@@ -16,7 +16,7 @@ public class Match {
     Boolean isPublic;
     Boolean isOnline;
     String status;
-//  Status list: NOT_READY, READY, PLAYER_ONE_TURN, PLAYER_TWO_TURN, PLAYER_ONE_WIN, PLAYER_TWO_WIN, DRAFT
+//  Status list: WAITING, PLAYER_ONE_TURN, PLAYER_TWO_TURN, PLAYER_ONE_WIN, PLAYER_TWO_WIN, DRAFT
 
     public Long getId() {
         return id;

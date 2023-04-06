@@ -19,7 +19,7 @@ public class PieceController {
         this.pieceService = pieceService;
     }
 
-    @PostMapping("match/{matchId}/move")
+    @PostMapping("match/{matchId}")
     public Match movePiece(@RequestBody PieceForm pieceForm, HttpServletRequest request){
         return pieceService.movePiece(pieceForm, request.getAttribute("match"));
     }
