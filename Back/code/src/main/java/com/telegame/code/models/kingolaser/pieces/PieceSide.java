@@ -1,4 +1,4 @@
-package com.telegame.code.models.kingolaser.utils;
+package com.telegame.code.models.kingolaser.pieces;
 
 import com.telegame.code.models.kingolaser.pieces.Piece;
 

@@ -1,7 +1,7 @@
 package com.telegame.code.models.kingolaser;
 
 import com.telegame.code.models.kingolaser.pieces.Piece;
-import com.telegame.code.models.kingolaser.utils.PieceSide;
+import com.telegame.code.models.kingolaser.pieces.PieceSide;
 
 public class Hit  implements PieceSide {
     @Override

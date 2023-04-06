@@ -1,8 +1,6 @@
 package com.telegame.code.models.kingolaser.pieces;
 
-import com.telegame.code.models.kingolaser.utils.Movable;
 import com.telegame.code.builder.PieceBuilder;
-import com.telegame.code.models.kingolaser.utils.PieceSide;
 
 import java.util.HashMap;
 import java.util.Map;

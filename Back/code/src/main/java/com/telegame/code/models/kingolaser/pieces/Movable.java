@@ -1,4 +1,4 @@
-package com.telegame.code.models.kingolaser.utils;
+package com.telegame.code.models.kingolaser.pieces;
 
 public interface Movable {
     void rotate(String rotateTo);

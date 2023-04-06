@@ -1,6 +1,6 @@
 package com.telegame.code.builder;
 
-import com.telegame.code.models.kingolaser.utils.PieceSide;
+import com.telegame.code.models.kingolaser.pieces.PieceSide;
 import com.telegame.code.models.kingolaser.pieces.Block;
 import com.telegame.code.models.kingolaser.Deflect;
 import com.telegame.code.models.kingolaser.Hit;
