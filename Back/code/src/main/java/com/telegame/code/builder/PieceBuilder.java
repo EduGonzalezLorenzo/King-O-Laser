@@ -12,28 +12,26 @@ import java.util.Map;
 
 public class PieceBuilder {
 
-    public static Piece buildPiece(Player owner, int posY, int posX, Piece.Direction rotation) {
+    public static Piece buildPiece(Player owner, String type, int posY, int posX, Piece.Direction rotation) {
         Piece piece = new King();
+        switch (type){
+            case "king":
+                Piece king = new King();
+                king.setOwner(owner);
+                king.setPosY(posY);
+                king.setPosX(posX);
+                king.setRotation(rotation);
+                king.setSide(Piece.Direction.NORTH, new Hit());
+                king.setSide(Piece.Direction.SOUTH, new Hit());
+                king.setSide(Piece.Direction.EAST, new Hit());
+                king.setSide(Piece.Direction.WEST, new Hit());
+                return king;
+            case "laser":
+                break;
+        }
         return piece;
     }
 
-//    public static Piece buildKing(int player_id, int posY, int posX,
-//                                  Piece.Direction rotation) {
-//        Piece king = new Piece();
-//
-//        king.setPlayer(player_id);
-//        king.setType(Piece.Type.KING);
-//        king.setPosY(posY);
-//        king.setPosX(posX);
-//        king.setRotation(rotation);
-//
-//        king.setSide(Piece.Direction.NORTH, new Hit());
-//        king.setSide(Piece.Direction.SOUTH, new Hit());
-//        king.setSide(Piece.Direction.EAST, new Hit());
-//        king.setSide(Piece.Direction.WEST, new Hit());
-//
-//        return king;
-//    }
 //
 //    public static Piece buildBlock(int player_id, int posY, int posX,
 //                                   Piece.Direction rotation) {

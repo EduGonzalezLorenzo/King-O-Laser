@@ -30,6 +30,14 @@ public abstract class Piece implements Movable {
     private Direction rotation;
     private Map<Direction, PieceSide> sides = new HashMap<>();
 
+    public void setSide(Direction side, PieceSide pieceSide) {
+        this.sides.put(side, pieceSide);
+    }
+
+    public PieceSide getSide(Direction side) {
+        return this.sides.get(side);
+    }
+
 
     @Override
     public void rotate(String rotateTo) {
