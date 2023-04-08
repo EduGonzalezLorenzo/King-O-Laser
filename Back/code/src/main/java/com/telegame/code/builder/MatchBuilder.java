@@ -10,11 +10,6 @@ public class MatchBuilder {
     public static Match createMatch(Player player1, String matchName, String password, boolean isPublic) throws NoSuchAlgorithmException {
         Match match = new Match();
 
-        match.setPublic(isPublic);
-        match.setPlayerOne(player1);
-        match.setName(matchName);
-        match.setPassword(HashUtils.getHashSHA256(password));
-        match.setStatus(Match.matchStatus.WAITING);
 
         return match;
     }

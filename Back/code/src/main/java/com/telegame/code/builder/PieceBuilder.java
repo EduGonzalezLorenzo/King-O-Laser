@@ -1,7 +1,8 @@
 package com.telegame.code.builder;
 
+import com.telegame.code.models.Player;
+import com.telegame.code.models.kingolaser.pieces.King;
 import com.telegame.code.models.kingolaser.pieces.PieceSide;
-import com.telegame.code.models.kingolaser.pieces.Block;
 import com.telegame.code.models.kingolaser.Deflect;
 import com.telegame.code.models.kingolaser.Hit;
 import com.telegame.code.models.kingolaser.pieces.Piece;
@@ -11,10 +12,10 @@ import java.util.Map;
 
 public class PieceBuilder {
 
-    // values[0] = player
-    // values[1] = posY
-    // values[2] = posX
-    // values[3] = rotation;
+    public static Piece buildPiece(Player owner, int posY, int posX, Piece.Direction rotation) {
+        Piece piece = new King();
+        return piece;
+    }
 
 //    public static Piece buildKing(int player_id, int posY, int posX,
 //                                  Piece.Direction rotation) {

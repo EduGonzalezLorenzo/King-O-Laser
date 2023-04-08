@@ -2,11 +2,22 @@ package com.telegame.code.models.kingolaser.pieces;
 
 import com.telegame.code.builder.PieceBuilder;
 import com.telegame.code.models.Player;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Piece implements Movable {
 
     public enum Direction {
@@ -19,52 +30,6 @@ public abstract class Piece implements Movable {
     private Direction rotation;
     private Map<Direction, PieceSide> sides = new HashMap<>();
 
-    public Player getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Player owner) {
-        this.owner = owner;
-    }
-    public int getPosX() {
-        return posX;
-    }
-
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
-
-    public Direction getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(Direction rotation) {
-        this.rotation = rotation;
-    }
-
-    public Map<Direction, PieceSide> getSides() {
-        return sides;
-    }
-
-    public void setSides(Map<Direction, PieceSide> sides) {
-        this.sides = sides;
-    }
-
-    public void setSide(Direction side, PieceSide pieceSide) {
-        this.sides.put(side, pieceSide);
-    }
-
-    public PieceSide getSide(Direction side) {
-        return this.sides.get(side);
-    }
 
     @Override
     public void rotate(String rotateTo) {

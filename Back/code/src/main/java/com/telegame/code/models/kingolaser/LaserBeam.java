@@ -1,6 +1,5 @@
 package com.telegame.code.models.kingolaser;
 
-import com.telegame.code.models.kingolaser.pieces.Block;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 import com.telegame.code.models.kingolaser.pieces.PieceSide;
 
