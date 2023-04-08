@@ -13,14 +13,14 @@ public class Pruebas {
 
         List<Piece> piecesList = new ArrayList<>();
 
-        Piece deflector = PieceBuilder.buildDeflector(1, 5, 7, Piece.Direction.EAST);
-        piecesList.add(deflector);
-
-        Piece deflector2 = PieceBuilder.buildDeflector(1, 5, 3, Piece.Direction.WEST);
-        piecesList.add(deflector2);
-
-        Piece deflector3 = PieceBuilder.buildDeflector(1, 9, 3, Piece.Direction.SOUTH);
-        piecesList.add(deflector3);
+//        Piece deflector = PieceBuilder.buildDeflector(1, 5, 7, Piece.Direction.EAST);
+//        piecesList.add(deflector);
+//
+//        Piece deflector2 = PieceBuilder.buildDeflector(1, 5, 3, Piece.Direction.WEST);
+//        piecesList.add(deflector2);
+//
+//        Piece deflector3 = PieceBuilder.buildDeflector(1, 9, 3, Piece.Direction.SOUTH);
+//        piecesList.add(deflector3);
 
         Object[][] board = buildBoard(piecesList);
 
@@ -30,12 +30,12 @@ public class Pruebas {
 
 //        movePiece(board, new int[]{5,3}, new int[]{5,3}, "L");
 
-        LaserBeam laserBeam = new LaserBeam();
-
-        List<int[]> route = laserBeam.shootLaser(1, Piece.Direction.WEST, board);
+//        LaserBeam laserBeam = new LaserBeam();
+//
+//        List<int[]> route = laserBeam.shootLaser(1, Piece.Direction.WEST, board);
 
         drawBoard(board);
-        System.out.println(Arrays.deepToString(route.toArray()));
+//        System.out.println(Arrays.deepToString(route.toArray()));
 
     }
 
@@ -75,7 +75,7 @@ public class Pruebas {
                     board[i][j] = "  " + i + ":" + j + " ";
                 } else if(board[i][j] instanceof Piece) {
                     Piece piece = (Piece) board[i][j];
-                    board[i][j] = piece.getType().toString();
+//                    board[i][j] = piece.getType().toString();
                 }
                 System.out.print(board[i][j] + "|");
             }

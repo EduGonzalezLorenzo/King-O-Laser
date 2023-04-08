@@ -1,6 +1,7 @@
 package com.telegame.code.models.kingolaser.pieces;
 
 import com.telegame.code.builder.PieceBuilder;
+import com.telegame.code.models.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,20 +13,19 @@ public abstract class Piece implements Movable {
         NORTH, SOUTH, EAST, WEST
     }
 
-    public enum Type {
-        KING, BLOCK, DEFLECTOR, BOUNCER, LASER
-    }
-
-    abstract String laserInteraction(String laserSource);
-
-    private int player_id;
-    private Type type;
+    private Player owner;
     private int posX;
     private int posY;
     private Direction rotation;
     private Map<Direction, PieceSide> sides = new HashMap<>();
 
+    public Player getOwner() {
+        return owner;
+    }
 
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
     public int getPosX() {
         return posX;
     }
@@ -42,28 +42,12 @@ public abstract class Piece implements Movable {
         this.posY = posY;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     public Direction getRotation() {
         return rotation;
     }
 
     public void setRotation(Direction rotation) {
         this.rotation = rotation;
-    }
-
-    public int getPlayer_id() {
-        return player_id;
-    }
-
-    public void setPlayer(int player_id) {
-        this.player_id = player_id;
     }
 
     public Map<Direction, PieceSide> getSides() {

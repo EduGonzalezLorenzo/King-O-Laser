@@ -69,16 +69,16 @@ public class LaserBeam {
                         break;
                 }
 
-                boolean bouncer = (piece.getType() == Piece.Type.BOUNCER);
+//                boolean bouncer = (piece.getType() == Piece.Type.BOUNCER);
 
-                Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
+//                Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
 
-                if(nextDirection == null) return route;
-                else {
-                    direction = nextDirection;
-                    currentPosition = newYX;
-                    route.add(newYX);
-                }
+//                if(nextDirection == null) return route;
+//                else {
+//                    direction = nextDirection;
+//                    currentPosition = newYX;
+//                    route.add(newYX);
+//                }
 
             } else {
                 board[posY][posX] = "  /\\  ";
