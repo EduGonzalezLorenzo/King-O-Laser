@@ -3,10 +3,12 @@ package com.telegame.code.controllers;
 import com.telegame.code.forms.MatchForm;
 import com.telegame.code.models.Match;
 import com.telegame.code.models.Message;
+import com.telegame.code.models.Player;
 import com.telegame.code.services.MatchService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -18,7 +20,7 @@ public class MatchController {
     }
 
     @PostMapping("/match")
-    public Message createMatch(@RequestBody MatchForm matchForm, HttpServletRequest request) {
+    public Message createMatch(@RequestBody MatchForm matchForm, HttpServletRequest request) throws NoSuchAlgorithmException {
         return matchService.createMatch(matchForm);
     }
 
@@ -29,7 +31,8 @@ public class MatchController {
 
     @GetMapping("/match/{matchId}")
     public Match joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
-        return matchService.getMatch(matchId, request.getAttribute("player"));
+        Player playerTwo = (Player) request.getAttribute("player");
+        return matchService.getMatch(matchId, playerTwo);
     }
 
     @PutMapping("/match/{matchId}")
