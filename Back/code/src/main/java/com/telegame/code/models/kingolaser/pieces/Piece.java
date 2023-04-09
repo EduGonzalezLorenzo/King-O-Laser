@@ -42,18 +42,23 @@ public abstract class Piece implements Movable {
     @Override
     public void rotate(String rotateTo) {
         if(Objects.equals(rotateTo, "R")) {
-            if(this.rotation == Direction.NORTH) this.rotation = Direction.EAST;
-            if(this.rotation == Direction.EAST) this.rotation = Direction.SOUTH;
-            if(this.rotation == Direction.SOUTH) this.rotation = Direction.WEST;
-            if(this.rotation == Direction.WEST) this.rotation = Direction.NORTH;
+            switch(this.rotation) {
+                case NORTH -> this.rotation = Direction.EAST;
+                case EAST -> this.rotation = Direction.SOUTH;
+                case SOUTH -> this.rotation = Direction.WEST;
+                case WEST -> this.rotation = Direction.NORTH;
+            }
         }
         if(Objects.equals(rotateTo, "L")) {
-            if(this.rotation == Direction.NORTH) this.rotation = Direction.WEST;
-            if(this.rotation == Direction.EAST) this.rotation = Direction.NORTH;
-            if(this.rotation == Direction.SOUTH) this.rotation = Direction.EAST;
-            if(this.rotation == Direction.WEST) this.rotation = Direction.SOUTH;
+            switch(this.rotation) {
+                case NORTH -> this.rotation = Direction.WEST;
+                case EAST -> this.rotation = Direction.NORTH;
+                case SOUTH -> this.rotation = Direction.EAST;
+                case WEST -> this.rotation = Direction.SOUTH;
+            }
         }
-        this.setSides(PieceBuilder.buildDeflectorSides(this.rotation));
+        if(this.getClass() == Deflector.class) this.setSides(PieceBuilder.buildDeflectorSides(this.rotation));
+        if(this.getClass() == Defender.class) this.setSides(PieceBuilder.buildDefenderSides(this.rotation));
     }
 
     @Override

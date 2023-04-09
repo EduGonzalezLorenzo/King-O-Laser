@@ -1,33 +1,26 @@
 package com.telegame.code.models.kingolaser;
 
+import com.telegame.code.models.kingolaser.pieces.Bouncer;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 import com.telegame.code.models.kingolaser.pieces.PieceSide;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LaserBeam {
     Piece.Direction direction;
     List<int[]> route;
 
-    public Piece.Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Piece.Direction direction) {
-        this.direction = direction;
-    }
-
-    public List<int[]> getRoute() {
-        return route;
-    }
-
     public void setStep(int[] step) {
         this.route.add(step);
-    }
-
-    public void setRoute(List<int[]> route) {
-        this.route = route;
     }
 
     public List<int[]> shootLaser(int player_id, Piece.Direction direction, Object[][] board) {
@@ -68,16 +61,16 @@ public class LaserBeam {
                         break;
                 }
 
-//                boolean bouncer = (piece.getType() == Piece.Type.BOUNCER);
+                boolean bouncer = (piece instanceof Bouncer);
 
-//                Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
+                Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
 
-//                if(nextDirection == null) return route;
-//                else {
-//                    direction = nextDirection;
-//                    currentPosition = newYX;
-//                    route.add(newYX);
-//                }
+                if(nextDirection == null) return route;
+                else {
+                    direction = nextDirection;
+                    currentPosition = newYX;
+                    route.add(newYX);
+                }
 
             } else {
                 board[posY][posX] = "  /\\  ";

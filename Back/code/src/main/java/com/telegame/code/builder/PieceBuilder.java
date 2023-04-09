@@ -72,7 +72,7 @@ public class PieceBuilder {
         return piece;
     }
 
-    private static Map<Piece.Direction, PieceSide> buildDefenderSides(Piece.Direction rotation) {
+    public static Map<Piece.Direction, PieceSide> buildDefenderSides(Piece.Direction rotation) {
         Map<Piece.Direction, PieceSide> sides = new HashMap<>();
         switch (rotation) {
             case NORTH -> {
