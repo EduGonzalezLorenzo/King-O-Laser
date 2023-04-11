@@ -2,8 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --color-primario: #a4036f;
+    --color-secundario: #380036;
+    --gradiente: linear-gradient(180deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    background: rgb(80,125,188);
-background: linear-gradient(87deg, rgba(80,125,188,1) 0%, rgba(75,198,185,1) 25%, rgba(181,244,74,1) 50%, rgba(164,3,111,1) 75%, rgba(56,0,54,1) 100%);
-    width: 100%;
+    background-image: var(--gradiente);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+button.signup,button.login{
+    background-color: lightseagreen;
+    color:white;
+    font-weight: bold;
 }
