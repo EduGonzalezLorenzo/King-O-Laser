@@ -1,5 +1,6 @@
 package com.telegame.code.models;
 
+import com.telegame.code.models.kingolaser.LaserBoard;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +25,7 @@ public class Match {
     String password;
     Player playerOne;
     Player playerTwo;
-    Board board;
+    LaserBoard board;
     Boolean isPublic;
     MatchStatus status;
 

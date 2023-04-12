@@ -1,9 +1,7 @@
 package com.telegame.code.models.kingolaser;
 
-import com.telegame.code.models.Board;
 import com.telegame.code.models.kingolaser.pieces.Piece;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,14 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LaserBoard implements Board {
+@Embeddable
+public class LaserBoard {
+
     List<Piece> pieceList;
     LaserBeam laserBeam;
+
+//    public LaserBoard(List<Piece> piecesList, LaserBeam laserBeam) {
+//        this.pieceList = piecesList;
+//        this.laserBeam = laserBeam;
+//    }
 }

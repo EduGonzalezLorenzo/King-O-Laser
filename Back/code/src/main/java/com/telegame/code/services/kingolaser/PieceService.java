@@ -1,7 +1,6 @@
 package com.telegame.code.services.kingolaser;
 
 import com.telegame.code.forms.MovementForm;
-import com.telegame.code.models.Board;
 import com.telegame.code.models.Match;
 import com.telegame.code.models.kingolaser.LaserBeam;
 import com.telegame.code.models.kingolaser.LaserBoard;

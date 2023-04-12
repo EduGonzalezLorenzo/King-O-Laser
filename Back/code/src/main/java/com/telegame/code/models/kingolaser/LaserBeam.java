@@ -3,6 +3,9 @@ package com.telegame.code.models.kingolaser;
 import com.telegame.code.models.kingolaser.pieces.Bouncer;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 import com.telegame.code.models.kingolaser.pieces.PieceSide;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LaserBeam {
+
     Piece.Direction direction;
     List<int[]> route;
 
