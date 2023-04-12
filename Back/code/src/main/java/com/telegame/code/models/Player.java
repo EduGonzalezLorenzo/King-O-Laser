@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Getter
 @AllArgsConstructor
@@ -22,4 +24,6 @@ public class Player {
     String firstName;
     String lastName;
 
+    @OneToMany(mappedBy = "player")
+    List<Player_Play_Match> matches;
 }

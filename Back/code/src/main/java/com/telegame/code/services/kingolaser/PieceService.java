@@ -1,12 +1,12 @@
 package com.telegame.code.services.kingolaser;
 
-import com.telegame.code.models.Match;
+import com.telegame.code.models.GameMatch;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PieceService {
 
-    public Match movePiece(Object match) {
-        return new Match();
+    public GameMatch movePiece(Object match) {
+        return new GameMatch();
     }
 }

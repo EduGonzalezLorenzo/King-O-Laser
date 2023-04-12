@@ -1,6 +1,6 @@
 package com.telegame.code.controllers.kingolaser;
 
-import com.telegame.code.models.Match;
+import com.telegame.code.models.GameMatch;
 import com.telegame.code.services.kingolaser.PieceService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +15,7 @@ public class PieceController {
     }
 
     @PostMapping("match/{matchId}")
-    public Match movePiece(HttpServletRequest request){
+    public GameMatch movePiece(HttpServletRequest request){
         return pieceService.movePiece(request.getAttribute("match"));
     }
 }

@@ -1,7 +1,7 @@
 package com.telegame.code.controllers;
 
 import com.telegame.code.forms.MatchForm;
-import com.telegame.code.models.Match;
+import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Message;
 import com.telegame.code.services.MatchService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,17 +23,17 @@ public class MatchController {
     }
 
     @GetMapping("/matchList")
-    public List<Match> getMatchList() {
+    public List<GameMatch> getMatchList() {
         return matchService.getMatchList();
     }
 
     @GetMapping("/match/{matchId}")
-    public Match joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
+    public GameMatch joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
         return matchService.getMatch(matchId, request.getAttribute("player"));
     }
 
     @PutMapping("/match/{matchId}")
-    public List<Match> updateMatch(@PathVariable Long matchId, HttpServletRequest request) {
+    public List<GameMatch> updateMatch(@PathVariable Long matchId, HttpServletRequest request) {
         return matchService.updateMatch(matchId, request.getAttribute("player"));
     }
 

@@ -20,7 +20,7 @@ public class TokenService {
     public String createUserToken(Player player) {
         Date expDate = new Date(System.currentTimeMillis() + expTokenTime);
         return JWT.create()
-                .withSubject(player.getName())
+                .withSubject(player.getPlayerName())
                 .withExpiresAt(expDate)
                 .sign(Algorithm.HMAC512(tokenSecret.getBytes()));
     }
