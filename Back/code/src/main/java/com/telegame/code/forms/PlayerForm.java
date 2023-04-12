@@ -1,50 +1,32 @@
 package com.telegame.code.forms;
 
 import jakarta.validation.constraints.Email;
-import org.hibernate.validator.constraints.Range;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class PlayerForm {
     @Email
+    @Size(min = 6, max = 30)
+    @NotNull
     String email;
 
-    @Range(min = 8, max = 20)
+    @Size(min = 8, max = 20)
+    @NotNull
     String password;
 
-    @Range(min = 3, max = 10)
-    String name;
+    @Size(min = 3, max = 20)
+    @NotNull
+    String firstName;
 
-    @Range(min = 3, max = 10)
+    @Size(min = 3, max = 20)
+    @NotNull
+    String lastName;
+
+    @NotNull
+    @Size(min = 3, max = 10)
     String playerName;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
 }
