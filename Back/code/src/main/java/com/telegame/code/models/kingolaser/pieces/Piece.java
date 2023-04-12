@@ -2,8 +2,7 @@ package com.telegame.code.models.kingolaser.pieces;
 
 import com.telegame.code.builder.PieceBuilder;
 import com.telegame.code.models.Player;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,9 +24,16 @@ public abstract class Piece implements Movable {
         NORTH, SOUTH, EAST, WEST
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    @ManyToOne
+    @JoinColumn
     private Player owner;
     private int posX;
     private int posY;
+    @Enumerated(EnumType.STRING)
     private Direction rotation;
     private Map<Direction, PieceSide> sides = new HashMap<>();
 

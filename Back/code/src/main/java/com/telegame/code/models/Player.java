@@ -1,5 +1,6 @@
 package com.telegame.code.models;
 
+import com.telegame.code.models.kingolaser.pieces.Piece;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -23,6 +24,9 @@ public class Player {
     String email;
     String firstName;
     String lastName;
+
+    @OneToMany(mappedBy = "owner")
+    List<Piece> pieces;
 
     @OneToMany(mappedBy = "player")
     List<Player_Play_Match> matches;

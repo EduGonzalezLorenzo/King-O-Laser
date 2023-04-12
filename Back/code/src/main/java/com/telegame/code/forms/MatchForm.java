@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 public class MatchForm {
     @Range(min = 1, max = 20)
     String name;
+    @Range(min = 1, max = 20)
+    String password;
     Boolean isPublic;
 
     public String getName() {
