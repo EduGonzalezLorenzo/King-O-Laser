@@ -1,7 +1,7 @@
 package com.telegame.code.services;
 
 import com.telegame.code.forms.MatchForm;
-import com.telegame.code.models.Match;
+import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Message;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +14,18 @@ public class MatchService {
         return new Message();
     }
 
-    public List<Match> getMatchList() {
-        List<Match> matchList = new ArrayList<>();
+    public List<GameMatch> getMatchList() {
+        List<GameMatch> matchList = new ArrayList<>();
         return matchList;
     }
 
-    public Match getMatch(Long matchId, Object candidate) {
-        Match match = new Match();
+    public GameMatch getMatch(Long matchId, Object candidate) {
+        GameMatch match = new GameMatch();
         return match;
     }
 
-    public List<Match> updateMatch(Long matchId, Object candidate) {
-        List<Match> matchList = new ArrayList<>();
+    public List<GameMatch> updateMatch(Long matchId, Object candidate) {
+        List<GameMatch> matchList = new ArrayList<>();
         return matchList;
     }
 

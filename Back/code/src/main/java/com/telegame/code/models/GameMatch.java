@@ -1,16 +1,15 @@
 package com.telegame.code.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
-public class Match {
+public class GameMatch {
     public enum MatchStatus {
         WAITING, PLAYER_ONE_TURN, PLAYER_TWO_TURN, PLAYER_ONE_WIN, PLAYER_TWO_WIN, DRAFT
     }
@@ -20,10 +19,12 @@ public class Match {
     Long id;
     String name;
     String password;
-    Player playerOne;
-    Player playerTwo;
-    Board board;
     Boolean isPublic;
+    @Enumerated(EnumType.STRING)
     MatchStatus status;
 
+    @OneToMany(mappedBy = "gameMatch")
+    List<Player_Play_Match> players;
+    @OneToOne(mappedBy = "gameMatch")
+    Board board;
 }
