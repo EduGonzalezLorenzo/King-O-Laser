@@ -1,5 +1,6 @@
 package com.telegame.code.models.kingolaser;
 
+import com.telegame.code.models.Board;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,14 +14,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
-public class LaserBoard {
+@Entity
+public class LaserBoard extends Board {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-    List<Piece> pieceList;
-    LaserBeam laserBeam;
-
-//    public LaserBoard(List<Piece> piecesList, LaserBeam laserBeam) {
-//        this.pieceList = piecesList;
-//        this.laserBeam = laserBeam;
-//    }
+//    @OneToMany(mappedBy = "laserBoard")
+//    List<Piece> pieceList;
 }

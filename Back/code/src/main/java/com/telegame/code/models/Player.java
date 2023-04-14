@@ -25,9 +25,6 @@ public class Player {
     String firstName;
     String lastName;
 
-    @OneToMany(mappedBy = "owner")
-    List<Piece> pieces;
-
     @OneToMany(mappedBy = "player")
     List<Player_Play_Match> matches;
 }

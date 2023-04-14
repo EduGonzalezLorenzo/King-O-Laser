@@ -2,6 +2,7 @@ package com.telegame.code.models.kingolaser.pieces;
 
 import com.telegame.code.builder.PieceBuilder;
 import com.telegame.code.models.Player;
+import com.telegame.code.models.kingolaser.LaserBoard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,18 +25,26 @@ public abstract class Piece implements Movable {
         NORTH, SOUTH, EAST, WEST
     }
 
+    public enum Owner {
+        UNASSIGNED, PLAYER_ONE, PLAYER_TWO
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
-    @JoinColumn
-    private Player owner;
+    @Enumerated(EnumType.STRING)
+    private Owner owner;
     private int posX;
     private int posY;
     @Enumerated(EnumType.STRING)
     private Direction rotation;
-    private Map<Direction, PieceSide> sides = new HashMap<>();
+    @Embedded
+    private Map<Direction, PieceSide> sides;
+
+    @ManyToOne
+    @JoinColumn(name = "laser_board_id")
+    LaserBoard laserBoard;
 
     public void setSide(Direction side, PieceSide pieceSide) {
         this.sides.put(side, pieceSide);
