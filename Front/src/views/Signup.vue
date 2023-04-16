@@ -47,7 +47,7 @@ function isStrongPassword(value: string) {
   >
     <h1 class="text-7xl text-center mt-28 text-white">SignUp</h1>
 
-    <form class="bg-white rounded-lg text-black m-10 p-10" id="signup">
+    <form class="bg-white rounded-lg text-black m-10 p-10" id="signup" action="/signUp" method="post">
       <div class="mb-6">
         <label for="email" class="block mb-2 text-sm font-medium text-black"
           >Your Username or Email</label

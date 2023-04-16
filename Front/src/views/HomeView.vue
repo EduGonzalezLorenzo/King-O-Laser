@@ -8,6 +8,6 @@
     <br>
     <a href="/login">Login</a>
     <br>
-    <a href="/signup">Signup</a>
+    <a href="/signUp">Signup</a>
   </div>
 </template>
