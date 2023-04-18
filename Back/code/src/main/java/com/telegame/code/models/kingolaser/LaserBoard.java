@@ -20,6 +20,7 @@ public class LaserBoard extends Board {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    Long id;
 
+
     @OneToMany(mappedBy = "laserBoard")
     List<Piece> pieceList;
 }

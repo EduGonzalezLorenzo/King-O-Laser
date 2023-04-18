@@ -1,6 +1,5 @@
 package com.telegame.code.builder;
 
-import com.telegame.code.models.Player;
 import com.telegame.code.models.kingolaser.Block;
 import com.telegame.code.models.kingolaser.pieces.*;
 import com.telegame.code.models.kingolaser.Deflect;

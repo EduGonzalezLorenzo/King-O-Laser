@@ -1,7 +1,6 @@
 package com.telegame.code.models.kingolaser.pieces;
 
 import com.telegame.code.builder.PieceBuilder;
-import com.telegame.code.models.Player;
 import com.telegame.code.models.kingolaser.LaserBoard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 

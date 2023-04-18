@@ -4,6 +4,7 @@ import com.telegame.code.models.kingolaser.pieces.Piece;
 import com.telegame.code.models.kingolaser.pieces.PieceSide;
 
 public class Deflect implements PieceSide {
+
     @Override
     public Piece.Direction interact(Piece.Direction laserDirection, Piece.Direction rotation, boolean bouncer) {
 
