@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const form = document.getElementById("signup");
+const form = document.getElementById("signUp") as HTMLFormElement;
 
 function isEmail(value: string) {
   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
@@ -10,8 +10,13 @@ function isEmail(value: string) {
 }
 
 function checkPasswordsMatch() {
-  let password1 = form?.elements.password.value;
-  let password2 = form?.elements.repeat_password.value;
+  let password1 = (document.getElementById("password") as HTMLInputElement)
+    .value;
+  let password2 = (
+    document.getElementById("repeat-password") as HTMLInputElement
+  ).value;
+
+  console.log(password1, password2);
   return password1 === password2;
 }
 
@@ -29,11 +34,15 @@ window.addEventListener("load", function () {
 });
 function isStrongPassword(value: string) {
   const myButton = document.querySelector("#submit") as HTMLButtonElement;
-  const msg = document.querySelector('#msg') as HTMLSpanElement;
-  msg.textContent = 'Password is not Strong';
+  const msg = document.querySelector("#msg") as HTMLSpanElement;
+  msg.textContent = "Password is not Strong";
   myButton.disabled = true;
-  if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,15}$/.test(value)) {
-    msg.textContent = '';
+  if (
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,15}$/.test(
+      value
+    )
+  ) {
+    msg.textContent = "";
     myButton.disabled = false;
   }
 }
@@ -47,7 +56,12 @@ function isStrongPassword(value: string) {
   >
     <h1 class="text-7xl text-center mt-28 text-white">SignUp</h1>
 
-    <form class="bg-white rounded-lg text-black m-10 p-10" id="signup" action="/signUp" method="post">
+    <form
+      class="bg-white rounded-lg text-black m-10 p-10"
+      id="signUp"
+      action="/signUp"
+      method="post"
+    >
       <div class="mb-6">
         <label for="email" class="block mb-2 text-sm font-medium text-black"
           >Your Username or Email</label
@@ -85,7 +99,7 @@ function isStrongPassword(value: string) {
         >
         <input
           type="password"
-          id="repeat_password"
+          id="repeat-password"
           class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
           required
           placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const form = document.getElementById("signup");
+const form = document.getElementById("login") as HTMLFormElement;
 
 function isEmail(value: string) {
   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
@@ -9,24 +9,7 @@ function isEmail(value: string) {
   }
 }
 
-function checkPasswordsMatch() {
-  let password1 = form?.elements.password.value;
-  let password2 = form?.elements.repeat_password.value;
-  return password1 === password2;
-}
 
-function handleSubmit(event: any) {
-  event.preventDefault();
-  if (checkPasswordsMatch()) {
-    console.log("Passwords match!");
-  } else {
-    console.log("Passwords do not match.");
-  }
-}
-
-window.addEventListener("load", function () {
-  form?.addEventListener("submit", handleSubmit);
-});
 function isStrongPassword(value: string) {
   const myButton = document.querySelector("#submit") as HTMLButtonElement;
   const msg = document.querySelector('#msg') as HTMLSpanElement;
@@ -47,7 +30,7 @@ function isStrongPassword(value: string) {
   >
     <h1 class="text-7xl text-center mt-28 text-white">Login</h1>
 
-    <form class="bg-white rounded-lg text-black m-10 p-10" id="signup" action="/login" method="post">
+    <form class="bg-white rounded-lg text-black m-10 p-10" id="login" action="/login" method="post">
       <div class="mb-6">
         <label for="email" class="block mb-2 text-sm font-medium text-black"
           >Your Username or Email</label
