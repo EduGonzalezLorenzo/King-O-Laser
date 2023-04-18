@@ -12,9 +12,7 @@ import java.util.List;
 @ToString
 @Entity
 public class GameMatch {
-    public enum MatchStatus {
-        WAITING, PLAYER_ONE_TURN, PLAYER_TWO_TURN, PLAYER_ONE_WIN, PLAYER_TWO_WIN, DRAFT
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +20,6 @@ public class GameMatch {
     String name;
     String password;
     Boolean isPublic;
-    @Enumerated(EnumType.STRING)
-    MatchStatus status;
 
     @OneToMany(mappedBy = "gameMatch")
     List<Player_Play_Match> players;

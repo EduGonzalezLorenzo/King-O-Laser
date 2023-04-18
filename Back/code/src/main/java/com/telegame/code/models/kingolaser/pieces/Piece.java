@@ -18,7 +18,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Piece implements Movable {
 
     public enum Direction {
@@ -30,7 +30,7 @@ public abstract class Piece implements Movable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     Long id;
 
     @Enumerated(EnumType.STRING)

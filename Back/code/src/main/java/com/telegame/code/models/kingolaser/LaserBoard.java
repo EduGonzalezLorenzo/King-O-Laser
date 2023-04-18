@@ -16,10 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class LaserBoard extends Board {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    Long id;
 
-//    @OneToMany(mappedBy = "laserBoard")
-//    List<Piece> pieceList;
+    @OneToMany(mappedBy = "laserBoard")
+    List<Piece> pieceList;
 }

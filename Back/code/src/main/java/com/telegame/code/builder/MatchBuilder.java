@@ -18,18 +18,18 @@ public class MatchBuilder {
         return match;
     }
 
-//    public static List<Piece> getBoardDisposition(Player player1, Player player2) {
-//        List<Piece> piecesList = new ArrayList<>();
-//
-//        Piece deflector = PieceBuilder.buildPiece("deflector", 5,7, Piece.Direction.NORTH);
-//        piecesList.add(deflector);
-//        Piece bouncer = PieceBuilder.buildPiece("bouncer", 5,3, Piece.Direction.NORTH);
-//        piecesList.add(bouncer);
-//        Piece king = PieceBuilder.buildPiece("king", 5,0, Piece.Direction.EAST);
-//        piecesList.add(king);
-//        Piece defender = PieceBuilder.buildPiece("defender", 2,3, Piece.Direction.NORTH);
-//        piecesList.add(defender);
-//
-//        return piecesList;
-//    }
+    public static List<Piece> getBoardDisposition(Player player1, Player player2) {
+        List<Piece> piecesList = new ArrayList<>();
+
+        Piece deflector = PieceBuilder.buildPiece("deflector", 5,7, Piece.Direction.NORTH);
+        piecesList.add(deflector);
+        Piece bouncer = PieceBuilder.buildPiece("bouncer", 5,3, Piece.Direction.NORTH);
+        piecesList.add(bouncer);
+        Piece king = PieceBuilder.buildPiece("king", 5,0, Piece.Direction.EAST);
+        piecesList.add(king);
+        Piece defender = PieceBuilder.buildPiece("defender", 2,3, Piece.Direction.NORTH);
+        piecesList.add(defender);
+
+        return piecesList;
+    }
 }
