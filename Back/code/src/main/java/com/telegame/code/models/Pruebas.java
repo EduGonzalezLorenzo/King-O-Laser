@@ -11,16 +11,13 @@ import java.util.List;
 public class Pruebas {
     public static void main(String[] args) {
 
+        Player player = new Player();
+        Player player2 = new Player();
+
         List<Piece> piecesList = new ArrayList<>();
 
-//        Piece deflector = PieceBuilder.buildDeflector(1, 5, 7, Piece.Direction.EAST);
-//        piecesList.add(deflector);
-//
-//        Piece deflector2 = PieceBuilder.buildDeflector(1, 5, 3, Piece.Direction.WEST);
-//        piecesList.add(deflector2);
-//
-//        Piece deflector3 = PieceBuilder.buildDeflector(1, 9, 3, Piece.Direction.SOUTH);
-//        piecesList.add(deflector3);
+        Piece king = PieceBuilder.buildPiece(player, "king", 5,7, Piece.Direction.EAST);
+        piecesList.add(king);
 
         Object[][] board = buildBoard(piecesList);
 
@@ -75,7 +72,7 @@ public class Pruebas {
                     board[i][j] = "  " + i + ":" + j + " ";
                 } else if(board[i][j] instanceof Piece) {
                     Piece piece = (Piece) board[i][j];
-//                    board[i][j] = piece.getType().toString();
+                    board[i][j] = piece.getRotation();
                 }
                 System.out.print(board[i][j] + "|");
             }
