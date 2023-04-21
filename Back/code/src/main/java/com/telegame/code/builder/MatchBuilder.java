@@ -2,8 +2,10 @@ package com.telegame.code.builder;
 
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
+import com.telegame.code.models.Player_Play_Match;
 import com.telegame.code.models.kingolaser.LaserBeam;
 import com.telegame.code.models.kingolaser.LaserBoard;
+import com.telegame.code.models.kingolaser.pieces.King;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 
 import java.security.NoSuchAlgorithmException;
@@ -11,24 +13,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatchBuilder {
-    public static GameMatch createMatch(Player player1, String matchName, String password, boolean isPublic) throws NoSuchAlgorithmException {
-        GameMatch match = new GameMatch();
+    public static GameMatch createMatch(Player playerOne, String matchName, String password, boolean isPublic) throws NoSuchAlgorithmException {
 
+        Player_Play_Match player1_play_match = new Player_Play_Match();
+        player1_play_match.setPlayer(playerOne);
+        List<Player_Play_Match> players = new ArrayList<>();
+        players.add(player1_play_match);
 
-        return match;
+        List<Piece> boardDisposition = getBoardDisposition("std");
+        LaserBoard laserBoard = new LaserBoard();
+        laserBoard.setPieceList(boardDisposition);
+
+        return GameMatch.builder()
+                .name(matchName)
+                .password(password)
+                .isPublic(isPublic)
+                .players(players)
+                .board(laserBoard)
+                .build();
     }
 
-    public static List<Piece> getBoardDisposition(Player player1, Player player2) {
+    public static List<Piece> getBoardDisposition(String disposition) {
         List<Piece> piecesList = new ArrayList<>();
+        if ("std".equals(disposition)) {
+            PieceBuilder.buildPiece("king", Piece.Owner.PLAYER_ONE, 3, 3, Piece.Direction.NORTH);
+            PieceBuilder.buildPiece("king", Piece.Owner.PLAYER_TWO, 4, 4, Piece.Direction.NORTH);
 
-        Piece deflector = PieceBuilder.buildPiece("deflector", 5,7, Piece.Direction.NORTH);
-        piecesList.add(deflector);
-        Piece bouncer = PieceBuilder.buildPiece("bouncer", 5,3, Piece.Direction.NORTH);
-        piecesList.add(bouncer);
-        Piece king = PieceBuilder.buildPiece("king", 5,0, Piece.Direction.EAST);
-        piecesList.add(king);
-        Piece defender = PieceBuilder.buildPiece("defender", 2,3, Piece.Direction.NORTH);
-        piecesList.add(defender);
+            PieceBuilder.buildPiece("defender", Piece.Owner.PLAYER_ONE, 5, 5, Piece.Direction.NORTH);
+            PieceBuilder.buildPiece("defender", Piece.Owner.PLAYER_TWO, 6, 6, Piece.Direction.NORTH);
+        }
 
         return piecesList;
     }
