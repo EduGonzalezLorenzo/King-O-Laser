@@ -1,11 +1,10 @@
 package com.telegame.code.builder;
 
+import com.telegame.code.forms.MatchForm;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.Player_Play_Match;
-import com.telegame.code.models.kingolaser.LaserBeam;
 import com.telegame.code.models.kingolaser.LaserBoard;
-import com.telegame.code.models.kingolaser.pieces.King;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 
 import java.security.NoSuchAlgorithmException;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatchBuilder {
-    public static GameMatch createMatch(Player playerOne, String matchName, String password, boolean isPublic) throws NoSuchAlgorithmException {
+    public static GameMatch fromForm(Player playerOne, MatchForm matchForm) {
 
         Player_Play_Match player1_play_match = new Player_Play_Match();
         player1_play_match.setPlayer(playerOne);
@@ -25,9 +24,9 @@ public class MatchBuilder {
         laserBoard.setPieceList(boardDisposition);
 
         return GameMatch.builder()
-                .name(matchName)
-                .password(password)
-                .isPublic(isPublic)
+                .name(matchForm.getName())
+                .password(matchForm.getPassword())
+                .isPublic(matchForm.getIsPublic())
                 .players(players)
                 .board(laserBoard)
                 .build();

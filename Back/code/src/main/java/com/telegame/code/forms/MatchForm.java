@@ -1,8 +1,12 @@
 package com.telegame.code.forms;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+@Getter
+@Setter
 public class MatchForm {
     @Range(min = 1, max = 20)
     String name;
@@ -10,19 +14,4 @@ public class MatchForm {
     String password;
     Boolean isPublic;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean getPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(Boolean aPublic) {
-        isPublic = aPublic;
-    }
 }

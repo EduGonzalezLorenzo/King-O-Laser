@@ -1,8 +1,11 @@
 package com.telegame.code.services;
 
+import com.telegame.code.builder.MatchBuilder;
 import com.telegame.code.forms.MatchForm;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Message;
+import com.telegame.code.models.Player;
+import com.telegame.code.repos.MatchRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,8 +13,13 @@ import java.util.List;
 
 @Service
 public class MatchService {
-    public Message createMatch(MatchForm matchForm) {
-        return new Message();
+    private MatchRepo matchRepo;
+//    private MatchBuilder matchBuilder;
+    public String createMatch(MatchForm matchForm) {
+        // Recoger player del JWT
+        Player playerOne = new Player();
+        matchRepo.save(MatchBuilder.fromForm(playerOne, matchForm));
+        return "Ok";
     }
 
     public List<GameMatch> getMatchList() {
@@ -19,8 +27,8 @@ public class MatchService {
         return matchList;
     }
 
-    public GameMatch getMatch(Long matchId, Object candidate) {
-        GameMatch match = new GameMatch();
+    public GameMatch getMatch(Long matchId, Player candidate) {
+        GameMatch match = matchRepo.getReferenceById(matchId);
         return match;
     }
 
