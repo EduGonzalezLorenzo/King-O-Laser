@@ -1,9 +1,10 @@
-<script setup lang="ts">
-import { RouterView } from 'vue-router'
-import './index.css'
-</script>
-
 <template>
-  <RouterView />
+  <div>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
 </template>
-
+<script setup lang="ts">
+import "@/assets/css/styles.css";
+</script>
