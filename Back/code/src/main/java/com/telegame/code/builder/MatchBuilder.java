@@ -17,7 +17,7 @@ import java.util.List;
 
 public class MatchBuilder {
 
-    public static GameMatch fromForm(Player playerOne, MatchForm matchForm,
+    public static GameMatch fromForm(MatchForm matchForm,
                                      Board board, Player_Play_Match ppm) {
 
         List<Player_Play_Match> players = new ArrayList<>();

@@ -55,7 +55,7 @@ public class MatchController {
                 pieceService.savePiece(piece);
             }
 
-            GameMatch gameMatch = matchService.createMatch(matchForm, playerOne, laserBoard, ppm);
+            GameMatch gameMatch = matchService.createMatch(matchForm, laserBoard, ppm);
             ppm.setGameMatch(gameMatch);
             ppmService.savePPM(ppm);
             laserBoard.setGameMatch(gameMatch);

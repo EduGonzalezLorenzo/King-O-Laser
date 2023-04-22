@@ -27,13 +27,13 @@ public class MatchService {
     @Autowired
     PPMService ppmService;
 
-    public GameMatch createMatch(MatchForm matchForm, Player playerOne,
+    public GameMatch createMatch(MatchForm matchForm,
                               Board board, Player_Play_Match ppm) {
 
 //        Set<ConstraintViolation<MatchForm>> formErrorList = validatorFactory.getValidator().validate(matchForm);
 //        if (!formErrorList.isEmpty()) throw new MatchFormException();
 
-        GameMatch gameMatch = MatchBuilder.fromForm(playerOne, matchForm, board, ppm);
+        GameMatch gameMatch = MatchBuilder.fromForm(matchForm, board, ppm);
         matchRepo.save(gameMatch);
         return gameMatch;
     }
