@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,8 +38,8 @@ public abstract class Piece implements Movable {
     private int posY;
     @Enumerated(EnumType.STRING)
     private Direction rotation;
-    @Embedded
-    private Map<Direction, PieceSide> sides;
+    @Transient
+    private Map<Direction, PieceSide> sides = new HashMap<>();
 
     @ManyToOne
     @JoinColumn(name = "laser_board_id")

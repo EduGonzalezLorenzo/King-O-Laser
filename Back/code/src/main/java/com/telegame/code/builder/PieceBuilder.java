@@ -11,11 +11,12 @@ import java.util.Map;
 
 public class PieceBuilder {
 
-    public static Piece buildPiece(String type, int posY, int posX, Piece.Direction rotation) {
+    public static Piece buildPiece(String type, Piece.Owner owner, int posY, int posX, Piece.Direction rotation) {
         Piece piece = new King();
         switch (type) {
             case "king" -> {
                 Piece king = new King();
+                king.setOwner(owner);
                 king.setPosY(posY);
                 king.setPosX(posX);
                 king.setRotation(rotation);
@@ -27,6 +28,7 @@ public class PieceBuilder {
             }
             case "laser" -> {
                 Piece laser = new Laser();
+                laser.setOwner(owner);
                 laser.setPosY(posY);
                 laser.setPosX(posX);
                 laser.setRotation(rotation);
@@ -38,6 +40,7 @@ public class PieceBuilder {
             }
             case "deflector" -> {
                 Piece deflector = new Deflector();
+                deflector.setOwner(owner);
                 deflector.setPosY(posY);
                 deflector.setPosX(posX);
                 deflector.setRotation(rotation);
@@ -46,6 +49,7 @@ public class PieceBuilder {
             }
             case "defender" -> {
                 Piece defender = new Defender();
+                defender.setOwner(owner);
                 defender.setPosY(posY);
                 defender.setPosX(posX);
                 defender.setRotation(rotation);
@@ -54,6 +58,7 @@ public class PieceBuilder {
             }
             case "bouncer" -> {
                 Piece bouncer = new Bouncer();
+                bouncer.setOwner(owner);
                 bouncer.setPosY(posY);
                 bouncer.setPosX(posX);
                 bouncer.setRotation(rotation);

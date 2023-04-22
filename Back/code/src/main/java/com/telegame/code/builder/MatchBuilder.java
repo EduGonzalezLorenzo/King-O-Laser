@@ -1,35 +1,34 @@
 package com.telegame.code.builder;
 
+import com.telegame.code.forms.MatchForm;
+import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
-import com.telegame.code.models.kingolaser.LaserBeam;
+import com.telegame.code.models.Player_Play_Match;
 import com.telegame.code.models.kingolaser.LaserBoard;
 import com.telegame.code.models.kingolaser.pieces.Piece;
+import com.telegame.code.repos.BoardRepo;
+import com.telegame.code.services.BoardService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MatchBuilder {
-    public static GameMatch createMatch(Player player1, String matchName, String password, boolean isPublic) throws NoSuchAlgorithmException {
-        GameMatch match = new GameMatch();
 
+    public static GameMatch fromForm(MatchForm matchForm,
+                                     Board board, Player_Play_Match ppm) {
 
-        return match;
-    }
+        List<Player_Play_Match> players = new ArrayList<>();
+        players.add(ppm);
 
-    public static List<Piece> getBoardDisposition(Player player1, Player player2) {
-        List<Piece> piecesList = new ArrayList<>();
-
-        Piece deflector = PieceBuilder.buildPiece("deflector", 5,7, Piece.Direction.NORTH);
-        piecesList.add(deflector);
-        Piece bouncer = PieceBuilder.buildPiece("bouncer", 5,3, Piece.Direction.NORTH);
-        piecesList.add(bouncer);
-        Piece king = PieceBuilder.buildPiece("king", 5,0, Piece.Direction.EAST);
-        piecesList.add(king);
-        Piece defender = PieceBuilder.buildPiece("defender", 2,3, Piece.Direction.NORTH);
-        piecesList.add(defender);
-
-        return piecesList;
+        return GameMatch.builder()
+                .name(matchForm.getName())
+                .password(matchForm.getPassword())
+                .isPublic(matchForm.getIsPublic())
+                .players(players)
+                .board(board)
+                .build();
     }
 }
