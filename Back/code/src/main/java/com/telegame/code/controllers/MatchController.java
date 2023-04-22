@@ -71,10 +71,10 @@ public class MatchController {
         return matchService.getMatchList();
     }
 
-    @PostMapping("/match/{matchId}")
+    @PostMapping("/match/kingolaser/{matchId}")
     public ResponseEntity<String> joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
         //PlayerTwo de JWT
-        Player playerTwo = new Player();
+        Player playerTwo = playerRepo.getReferenceById(2L);
 
         return new ResponseEntity<>(matchService.joinGameMatch(matchId, playerTwo), HttpStatus.OK);
     }
