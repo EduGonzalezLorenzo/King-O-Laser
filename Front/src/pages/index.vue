@@ -2,19 +2,24 @@
 <template>
   <div
     id="home"
-    class="text-white"
+    class="text-white flex flex-col justify-between h-screen"
   >
-    <h1 class="text-7xl text-center mt-28">
+    <h1 class="text-7xl text-center mt-52">
       Telegame
     </h1>
-    <button
-      class="bg-transparent font-semibold hover:text-white py-3 px-10 border rounded"
-    >
-      Play
-    </button>
+    <div class="text-center mt-auto mb-40">
+      <button
+        class="bg-transparent font-semibold hover:text-black hover:bg-white hover:shadow-xl hover:shadow-white hover:mb-3 py-5 px-16 border rounded text-2xl transition duration-300 ease-in-out"
+      >
+        Play
+      </button>
+    </div>
+
     <br>
     <a href="/login">Login</a>
     <br>
     <a href="/signUp">Signup</a>
   </div>
 </template>
+
+
