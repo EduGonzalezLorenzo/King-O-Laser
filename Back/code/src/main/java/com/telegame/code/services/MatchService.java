@@ -5,13 +5,11 @@ import com.telegame.code.exceptions.InputPlayerFormException;
 import com.telegame.code.exceptions.MatchFormException;
 import com.telegame.code.forms.MatchForm;
 import com.telegame.code.forms.PlayerForm;
-import com.telegame.code.models.GameMatch;
-import com.telegame.code.models.Message;
-import com.telegame.code.models.Player;
-import com.telegame.code.models.Player_Play_Match;
+import com.telegame.code.models.*;
 import com.telegame.code.repos.MatchRepo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,21 +17,24 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class MatchService {
 
     private ValidatorFactory validatorFactory;
     private MatchRepo matchRepo;
 
-    public String createMatch(MatchForm matchForm) {
-        // Recoger player del JWT
-        Player playerOne = new Player();
+    public GameMatch createMatch(MatchForm matchForm, Player playerOne,
+                              Board board, Player_Play_Match ppm) {
 
 //        Set<ConstraintViolation<MatchForm>> formErrorList = validatorFactory.getValidator().validate(matchForm);
 //        if (!formErrorList.isEmpty()) throw new MatchFormException();
 
-        matchRepo.save(MatchBuilder.fromForm(playerOne, matchForm));
-        return "Ok";
+        GameMatch gameMatch = MatchBuilder.fromForm(playerOne, matchForm, board, ppm);
+        matchRepo.save(gameMatch);
+        return gameMatch;
     }
+
+
 
     public List<GameMatch> getMatchList() {
         List<GameMatch> matchList = new ArrayList<>();

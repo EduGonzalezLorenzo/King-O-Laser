@@ -13,5 +13,6 @@ public class MatchForm {
     @Range(min = 1, max = 20)
     String password;
     Boolean isPublic;
+    String boardDisposition;
 
 }

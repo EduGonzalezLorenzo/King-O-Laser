@@ -1,47 +1,34 @@
 package com.telegame.code.builder;
 
 import com.telegame.code.forms.MatchForm;
+import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.Player_Play_Match;
 import com.telegame.code.models.kingolaser.LaserBoard;
 import com.telegame.code.models.kingolaser.pieces.Piece;
+import com.telegame.code.repos.BoardRepo;
+import com.telegame.code.services.BoardService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MatchBuilder {
-    public static GameMatch fromForm(Player playerOne, MatchForm matchForm) {
 
-        Player_Play_Match player1_play_match = new Player_Play_Match();
-        player1_play_match.setPlayer(playerOne);
+    public static GameMatch fromForm(Player playerOne, MatchForm matchForm,
+                                     Board board, Player_Play_Match ppm) {
+
         List<Player_Play_Match> players = new ArrayList<>();
-        players.add(player1_play_match);
-
-        List<Piece> boardDisposition = getBoardDisposition("std");
-        LaserBoard laserBoard = new LaserBoard();
-        laserBoard.setPieceList(boardDisposition);
+        players.add(ppm);
 
         return GameMatch.builder()
                 .name(matchForm.getName())
                 .password(matchForm.getPassword())
                 .isPublic(matchForm.getIsPublic())
                 .players(players)
-                .board(laserBoard)
+                .board(board)
                 .build();
-    }
-
-    public static List<Piece> getBoardDisposition(String disposition) {
-        List<Piece> piecesList = new ArrayList<>();
-        if ("std".equals(disposition)) {
-            PieceBuilder.buildPiece("king", Piece.Owner.PLAYER_ONE, 3, 3, Piece.Direction.NORTH);
-            PieceBuilder.buildPiece("king", Piece.Owner.PLAYER_TWO, 4, 4, Piece.Direction.NORTH);
-
-            PieceBuilder.buildPiece("defender", Piece.Owner.PLAYER_ONE, 5, 5, Piece.Direction.NORTH);
-            PieceBuilder.buildPiece("defender", Piece.Owner.PLAYER_TWO, 6, 6, Piece.Direction.NORTH);
-        }
-
-        return piecesList;
     }
 }
