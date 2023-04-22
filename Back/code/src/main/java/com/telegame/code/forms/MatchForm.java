@@ -15,4 +15,5 @@ public class MatchForm {
     Boolean isPublic;
     String boardDisposition;
 
+
 }
