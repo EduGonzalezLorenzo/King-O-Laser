@@ -6,6 +6,8 @@ import com.telegame.code.exceptions.PlayerNameException;
 import com.telegame.code.forms.MatchForm;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Message;
+import com.telegame.code.models.Player;
+import com.telegame.code.models.Player_Play_Match;
 import com.telegame.code.services.MatchService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -24,7 +26,7 @@ public class MatchController {
         this.matchService = matchService;
     }
 
-    @PostMapping("/match")
+    @PostMapping("/match/kingolaser")
     public ResponseEntity<String> createMatch(@RequestBody MatchForm matchForm, HttpServletRequest request) {
         try {
             return new ResponseEntity<>(matchService.createMatch(matchForm), HttpStatus.OK);
@@ -38,10 +40,13 @@ public class MatchController {
         return matchService.getMatchList();
     }
 
-//    @GetMapping("/match/{matchId}")
-//    public GameMatch joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
-//        return matchService.getMatch(matchId, request.getAttribute("player"));
-//    }
+    @PostMapping("/match/{matchId}")
+    public ResponseEntity<String> joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
+        //PlayerTwo de JWT
+        Player playerTwo = new Player();
+
+        return new ResponseEntity<>(matchService.joinGameMatch(matchId, playerTwo), HttpStatus.OK);
+    }
 
     @PutMapping("/match/{matchId}")
     public List<GameMatch> updateMatch(@PathVariable Long matchId, HttpServletRequest request) {

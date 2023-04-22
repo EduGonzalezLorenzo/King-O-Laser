@@ -14,8 +14,8 @@ public class PieceController {
         this.pieceService = pieceService;
     }
 
-    @PostMapping("match/{matchId}")
-    public GameMatch movePiece(HttpServletRequest request){
-        return pieceService.movePiece(request.getAttribute("match"));
-    }
+//    @PostMapping("match/{matchId}")
+//    public GameMatch movePiece(HttpServletRequest request){
+//        return pieceService.movePiece(request.getAttribute("match"));
+//    }
 }
