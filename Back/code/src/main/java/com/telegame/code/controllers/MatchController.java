@@ -3,6 +3,7 @@ package com.telegame.code.controllers;
 import com.telegame.code.builder.BoardBuilder;
 import com.telegame.code.exceptions.MatchFormException;
 import com.telegame.code.forms.MatchForm;
+import com.telegame.code.forms.MovementForm;
 import com.telegame.code.models.*;
 import com.telegame.code.models.kingolaser.LaserBoard;
 import com.telegame.code.models.kingolaser.pieces.Piece;
@@ -48,6 +49,7 @@ public class MatchController {
         try {
             List<Piece> boardDisposition = BoardBuilder.getBoardDisposition(matchForm.getBoardDisposition());
             Player_Play_Match ppm = ppmService.createPpm(playerOne);
+            ppm.setPlayerNumber(Piece.Owner.PLAYER_ONE);
             Board laserBoard = boardService.createBoard(boardDisposition);
 
             for (Piece piece : boardDisposition) {
@@ -79,9 +81,10 @@ public class MatchController {
         return new ResponseEntity<>(matchService.joinGameMatch(matchId, playerTwo), HttpStatus.OK);
     }
 
-    @PutMapping("/match/{matchId}")
-    public List<GameMatch> updateMatch(@PathVariable Long matchId, HttpServletRequest request) {
-        return matchService.updateMatch(matchId, request.getAttribute("player"));
+    @PutMapping("/match/kingolaser/move/{matchId}")
+    public ResponseEntity<String> updateMatch(@PathVariable Long matchId, @RequestBody MovementForm movementForm, HttpServletRequest request) {
+        matchService.updateMatch(matchId, movementForm);
+        return new ResponseEntity<>("ok", HttpStatus.OK);
     }
 
     @DeleteMapping("/match/{matchId}")

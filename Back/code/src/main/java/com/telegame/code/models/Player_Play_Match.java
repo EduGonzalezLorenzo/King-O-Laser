@@ -1,5 +1,6 @@
 package com.telegame.code.models;
 
+import com.telegame.code.models.kingolaser.pieces.Piece;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,8 @@ public class Player_Play_Match {
     @ManyToOne
     @JoinColumn(name = "player_id")
     Player player;
+
+    Piece.Owner playerNumber;
 
     @ManyToOne
     @JoinColumn(name = "game_match_id")

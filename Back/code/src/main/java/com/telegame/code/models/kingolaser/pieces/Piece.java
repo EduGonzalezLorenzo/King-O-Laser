@@ -77,9 +77,7 @@ public abstract class Piece implements Movable {
     }
 
     @Override
-    public boolean move(int[] nextPosition) {
-        int nextY = nextPosition[0];
-        int nextX = nextPosition[1];
+    public boolean move(int nextY, int nextX) {
 
         boolean validateY = (nextY == this.posY || nextY == this.posY +1 || nextY == this.posY -1);
         boolean validateX = (nextX == this.posX || nextX == this.posX +1 || nextX == this.posX -1);
