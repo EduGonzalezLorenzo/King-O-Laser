@@ -17,4 +17,5 @@
     "nuxt": "^3.4.1",
     "vite-plugin-eslint": "^1.8.1"
   }
+
 }
