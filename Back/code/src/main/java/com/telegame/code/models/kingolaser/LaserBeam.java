@@ -1,5 +1,6 @@
 package com.telegame.code.models.kingolaser;
 
+import com.telegame.code.models.Board;
 import com.telegame.code.models.kingolaser.pieces.Bouncer;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 import com.telegame.code.models.kingolaser.pieces.PieceSide;
@@ -24,16 +25,19 @@ public class LaserBeam {
         this.route.add(step);
     }
 
-    public List<int[]> shootLaser(int player_id, Piece.Direction direction, Object[][] board) {
+    public List<int[]> shootLaser(Board.MatchStatus matchStatus, Piece.Direction direction, List<Piece> boardDisposition) {
 
         int[] currentPosition;
         List<int[]> route = new ArrayList<>();
 
-        if(player_id == 1) {
+        if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN ) {
             currentPosition = new int[]{9, 7};
         } else {
             currentPosition = new int[]{0, 0};
         }
+
+        Object[][] board = buildBoard(boardDisposition);
+
 
         while ( currentPosition[0] >= 0 && currentPosition[0] <= 9 &&
                 currentPosition[1] >= 0 && currentPosition[1] <= 7) {
@@ -108,6 +112,34 @@ public class LaserBeam {
                 posX--;
         }
         return new int[]{posY, posX};
+    }
+
+    public static Object[][] buildBoard(List<Piece> piecesList) {
+        Object[][] board = new Object[10][8];
+        for(Piece piece : piecesList) {
+            board[piece.getPosY()][piece.getPosX()] = piece;
+        }
+        drawBoard(board);
+        return board;
+    }
+
+    public static void drawBoard(Object[][] board) {
+        System.out.println();
+        System.out.println("--------------------------------------------------------");
+        for (int i = 0; i < board.length ; i++) {
+            for (int j = 0; j < board[i].length ; j++) {
+                if(board[i][j] == null) {
+                    board[i][j] = "  " + i + ":" + j + " ";
+                } else if(board[i][j] instanceof Piece) {
+                    Piece piece = (Piece) board[i][j];
+//                    board[i][j] = piece.getType().toString();
+                    board[i][j] = piece.getRotation();
+                }
+                System.out.print(board[i][j] + "|");
+            }
+            System.out.println();
+            System.out.println("--------------------------------------------------------");
+        }
     }
 
 }

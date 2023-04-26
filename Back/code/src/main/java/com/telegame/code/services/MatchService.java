@@ -8,6 +8,7 @@ import com.telegame.code.forms.MovementForm;
 import com.telegame.code.forms.PlayerForm;
 import com.telegame.code.models.*;
 import com.telegame.code.models.kingolaser.pieces.Piece;
+import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.MatchRepo;
 import com.telegame.code.repos.PieceRepo;
 import jakarta.validation.ConstraintViolation;
@@ -31,6 +32,8 @@ public class MatchService {
     private MatchRepo matchRepo;
 
     private PieceRepo pieceRepo;
+
+    private BoardRepo boardRepo;
 
     @Autowired
     PPMService ppmService;
@@ -75,8 +78,14 @@ public class MatchService {
                 System.out.println("Turno incorrecto");
                 return new ResponseEntity<>("Wrong turn", HttpStatus.BAD_REQUEST);
             }
+            if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
+                board.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
+            } else {
+                board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
+            }
 
             pieceRepo.save(piece);
+            boardRepo.save(board);
             return new ResponseEntity<>("OK", HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>("Incorrect Movement", HttpStatus.BAD_REQUEST);
