@@ -77,7 +77,7 @@ function isStrongPassword(value: string) {
             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             placeholder="name@email.com"
             required
-            @change="event => isEmail((event.target as HTMLInputElement).value)"
+            @change="(event:Event) => isEmail((event.target as HTMLInputElement).value)"
           >
         </div>
         <div class="mb-6">
@@ -91,7 +91,7 @@ function isStrongPassword(value: string) {
             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
-            @change="event => isStrongPassword((event.target as HTMLInputElement).value)"
+            @change="(event:Event) => isStrongPassword((event.target as HTMLInputElement).value)"
           >
           <span id="msg" />
         </div>
