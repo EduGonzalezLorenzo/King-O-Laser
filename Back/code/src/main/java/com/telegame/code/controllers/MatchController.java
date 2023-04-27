@@ -39,8 +39,7 @@ public class MatchController {
     public MatchController(MatchService matchService) {
         this.matchService = matchService;
     }
-
-
+    
     @PostMapping("/match/kingolaser")
     public ResponseEntity<String> createMatch(@RequestBody MatchForm matchForm, HttpServletRequest request) {
 
