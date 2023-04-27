@@ -40,7 +40,7 @@ public class MatchController {
         this.matchService = matchService;
     }
     
-    @PostMapping("/match/kingolaser")
+    @PostMapping("/match")
     public ResponseEntity<String> createMatch(@RequestBody MatchForm matchForm, HttpServletRequest request) {
 
         Player playerOne = playerRepo.getReferenceById(1L);
@@ -67,12 +67,12 @@ public class MatchController {
         }
     }
 
-    @GetMapping("/matchList")
+    @GetMapping("/match")
     public List<GameMatch> getMatchList() {
         return matchService.getMatchList();
     }
 
-    @PostMapping("/match/kingolaser/{matchId}")
+    @PostMapping("/match/{matchId}")
     public ResponseEntity<String> joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
         //PlayerTwo de JWT
         Player playerTwo = playerRepo.getReferenceById(2L);
@@ -80,7 +80,8 @@ public class MatchController {
         return new ResponseEntity<>(matchService.joinGameMatch(matchId, playerTwo), HttpStatus.OK);
     }
 
-    @PutMapping("/match/kingolaser/move/{matchId}")
+    // cambiar a match/matchID
+    @PutMapping("/match/{matchId}/action")
     public ResponseEntity<String> updateMatch(@PathVariable Long matchId, @RequestBody MovementForm movementForm, HttpServletRequest request) {
         return matchService.updateMatch(matchId, movementForm);
     }
