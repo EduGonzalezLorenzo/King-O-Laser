@@ -1,6 +1,5 @@
 package com.telegame.code.models;
 
-import com.telegame.code.models.kingolaser.pieces.Piece;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
