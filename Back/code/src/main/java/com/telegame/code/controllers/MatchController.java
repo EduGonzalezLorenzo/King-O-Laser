@@ -83,8 +83,7 @@ public class MatchController {
 
     @PutMapping("/match/kingolaser/move/{matchId}")
     public ResponseEntity<String> updateMatch(@PathVariable Long matchId, @RequestBody MovementForm movementForm, HttpServletRequest request) {
-        matchService.updateMatch(matchId, movementForm);
-        return new ResponseEntity<>("ok", HttpStatus.OK);
+        return matchService.updateMatch(matchId, movementForm);
     }
 
     @DeleteMapping("/match/{matchId}")

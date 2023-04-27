@@ -7,6 +7,7 @@ import com.telegame.code.forms.MatchForm;
 import com.telegame.code.forms.MovementForm;
 import com.telegame.code.forms.PlayerForm;
 import com.telegame.code.models.*;
+import com.telegame.code.models.kingolaser.LaserBeam;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.MatchRepo;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -78,14 +80,38 @@ public class MatchService {
                 System.out.println("Turno incorrecto");
                 return new ResponseEntity<>("Wrong turn", HttpStatus.BAD_REQUEST);
             }
+
+            pieceRepo.save(piece);
+            boardRepo.save(board);
+
+            if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(9, 7, board.getId());
+            if(matchStatus == Board.MatchStatus.PLAYER_TWO_TURN) currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(0, 0, board.getId());
+
+            piece = currentDisposition.get(0);
+
+            currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
+
+            LaserBeam laserBeam = new LaserBeam();
+            List<int[]> route = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
+
+
+
+//            System.out.println("ROUTE: ");
+//            for (int[] step : route) {
+//                System.out.print(" [" + step[0] + " : " + step[1] + "]");
+//            }
+//            System.out.println();
+
+
+
             if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
                 board.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
             } else {
                 board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
             }
 
-            pieceRepo.save(piece);
             boardRepo.save(board);
+
             return new ResponseEntity<>("OK", HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>("Incorrect Movement", HttpStatus.BAD_REQUEST);

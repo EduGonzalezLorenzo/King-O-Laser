@@ -70,7 +70,9 @@ public class LaserBeam {
 
                 Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
 
-                if(nextDirection == null) return route;
+                if(nextDirection == null) {
+                    LaserBeam.drawBoard(board);
+                    return route;}
                 else {
                     direction = nextDirection;
                     currentPosition = newYX;
@@ -83,15 +85,18 @@ public class LaserBeam {
                 currentPosition[1] = posX;
                 route.add(new int[]{posY, posX});
                 if(posY == 0 && direction == Piece.Direction.NORTH || posY == 9 && direction == Piece.Direction.SOUTH) {
+                    LaserBeam.drawBoard(board);
                     return route;
                 }
                 if(posX == 0 && direction == Piece.Direction.WEST || posX == 7 && direction == Piece.Direction.EAST){
+                    LaserBeam.drawBoard(board);
                     return route;
                 }
 
 
             }
         }
+        LaserBeam.drawBoard(board);
         return route;
     }
 
@@ -119,12 +124,10 @@ public class LaserBeam {
         for(Piece piece : piecesList) {
             board[piece.getPosY()][piece.getPosX()] = piece;
         }
-        drawBoard(board);
         return board;
     }
 
     public static void drawBoard(Object[][] board) {
-        System.out.println();
         System.out.println("--------------------------------------------------------");
         for (int i = 0; i < board.length ; i++) {
             for (int j = 0; j < board[i].length ; j++) {
