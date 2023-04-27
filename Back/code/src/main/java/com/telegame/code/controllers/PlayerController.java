@@ -2,7 +2,9 @@ package com.telegame.code.controllers;
 
 import com.telegame.code.exceptions.EmailException;
 import com.telegame.code.exceptions.InputPlayerFormException;
+import com.telegame.code.exceptions.LoginException;
 import com.telegame.code.exceptions.PlayerNameException;
+import com.telegame.code.forms.LoginForm;
 import com.telegame.code.forms.PlayerForm;
 import com.telegame.code.models.Player;
 import com.telegame.code.services.PlayerService;
@@ -37,13 +39,18 @@ public class PlayerController {
     }
 
     @PostMapping("/login")
-    public Player login(@RequestBody PlayerForm playerForm) {
-        return playerService.login(playerForm);
+    public ResponseEntity<String> login(@RequestBody LoginForm loginForm) throws NoSuchAlgorithmException {
+        try {
+            return new ResponseEntity<>(playerService.login(loginForm), HttpStatus.OK);
+        } catch (InputPlayerFormException e) {
+            return new ResponseEntity<>("Player form error", HttpStatus.BAD_REQUEST);
+        } catch (LoginException e) {
+            return new ResponseEntity<>("Wrong user, email or password already exists", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/getPlayer")
     public Player getPlayerInfo(HttpServletRequest request) {
-        //Forma no definitva, hay que estudiar como hacerlo
         return playerService.getPlayerInfo(request.getAttribute("player"));
     }
 
