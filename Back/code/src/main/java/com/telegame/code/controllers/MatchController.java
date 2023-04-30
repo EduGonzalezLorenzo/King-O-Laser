@@ -45,26 +45,34 @@ public class MatchController {
 
         Player playerOne = playerRepo.getReferenceById(1L);
 
-        try {
-            List<Piece> boardDisposition = BoardBuilder.getBoardDisposition(matchForm.getBoardDisposition());
-            Player_Play_Match ppm = ppmService.createPpm(playerOne);
-            ppm.setPlayerNumber(Piece.Owner.PLAYER_ONE);
-            Board laserBoard = boardService.createBoard(boardDisposition);
+        switch (matchForm.getGame()) {
+            case "kingolaser": {
+                try {
+                    List<Piece> boardDisposition = BoardBuilder.getBoardDisposition(matchForm.getBoardDisposition());
+                    Player_Play_Match ppm = ppmService.createPpm(playerOne);
+                    ppm.setPlayerNumber(Piece.Owner.PLAYER_ONE);
+                    Board laserBoard = boardService.createBoard(boardDisposition);
 
-            for (Piece piece : boardDisposition) {
-                piece.setLaserBoard((LaserBoard)laserBoard);
-                pieceService.savePiece(piece);
+                    for (Piece piece : boardDisposition) {
+                        piece.setLaserBoard((LaserBoard)laserBoard);
+                        pieceService.savePiece(piece);
+                    }
+
+                    GameMatch gameMatch = matchService.createMatch(matchForm, laserBoard, ppm);
+                    ppm.setGameMatch(gameMatch);
+                    ppmService.savePPM(ppm);
+                    laserBoard.setGameMatch(gameMatch);
+                    boardService.saveBoard(laserBoard);
+                    return new ResponseEntity<>("OK", HttpStatus.CREATED);
+                } catch (MatchFormException e) {
+                    return new ResponseEntity<>("Match form error", HttpStatus.BAD_REQUEST);
+                }
             }
-
-            GameMatch gameMatch = matchService.createMatch(matchForm, laserBoard, ppm);
-            ppm.setGameMatch(gameMatch);
-            ppmService.savePPM(ppm);
-            laserBoard.setGameMatch(gameMatch);
-            boardService.saveBoard(laserBoard);
-            return new ResponseEntity<>("OK", HttpStatus.CREATED);
-        } catch (MatchFormException e) {
-            return new ResponseEntity<>("Match form error", HttpStatus.BAD_REQUEST);
+            default: {
+                return new ResponseEntity<>("Incorrect Game", HttpStatus.BAD_REQUEST);
+            }
         }
+
     }
 
     @GetMapping("/match")

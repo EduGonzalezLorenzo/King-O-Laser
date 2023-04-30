@@ -72,9 +72,9 @@ public class MatchService {
             if((matchStatus == Board.MatchStatus.PLAYER_ONE_TURN && piece.getOwner() == Piece.Owner.PLAYER_ONE) ||
                     (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN && piece.getOwner() == Piece.Owner.PLAYER_TWO)) {
                 if (movementForm.getRotateTo() == null) {
-                    piece.move(movementForm.getNewPosY(), movementForm.getNewPosX());
+                    if(!piece.move(movementForm.getNewPosY(), movementForm.getNewPosX())) return new ResponseEntity<>("Incorrect Movement", HttpStatus.BAD_REQUEST);
                 } else {
-                    piece.rotate(movementForm.getRotateTo());
+                    if(!piece.rotate(movementForm.getRotateTo())) return new ResponseEntity<>("Incorrect Rotation Value", HttpStatus.BAD_REQUEST);
                 }
             } else {
                 System.out.println("Turno incorrecto");

@@ -55,7 +55,7 @@ public abstract class Piece implements Movable {
 
 
     @Override
-    public void rotate(String rotateTo) {
+    public boolean rotate(String rotateTo) {
         if(Objects.equals(rotateTo, "R")) {
             switch(this.rotation) {
                 case NORTH -> this.rotation = Direction.EAST;
@@ -72,8 +72,12 @@ public abstract class Piece implements Movable {
                 case WEST -> this.rotation = Direction.SOUTH;
             }
         }
+        else {
+            return false;
+        }
         if(this.getClass() == Deflector.class) this.setSides(PieceBuilder.buildDeflectorSides(this.rotation));
         if(this.getClass() == Defender.class) this.setSides(PieceBuilder.buildDefenderSides(this.rotation));
+        return true;
     }
 
     @Override
