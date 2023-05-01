@@ -21,7 +21,7 @@ import java.util.Objects;
 public abstract class Piece implements Movable {
 
     public enum Direction {
-        NORTH, SOUTH, EAST, WEST
+        NORTH, SOUTH, EAST, WEST, STOPPED
     }
 
     public enum Owner {
@@ -55,7 +55,7 @@ public abstract class Piece implements Movable {
 
 
     @Override
-    public boolean rotate(String rotateTo) {
+    public boolean rotate(String rotateTo, Piece piece) {
         if(Objects.equals(rotateTo, "R")) {
             switch(this.rotation) {
                 case NORTH -> this.rotation = Direction.EAST;

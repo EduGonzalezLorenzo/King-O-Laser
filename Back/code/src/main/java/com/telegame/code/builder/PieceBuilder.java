@@ -7,26 +7,30 @@ import com.telegame.code.models.kingolaser.Deflect;
 import com.telegame.code.models.kingolaser.Hit;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PieceBuilder {
 
     public static Piece buildPiece(String type, Piece.Owner owner, int posY, int posX, Piece.Direction rotation) {
         Piece piece = new King();
+        System.out.println("type: " + type);
         switch (type) {
-            case "king" -> {
+            case "class com.telegame.code.models.kingolaser.pieces.King" -> {
                 Piece king = new King();
                 king.setOwner(owner);
                 king.setPosY(posY);
                 king.setPosX(posX);
                 king.setRotation(rotation);
-                king.setSide(Piece.Direction.NORTH, new Hit());
-                king.setSide(Piece.Direction.SOUTH, new Hit());
-                king.setSide(Piece.Direction.EAST, new Hit());
-                king.setSide(Piece.Direction.WEST, new Hit());
+                Map<Piece.Direction, PieceSide> sides = new HashMap<>();
+                sides.put(Piece.Direction.NORTH, new Hit());
+                sides.put(Piece.Direction.SOUTH, new Hit());
+                sides.put(Piece.Direction.EAST, new Hit());
+                sides.put(Piece.Direction.WEST, new Hit());
+                king.setSides(sides);
                 return king;
             }
-            case "laser" -> {
+            case "class com.telegame.code.models.kingolaser.pieces.Laser" -> {
                 Piece laser = new Laser();
                 laser.setOwner(owner);
                 laser.setPosY(posY);
@@ -38,7 +42,7 @@ public class PieceBuilder {
                 laser.setSide(Piece.Direction.WEST, new Block());
                 return laser;
             }
-            case "deflector" -> {
+            case "class com.telegame.code.models.kingolaser.pieces.Deflector" -> {
                 Piece deflector = new Deflector();
                 deflector.setOwner(owner);
                 deflector.setPosY(posY);
@@ -47,7 +51,7 @@ public class PieceBuilder {
                 deflector.setSides(buildDeflectorSides(deflector.getRotation()));
                 return deflector;
             }
-            case "defender" -> {
+            case "class com.telegame.code.models.kingolaser.pieces.Defender" -> {
                 Piece defender = new Defender();
                 defender.setOwner(owner);
                 defender.setPosY(posY);
@@ -56,7 +60,7 @@ public class PieceBuilder {
                 defender.setSides(buildDefenderSides(defender.getRotation()));
                 return defender;
             }
-            case "bouncer" -> {
+            case "class com.telegame.code.models.kingolaser.pieces.Bouncer" -> {
                 Piece bouncer = new Bouncer();
                 bouncer.setOwner(owner);
                 bouncer.setPosY(posY);

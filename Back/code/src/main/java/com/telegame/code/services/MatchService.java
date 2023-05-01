@@ -68,13 +68,17 @@ public class MatchService {
             Board.MatchStatus matchStatus = board.getStatus();
 
             List<Piece> currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(movementForm.getCurrentPosY(), movementForm.getCurrentPosX(), board.getId());
+
+            // BUILD BOARD
+
+
             Piece piece = currentDisposition.get(0);
             if((matchStatus == Board.MatchStatus.PLAYER_ONE_TURN && piece.getOwner() == Piece.Owner.PLAYER_ONE) ||
                     (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN && piece.getOwner() == Piece.Owner.PLAYER_TWO)) {
                 if (movementForm.getRotateTo() == null) {
                     if(!piece.move(movementForm.getNewPosY(), movementForm.getNewPosX())) return new ResponseEntity<>("Incorrect Movement", HttpStatus.BAD_REQUEST);
                 } else {
-                    if(!piece.rotate(movementForm.getRotateTo())) return new ResponseEntity<>("Incorrect Rotation Value", HttpStatus.BAD_REQUEST);
+                    if(!piece.rotate(movementForm.getRotateTo(), piece)) return new ResponseEntity<>("Incorrect Rotation Value", HttpStatus.BAD_REQUEST);
                 }
             } else {
                 System.out.println("Turno incorrecto");

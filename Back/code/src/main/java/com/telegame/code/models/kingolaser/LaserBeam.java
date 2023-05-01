@@ -1,5 +1,6 @@
 package com.telegame.code.models.kingolaser;
 
+import com.telegame.code.builder.PieceBuilder;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.kingolaser.pieces.Bouncer;
 import com.telegame.code.models.kingolaser.pieces.Piece;
@@ -49,6 +50,7 @@ public class LaserBeam {
 
             if(board[posY][posX] instanceof Piece) {
                 Piece piece = (Piece) board[posY][posX];
+                System.out.println("sides: " + piece.getSides());
                 PieceSide pieceSide = new Block();
 
                 switch (direction) {
@@ -70,7 +72,7 @@ public class LaserBeam {
 
                 Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
 
-                if(nextDirection == null) {
+                if(nextDirection == Piece.Direction.STOPPED) {
                     LaserBeam.drawBoard(board);
                     return route;}
                 else {
@@ -122,6 +124,7 @@ public class LaserBeam {
     public static Object[][] buildBoard(List<Piece> piecesList) {
         Object[][] board = new Object[10][8];
         for(Piece piece : piecesList) {
+            piece = PieceBuilder.buildPiece(piece.getClass().toString(), piece.getOwner(), piece.getPosY(), piece.getPosX(), piece.getRotation());
             board[piece.getPosY()][piece.getPosX()] = piece;
         }
         return board;
