@@ -72,7 +72,7 @@ public class LaserBeam {
 
                 Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
 
-                if(nextDirection == Piece.Direction.STOPPED) {
+                if(nextDirection == null) {
                     LaserBeam.drawBoard(board);
                     return route;}
                 else {

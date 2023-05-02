@@ -21,7 +21,7 @@ import java.util.Objects;
 public abstract class Piece implements Movable {
 
     public enum Direction {
-        NORTH, SOUTH, EAST, WEST, STOPPED
+        NORTH, SOUTH, EAST, WEST
     }
 
     public enum Owner {
