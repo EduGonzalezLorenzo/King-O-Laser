@@ -10,7 +10,7 @@ async function createUser() {
   const password = (document.getElementById("password") as HTMLInputElement)
     .value;
 
-  const response = await fetch("http://localhost:8080/signup", {
+  const response = await fetch("http://localhost:8080/signUp", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
