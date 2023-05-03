@@ -21,7 +21,7 @@ import java.util.Objects;
 public abstract class Piece implements Movable {
 
     public enum Direction {
-        NORTH, SOUTH, EAST, WEST
+        NORTH, SOUTH, EAST, WEST, STOPPED, HIT
     }
 
     public enum Owner {
@@ -55,7 +55,7 @@ public abstract class Piece implements Movable {
 
 
     @Override
-    public void rotate(String rotateTo) {
+    public boolean rotate(String rotateTo, Piece piece) {
         if(Objects.equals(rotateTo, "R")) {
             switch(this.rotation) {
                 case NORTH -> this.rotation = Direction.EAST;
@@ -72,14 +72,16 @@ public abstract class Piece implements Movable {
                 case WEST -> this.rotation = Direction.SOUTH;
             }
         }
+        else {
+            return false;
+        }
         if(this.getClass() == Deflector.class) this.setSides(PieceBuilder.buildDeflectorSides(this.rotation));
         if(this.getClass() == Defender.class) this.setSides(PieceBuilder.buildDefenderSides(this.rotation));
+        return true;
     }
 
     @Override
-    public boolean move(int[] nextPosition) {
-        int nextY = nextPosition[0];
-        int nextX = nextPosition[1];
+    public boolean move(int nextY, int nextX) {
 
         boolean validateY = (nextY == this.posY || nextY == this.posY +1 || nextY == this.posY -1);
         boolean validateX = (nextX == this.posX || nextX == this.posX +1 || nextX == this.posX -1);

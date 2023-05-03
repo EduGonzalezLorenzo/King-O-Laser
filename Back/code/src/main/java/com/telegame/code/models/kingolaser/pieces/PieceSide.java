@@ -2,6 +2,8 @@ package com.telegame.code.models.kingolaser.pieces;
 
 import com.telegame.code.models.kingolaser.pieces.Piece;
 
+import java.util.Map;
+
 
 public interface PieceSide {
 

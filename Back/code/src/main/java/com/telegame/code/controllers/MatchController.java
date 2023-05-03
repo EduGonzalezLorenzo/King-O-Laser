@@ -3,6 +3,7 @@ package com.telegame.code.controllers;
 import com.telegame.code.builder.BoardBuilder;
 import com.telegame.code.exceptions.MatchFormException;
 import com.telegame.code.forms.MatchForm;
+import com.telegame.code.forms.MovementForm;
 import com.telegame.code.models.*;
 import com.telegame.code.models.kingolaser.LaserBoard;
 import com.telegame.code.models.kingolaser.pieces.Piece;
@@ -38,40 +39,48 @@ public class MatchController {
     public MatchController(MatchService matchService) {
         this.matchService = matchService;
     }
-
-
-    @PostMapping("/match/kingolaser")
+    
+    @PostMapping("/match")
     public ResponseEntity<String> createMatch(@RequestBody MatchForm matchForm, HttpServletRequest request) {
 
         Player playerOne = playerRepo.getReferenceById(1L);
 
-        try {
-            List<Piece> boardDisposition = BoardBuilder.getBoardDisposition(matchForm.getBoardDisposition());
-            Player_Play_Match ppm = ppmService.createPpm(playerOne);
-            Board laserBoard = boardService.createBoard(boardDisposition);
+        switch (matchForm.getGame()) {
+            case "kingolaser": {
+                try {
+                    List<Piece> boardDisposition = BoardBuilder.getBoardDisposition(matchForm.getBoardDisposition());
+                    Player_Play_Match ppm = ppmService.createPpm(playerOne);
+                    ppm.setPlayerNumber(Piece.Owner.PLAYER_ONE);
+                    Board laserBoard = boardService.createBoard(boardDisposition);
 
-            for (Piece piece : boardDisposition) {
-                piece.setLaserBoard((LaserBoard)laserBoard);
-                pieceService.savePiece(piece);
+                    for (Piece piece : boardDisposition) {
+                        piece.setLaserBoard((LaserBoard)laserBoard);
+                        pieceService.savePiece(piece);
+                    }
+
+                    GameMatch gameMatch = matchService.createMatch(matchForm, laserBoard, ppm);
+                    ppm.setGameMatch(gameMatch);
+                    ppmService.savePPM(ppm);
+                    laserBoard.setGameMatch(gameMatch);
+                    boardService.saveBoard(laserBoard);
+                    return new ResponseEntity<>("OK", HttpStatus.CREATED);
+                } catch (MatchFormException e) {
+                    return new ResponseEntity<>("Match form error", HttpStatus.BAD_REQUEST);
+                }
             }
-
-            GameMatch gameMatch = matchService.createMatch(matchForm, laserBoard, ppm);
-            ppm.setGameMatch(gameMatch);
-            ppmService.savePPM(ppm);
-            laserBoard.setGameMatch(gameMatch);
-            boardService.saveBoard(laserBoard);
-            return new ResponseEntity<>("OK", HttpStatus.CREATED);
-        } catch (MatchFormException e) {
-            return new ResponseEntity<>("Match form error", HttpStatus.BAD_REQUEST);
+            default: {
+                return new ResponseEntity<>("Incorrect Game", HttpStatus.BAD_REQUEST);
+            }
         }
+
     }
 
-    @GetMapping("/matchList")
+    @GetMapping("/match")
     public List<GameMatch> getMatchList() {
         return matchService.getMatchList();
     }
 
-    @PostMapping("/match/kingolaser/{matchId}")
+    @PostMapping("/match/{matchId}")
     public ResponseEntity<String> joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
         //PlayerTwo de JWT
         Player playerTwo = playerRepo.getReferenceById(2L);
@@ -79,9 +88,10 @@ public class MatchController {
         return new ResponseEntity<>(matchService.joinGameMatch(matchId, playerTwo), HttpStatus.OK);
     }
 
-    @PutMapping("/match/{matchId}")
-    public List<GameMatch> updateMatch(@PathVariable Long matchId, HttpServletRequest request) {
-        return matchService.updateMatch(matchId, request.getAttribute("player"));
+    // cambiar a match/matchID
+    @PutMapping("/match/{matchId}/action")
+    public ResponseEntity<String> updateMatch(@PathVariable Long matchId, @RequestBody MovementForm movementForm, HttpServletRequest request) {
+        return matchService.updateMatch(matchId, movementForm);
     }
 
     @DeleteMapping("/match/{matchId}")

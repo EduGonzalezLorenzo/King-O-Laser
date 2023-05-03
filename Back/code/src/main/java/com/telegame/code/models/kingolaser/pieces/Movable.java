@@ -1,6 +1,6 @@
 package com.telegame.code.models.kingolaser.pieces;
 
 public interface Movable {
-    void rotate(String rotateTo);
-    boolean move(int[] nextPosition);
+    boolean rotate(String rotateTo, Piece piece);
+    boolean move(int nextY, int nextX);
 }
