@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin()
 @RestController
@@ -90,7 +91,7 @@ public class MatchController {
 
     // cambiar a match/matchID
     @PutMapping("/match/{matchId}/action")
-    public ResponseEntity<String> updateMatch(@PathVariable Long matchId, @RequestBody MovementForm movementForm, HttpServletRequest request) {
+    public Map<String, Object> updateMatch(@PathVariable Long matchId, @RequestBody MovementForm movementForm, HttpServletRequest request) {
         return matchService.updateMatch(matchId, movementForm);
     }
 

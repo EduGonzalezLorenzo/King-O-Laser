@@ -77,15 +77,15 @@ public class LaserBeam {
                 Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
 
                 if (nextDirection == Piece.Direction.STOPPED) {
-//                    System.out.println("LÁSER BLOQUEADO");
                     LaserBeam.drawBoard(board);
-                    returnMap.put("message", "LÁSER BLOQUEADO");
+                    returnMap.put("message", "BLOCK");
+                    route.add(newYX);
                     returnMap.put("route", route);
                     return returnMap;
                 } else if (nextDirection == Piece.Direction.HIT) {
-//                    System.out.println("PIEZA DESTRUÍDA");
                     LaserBeam.drawBoard(board);
-                    returnMap.put("message", "PIEZA DESTRUÍDA");
+                    returnMap.put("message", "HIT");
+                    route.add(forward(direction, currentPosition));
                     returnMap.put("route", route);
                     return returnMap;
                 } else {
@@ -101,13 +101,13 @@ public class LaserBeam {
                 route.add(new int[]{posY, posX});
                 if (posY == 0 && direction == Piece.Direction.NORTH || posY == 9 && direction == Piece.Direction.SOUTH) {
                     LaserBeam.drawBoard(board);
-                    returnMap.put("message", "FUERA DEL TABLERO");
+                    returnMap.put("message", "OUT");
                     returnMap.put("route", route);
                     return returnMap;
                 }
                 if (posX == 0 && direction == Piece.Direction.WEST || posX == 7 && direction == Piece.Direction.EAST) {
                     LaserBeam.drawBoard(board);
-                    returnMap.put("message", "FUERA DEL TABLERO");
+                    returnMap.put("message", "OUT");
                     returnMap.put("route", route);
                     return returnMap;
                 }
@@ -115,9 +115,9 @@ public class LaserBeam {
 
             }
         }
-        LaserBeam.drawBoard(board);
-        returnMap.put("message", "FIN");
-        returnMap.put("route", route);
+//        LaserBeam.drawBoard(board);
+//        returnMap.put("message", "END");
+//        returnMap.put("route", route);
         return returnMap;
     }
 
