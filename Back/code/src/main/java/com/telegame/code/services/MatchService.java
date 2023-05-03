@@ -21,10 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -93,7 +90,11 @@ public class MatchService {
             currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
 
             LaserBeam laserBeam = new LaserBeam();
-            List<int[]> route = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
+            Map<String, Object> laserResult = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
+
+            System.out.println("LASER RESULT: " + laserResult.get("message"));
+            List<int[]> route = (List<int[]>) laserResult.get("route");
+            System.out.println("last step: " + Arrays.toString(route.get(route.size() -1)));
 
 
 

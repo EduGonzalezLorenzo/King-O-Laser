@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -22,16 +24,18 @@ public class LaserBeam {
     Piece.Direction direction;
     List<int[]> route;
 
-    public void setStep(int[] step) {
-        this.route.add(step);
-    }
+//    public void setStep(int[] step) {
+//        this.route.add(step);
+//    }
 
-    public List<int[]> shootLaser(Board.MatchStatus matchStatus, Piece.Direction direction, List<Piece> boardDisposition) {
+    public Map<String, Object> shootLaser(Board.MatchStatus matchStatus, Piece.Direction direction, List<Piece> boardDisposition) {
+
+        Map<String, Object> returnMap = new HashMap<>();
 
         int[] currentPosition;
         List<int[]> route = new ArrayList<>();
 
-        if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN ) {
+        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
             currentPosition = new int[]{9, 7};
         } else {
             currentPosition = new int[]{0, 0};
@@ -40,7 +44,7 @@ public class LaserBeam {
         Object[][] board = buildBoard(boardDisposition);
 
 
-        while ( currentPosition[0] >= 0 && currentPosition[0] <= 9 &&
+        while (currentPosition[0] >= 0 && currentPosition[0] <= 9 &&
                 currentPosition[1] >= 0 && currentPosition[1] <= 7) {
 
             int[] newYX = forward(direction, currentPosition);
@@ -48,7 +52,7 @@ public class LaserBeam {
             int posX = newYX[1];
 
 
-            if(board[posY][posX] instanceof Piece) {
+            if (board[posY][posX] instanceof Piece) {
                 Piece piece = (Piece) board[posY][posX];
                 System.out.println("sides: " + piece.getSides());
                 PieceSide pieceSide = new Block();
@@ -72,10 +76,19 @@ public class LaserBeam {
 
                 Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
 
-                if(nextDirection == null) {
+                if (nextDirection == Piece.Direction.STOPPED) {
+//                    System.out.println("LÁSER BLOQUEADO");
                     LaserBeam.drawBoard(board);
-                    return route;}
-                else {
+                    returnMap.put("message", "LÁSER BLOQUEADO");
+                    returnMap.put("route", route);
+                    return returnMap;
+                } else if (nextDirection == Piece.Direction.HIT) {
+//                    System.out.println("PIEZA DESTRUÍDA");
+                    LaserBeam.drawBoard(board);
+                    returnMap.put("message", "PIEZA DESTRUÍDA");
+                    returnMap.put("route", route);
+                    return returnMap;
+                } else {
                     direction = nextDirection;
                     currentPosition = newYX;
                     route.add(newYX);
@@ -86,20 +99,26 @@ public class LaserBeam {
                 currentPosition[0] = posY;
                 currentPosition[1] = posX;
                 route.add(new int[]{posY, posX});
-                if(posY == 0 && direction == Piece.Direction.NORTH || posY == 9 && direction == Piece.Direction.SOUTH) {
+                if (posY == 0 && direction == Piece.Direction.NORTH || posY == 9 && direction == Piece.Direction.SOUTH) {
                     LaserBeam.drawBoard(board);
-                    return route;
+                    returnMap.put("message", "FUERA DEL TABLERO");
+                    returnMap.put("route", route);
+                    return returnMap;
                 }
-                if(posX == 0 && direction == Piece.Direction.WEST || posX == 7 && direction == Piece.Direction.EAST){
+                if (posX == 0 && direction == Piece.Direction.WEST || posX == 7 && direction == Piece.Direction.EAST) {
                     LaserBeam.drawBoard(board);
-                    return route;
+                    returnMap.put("message", "FUERA DEL TABLERO");
+                    returnMap.put("route", route);
+                    return returnMap;
                 }
 
 
             }
         }
         LaserBeam.drawBoard(board);
-        return route;
+        returnMap.put("message", "FIN");
+        returnMap.put("route", route);
+        return returnMap;
     }
 
     public int[] forward(Piece.Direction direction, int[] currentPosition) {
@@ -123,7 +142,7 @@ public class LaserBeam {
 
     public static Object[][] buildBoard(List<Piece> piecesList) {
         Object[][] board = new Object[10][8];
-        for(Piece piece : piecesList) {
+        for (Piece piece : piecesList) {
             piece = PieceBuilder.buildPiece(piece.getClass().toString(), piece.getOwner(), piece.getPosY(), piece.getPosX(), piece.getRotation());
             board[piece.getPosY()][piece.getPosX()] = piece;
         }
@@ -132,11 +151,11 @@ public class LaserBeam {
 
     public static void drawBoard(Object[][] board) {
         System.out.println("--------------------------------------------------------");
-        for (int i = 0; i < board.length ; i++) {
-            for (int j = 0; j < board[i].length ; j++) {
-                if(board[i][j] == null) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == null) {
                     board[i][j] = "  " + i + ":" + j + " ";
-                } else if(board[i][j] instanceof Piece) {
+                } else if (board[i][j] instanceof Piece) {
                     Piece piece = (Piece) board[i][j];
 //                    board[i][j] = piece.getType().toString();
                     board[i][j] = piece.getRotation();
