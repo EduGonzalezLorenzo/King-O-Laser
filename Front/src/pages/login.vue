@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const is_email = ref<boolean>(true);
-const is_email = ref<boolean>(true);
 function isEmail(value: string) {
   if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
     is_email.value = true;
@@ -70,7 +69,6 @@ function isStrongPassword(value: string) {
       <form
         id="login"
         class="bg-white rounded-lg text-black m-10 p-10"
-        @submit="(event:Event) => LogUser(event)"
         @submit="(event:Event) => LogUser(event)"
       >
         <div class="mb-6">
