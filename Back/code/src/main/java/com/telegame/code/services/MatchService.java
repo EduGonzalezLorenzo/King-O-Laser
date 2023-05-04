@@ -38,6 +38,9 @@ public class MatchService {
     @Autowired
     PPMService ppmService;
 
+    @Autowired
+    BoardService boardService;
+
     public GameMatch createMatch(MatchForm matchForm,
                                  Board board, Player_Play_Match ppm) {
 
@@ -103,9 +106,9 @@ public class MatchService {
 
             LaserBeam laserBeam = new LaserBeam();
             Map<String, Object> laserResult = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
-
+            List<int[]> route = (List<int[]>) laserResult.get("route");
             if ("HIT".equals(laserResult.get("message"))) {
-                List<int[]> route = (List<int[]>) laserResult.get("route");
+
                 int[] lastStep = route.get(route.size() -1);
                 List<Piece> pieceList = pieceRepo.findByPosYAndPosXAndLaserBoardId(lastStep[0], lastStep[1], board.getId());
                 piece = pieceList.get(0);
@@ -118,7 +121,7 @@ public class MatchService {
                     responseMap.put("message", "ENDGAME");
                     responseMap.put("route", route);
                     responseMap.put("response", HttpStatus.OK);
-//                    responseMap.put("board", currentDisposition);
+                    responseMap.put("board", boardService.createBoardMap(currentDisposition));
                     boardRepo.save(board);
                     return responseMap;
                 }
@@ -134,7 +137,7 @@ public class MatchService {
                 responseMap.put("message", "HIT");
                 responseMap.put("route", route);
                 responseMap.put("response", HttpStatus.OK);
-//                responseMap.put("board", currentDisposition);
+                responseMap.put("board", boardService.createBoardMap(currentDisposition));
 
                 return responseMap;
             }
@@ -146,11 +149,11 @@ public class MatchService {
                 board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
             }
             boardRepo.save(board);
-
-            responseMap.put("message", "OK");
-//            responseMap.put("route", route);
+            currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
+            responseMap.put("message", "OUT");
+            responseMap.put("route", route);
             responseMap.put("response", HttpStatus.OK);
-//            responseMap.put("board", currentDisposition);
+            responseMap.put("board", boardService.createBoardMap(currentDisposition));
 
             return responseMap;
         } catch (RuntimeException e) {
