@@ -14,7 +14,7 @@ public class BoardBuilder {
             Piece kingOne = PieceBuilder.buildPiece("class com.telegame.code.models.kingolaser.pieces.King", Piece.Owner.PLAYER_ONE, 3, 3, Piece.Direction.NORTH);
             Piece kingTwo = PieceBuilder.buildPiece("class com.telegame.code.models.kingolaser.pieces.King", Piece.Owner.PLAYER_TWO, 4, 4, Piece.Direction.NORTH);
 
-            Piece defenderOne = PieceBuilder.buildPiece("class com.telegame.code.models.kingolaser.pieces.Defender", Piece.Owner.PLAYER_ONE, 5, 5, Piece.Direction.NORTH);
+            Piece defenderOne = PieceBuilder.buildPiece("class com.telegame.code.models.kingolaser.pieces.Defender", Piece.Owner.PLAYER_ONE, 2, 7, Piece.Direction.NORTH);
             Piece defenderTwo = PieceBuilder.buildPiece("class com.telegame.code.models.kingolaser.pieces.Defender", Piece.Owner.PLAYER_TWO, 6, 6, Piece.Direction.NORTH);
 
             Piece laserOne = PieceBuilder.buildPiece("class com.telegame.code.models.kingolaser.pieces.Laser", Piece.Owner.PLAYER_ONE, 9, 7, Piece.Direction.NORTH);
@@ -24,7 +24,7 @@ public class BoardBuilder {
 
             piecesList.add(kingOne);
             piecesList.add(kingTwo);
-//            piecesList.add(defenderOne);
+            piecesList.add(defenderOne);
 //            piecesList.add(defenderTwo);
             piecesList.add(laserOne);
             piecesList.add(laserTwo);

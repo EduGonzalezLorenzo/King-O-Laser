@@ -134,7 +134,7 @@ public class MatchService {
                 boardRepo.save(board);
                 currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
 
-                responseMap.put("message", "HIT");
+                responseMap.put("message", laserResult.get("message"));
                 responseMap.put("route", route);
                 responseMap.put("response", HttpStatus.OK);
                 responseMap.put("board", boardService.createBoardMap(currentDisposition));
@@ -150,7 +150,7 @@ public class MatchService {
             }
             boardRepo.save(board);
             currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
-            responseMap.put("message", "OUT");
+            responseMap.put("message", laserResult.get("message"));
             responseMap.put("route", route);
             responseMap.put("response", HttpStatus.OK);
             responseMap.put("board", boardService.createBoardMap(currentDisposition));
