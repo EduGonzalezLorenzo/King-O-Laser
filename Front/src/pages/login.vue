@@ -1,13 +1,44 @@
 <script setup lang="ts">
-
+const is_email = ref<boolean>(true);
 function isEmail(value: string) {
   if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
-    alert("Has introducido un Email");
+    is_email.value = true;
   } else {
-    alert("Has introducido un nombre de Usuario");
+    is_email.value = false;
   }
 }
 
+async function LogUser(event:Event) {
+  event.preventDefault()
+  const password = (document.getElementById("password") as HTMLInputElement)
+    .value;
+  let playerName = "";
+  let email = "";
+  if (is_email.value) {
+    email = (document.getElementById("email") as HTMLInputElement).value;
+  } else {
+    playerName = (document.getElementById("email") as HTMLInputElement).value;
+  }
+  const response = await fetch("http://localhost:8080/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      playerName,
+      email,
+      password,
+    }),
+  });
+
+  if (response.ok) {
+    console.log("User Loged!");
+     return await navigateTo({ path: '/select-game' })
+
+  } else {
+    console.error("Error logging user.");
+  }
+}
 function isStrongPassword(value: string) {
   const myButton = document.querySelector("#submit") as HTMLButtonElement;
   const msg = document.querySelector("#msg") as HTMLSpanElement;
@@ -38,8 +69,7 @@ function isStrongPassword(value: string) {
       <form
         id="login"
         class="bg-white rounded-lg text-black m-10 p-10"
-        action="/login"
-        method="post"
+        @submit="(event:Event) => LogUser(event)"
       >
         <div class="mb-6">
           <label
