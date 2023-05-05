@@ -1,9 +1,34 @@
 <script setup lang="ts">
-function isEmail(value: string) {
-  if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
-    alert("Has introducido un Email");
+async function createUser() {
+  const firstName = (document.getElementById("firstname") as HTMLInputElement)
+    .value;
+  const lastName = (document.getElementById("lastname") as HTMLInputElement)
+    .value;
+  const email = (document.getElementById("email") as HTMLInputElement).value;
+  const playerName = (document.getElementById("username") as HTMLInputElement)
+    .value;
+  const password = (document.getElementById("password") as HTMLInputElement)
+    .value;
+
+  const response = await fetch("http://localhost:8080/signUp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      firstName,
+      lastName,
+      email,
+      playerName,
+      password,
+    }),
+  });
+
+  if (response.ok) {
+    console.log("User created!");
+    // Aquí puedes redirigir a otra página si lo deseas
   } else {
-    alert("Has introducido un nombre de Usuario");
+    console.error("Error creating user.");
   }
 }
 
@@ -63,21 +88,58 @@ function isStrongPassword(value: string) {
       <form
         id="signUp"
         class="bg-white rounded-lg text-black m-10 p-10"
-        action="/sign-up"
-        method="post"
+        @submit="createUser()"
       >
+        <div class="mb-6">
+          <label
+            for="firstname"
+            class="block mb-2 text-sm font-medium text-black"
+          >First Name</label>
+          <input
+            id="firstname"
+            type="text"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            placeholder="Jhon"
+            required
+          >
+        </div>
+        <div class="mb-6">
+          <label
+            for="lastname"
+            class="block mb-2 text-sm font-medium text-black"
+          >Last Name</label>
+          <input
+            id="lastname"
+            type="text"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            placeholder="Presley"
+            required
+          >
+        </div>
         <div class="mb-6">
           <label
             for="email"
             class="block mb-2 text-sm font-medium text-black"
-          >Your Username or Email</label>
+          >Email</label>
           <input
             id="email"
-            type="text"
+            type="email"
             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             placeholder="name@email.com"
             required
-            @change="event => isEmail((event.target as HTMLInputElement).value)"
+          >
+        </div>
+        <div class="mb-6">
+          <label
+            for="username"
+            class="block mb-2 text-sm font-medium text-black"
+          >User Name</label>
+          <input
+            id="username"
+            type="text"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            placeholder="Player1234"
+            required
           >
         </div>
         <div class="mb-6">
@@ -91,7 +153,7 @@ function isStrongPassword(value: string) {
             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
-            @change="event => isStrongPassword((event.target as HTMLInputElement).value)"
+            @change="(event:Event) => isStrongPassword((event.target as HTMLInputElement).value)"
           >
           <span id="msg" />
         </div>

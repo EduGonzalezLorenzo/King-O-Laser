@@ -1,13 +1,44 @@
 <script setup lang="ts">
-
+const is_email = ref<boolean>(true);
 function isEmail(value: string) {
   if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
-    alert("Has introducido un Email");
+    is_email.value = true;
   } else {
-    alert("Has introducido un nombre de Usuario");
+    is_email.value = false;
   }
 }
 
+async function LogUser(event:Event) {
+  event.preventDefault()
+  const password = (document.getElementById("password") as HTMLInputElement)
+    .value;
+  let playerName = "";
+  let email = "";
+  if (is_email.value) {
+    email = (document.getElementById("email") as HTMLInputElement).value;
+  } else {
+    playerName = (document.getElementById("email") as HTMLInputElement).value;
+  }
+  const response = await fetch("http://localhost:8080/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      playerName,
+      email,
+      password,
+    }),
+  });
+
+  if (response.ok) {
+    console.log("User Loged!");
+     return await navigateTo({ path: '/select-game' })
+
+  } else {
+    console.error("Error logging user.");
+  }
+}
 function isStrongPassword(value: string) {
   const myButton = document.querySelector("#submit") as HTMLButtonElement;
   const msg = document.querySelector("#msg") as HTMLSpanElement;
@@ -38,8 +69,7 @@ function isStrongPassword(value: string) {
       <form
         id="login"
         class="bg-white rounded-lg text-black m-10 p-10"
-        action="/login"
-        method="post"
+        @submit="(event:Event) => LogUser(event)"
       >
         <div class="mb-6">
           <label
@@ -52,7 +82,7 @@ function isStrongPassword(value: string) {
             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             placeholder="name@email.com"
             required
-            @change="event => isEmail((event.target as HTMLInputElement).value)"
+            @change="(event:Event) => isEmail((event.target as HTMLInputElement).value)"
           >
         </div>
         <div class="mb-6">
@@ -66,7 +96,7 @@ function isStrongPassword(value: string) {
             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
-            @change="event => isStrongPassword((event.target as HTMLInputElement).value)"
+            @change="(event:Event) => isStrongPassword((event.target as HTMLInputElement).value)"
           >
           <span id="msg" />
         </div>

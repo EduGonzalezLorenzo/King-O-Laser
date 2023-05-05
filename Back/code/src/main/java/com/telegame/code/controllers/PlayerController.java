@@ -25,7 +25,7 @@ public class PlayerController {
     PlayerService playerService;
     TokenService tokenService;
 
-    @PostMapping("/signup")
+    @PostMapping("/signUp")
     public ResponseEntity<String> signUp(@RequestBody PlayerForm playerForm) throws NoSuchAlgorithmException {
         try {
             return new ResponseEntity<>(playerService.signUp(playerForm), HttpStatus.OK);
