@@ -56,37 +56,35 @@ public abstract class Piece implements Movable {
 
     @Override
     public boolean rotate(String rotateTo, Piece piece) {
-        if(Objects.equals(rotateTo, "R")) {
-            switch(this.rotation) {
+        if (Objects.equals(rotateTo, "R")) {
+            switch (this.rotation) {
                 case NORTH -> this.rotation = Direction.EAST;
                 case EAST -> this.rotation = Direction.SOUTH;
                 case SOUTH -> this.rotation = Direction.WEST;
                 case WEST -> this.rotation = Direction.NORTH;
             }
-        }
-        if(Objects.equals(rotateTo, "L")) {
-            switch(this.rotation) {
+        } else if (Objects.equals(rotateTo, "L")) {
+            switch (this.rotation) {
                 case NORTH -> this.rotation = Direction.WEST;
                 case EAST -> this.rotation = Direction.NORTH;
                 case SOUTH -> this.rotation = Direction.EAST;
                 case WEST -> this.rotation = Direction.SOUTH;
             }
-        }
-        else {
+        } else {
             return false;
         }
-        if(this.getClass() == Deflector.class) this.setSides(PieceBuilder.buildDeflectorSides(this.rotation));
-        if(this.getClass() == Defender.class) this.setSides(PieceBuilder.buildDefenderSides(this.rotation));
+        if (this.getClass() == Deflector.class) this.setSides(PieceBuilder.buildDeflectorSides(this.rotation));
+        if (this.getClass() == Defender.class) this.setSides(PieceBuilder.buildDefenderSides(this.rotation));
         return true;
     }
 
     @Override
     public boolean move(int nextY, int nextX) {
 
-        boolean validateY = (nextY == this.posY || nextY == this.posY +1 || nextY == this.posY -1);
-        boolean validateX = (nextX == this.posX || nextX == this.posX +1 || nextX == this.posX -1);
+        boolean validateY = (nextY == this.posY || nextY == this.posY + 1 || nextY == this.posY - 1);
+        boolean validateX = (nextX == this.posX || nextX == this.posX + 1 || nextX == this.posX - 1);
 
-        if(validateY && validateX) {
+        if (validateY && validateX) {
             this.posY = nextY;
             this.posX = nextX;
             return true;

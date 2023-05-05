@@ -8,6 +8,7 @@ import com.telegame.code.forms.MovementForm;
 import com.telegame.code.forms.PlayerForm;
 import com.telegame.code.models.*;
 import com.telegame.code.models.kingolaser.LaserBeam;
+import com.telegame.code.models.kingolaser.pieces.King;
 import com.telegame.code.models.kingolaser.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.MatchRepo;
@@ -37,6 +38,9 @@ public class MatchService {
     @Autowired
     PPMService ppmService;
 
+    @Autowired
+    BoardService boardService;
+
     public GameMatch createMatch(MatchForm matchForm,
                                  Board board, Player_Play_Match ppm) {
 
@@ -58,7 +62,8 @@ public class MatchService {
         return matchRepo.getReferenceById(matchId);
     }
 
-    public ResponseEntity<String> updateMatch(Long matchId, MovementForm movementForm) {
+    public Map<String, Object> updateMatch(Long matchId, MovementForm movementForm) {
+        Map<String, Object> responseMap = new HashMap<>();
         try {
             GameMatch gameMatch = matchRepo.getReferenceById(matchId);
             Board board = gameMatch.getBoard();
@@ -70,13 +75,23 @@ public class MatchService {
             if((matchStatus == Board.MatchStatus.PLAYER_ONE_TURN && piece.getOwner() == Piece.Owner.PLAYER_ONE) ||
                     (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN && piece.getOwner() == Piece.Owner.PLAYER_TWO)) {
                 if (movementForm.getRotateTo() == null) {
-                    if(!piece.move(movementForm.getNewPosY(), movementForm.getNewPosX())) return new ResponseEntity<>("Incorrect Movement", HttpStatus.BAD_REQUEST);
+                    if(!piece.move(movementForm.getNewPosY(), movementForm.getNewPosX())) {
+                        responseMap.put("message", "Incorrect Movement");
+                        responseMap.put("response", HttpStatus.BAD_REQUEST);
+                        return responseMap;
+                    }
                 } else {
-                    if(!piece.rotate(movementForm.getRotateTo(), piece)) return new ResponseEntity<>("Incorrect Rotation Value", HttpStatus.BAD_REQUEST);
+                    if(!piece.rotate(movementForm.getRotateTo(), piece)) {
+                        responseMap.put("message", "Incorrect Rotation Value");
+                        responseMap.put("response", HttpStatus.BAD_REQUEST);
+                        return responseMap;
+                    }
                 }
             } else {
                 System.out.println("Turno incorrecto");
-                return new ResponseEntity<>("Wrong turn", HttpStatus.BAD_REQUEST);
+                responseMap.put("message", "Wrong turn");
+                responseMap.put("response", HttpStatus.BAD_REQUEST);
+                return responseMap;
             }
 
             pieceRepo.save(piece);
@@ -91,19 +106,41 @@ public class MatchService {
 
             LaserBeam laserBeam = new LaserBeam();
             Map<String, Object> laserResult = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
-
-            System.out.println("LASER RESULT: " + laserResult.get("message"));
             List<int[]> route = (List<int[]>) laserResult.get("route");
-            System.out.println("last step: " + Arrays.toString(route.get(route.size() -1)));
+            if ("HIT".equals(laserResult.get("message"))) {
 
+                int[] lastStep = route.get(route.size() -1);
+                List<Piece> pieceList = pieceRepo.findByPosYAndPosXAndLaserBoardId(lastStep[0], lastStep[1], board.getId());
+                piece = pieceList.get(0);
+                if(piece.getClass() == King.class) {
+                    Piece.Owner owner = piece.getOwner();
+                    if(owner == Piece.Owner.PLAYER_ONE) board.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
+                    if(owner == Piece.Owner.PLAYER_TWO) board.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
+                    pieceRepo.delete(piece);
+                    currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
+                    responseMap.put("message", "ENDGAME");
+                    responseMap.put("route", route);
+                    responseMap.put("response", HttpStatus.OK);
+                    responseMap.put("board", boardService.createBoardMap(currentDisposition));
+                    boardRepo.save(board);
+                    return responseMap;
+                }
+                pieceRepo.delete(piece);
+                if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
+                    board.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
+                } else {
+                    board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
+                }
+                boardRepo.save(board);
+                currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
 
+                responseMap.put("message", laserResult.get("message"));
+                responseMap.put("route", route);
+                responseMap.put("response", HttpStatus.OK);
+                responseMap.put("board", boardService.createBoardMap(currentDisposition));
 
-//            System.out.println("ROUTE: ");
-//            for (int[] step : route) {
-//                System.out.print(" [" + step[0] + " : " + step[1] + "]");
-//            }
-//            System.out.println();
-
+                return responseMap;
+            }
 
 
             if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
@@ -111,12 +148,18 @@ public class MatchService {
             } else {
                 board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
             }
-
             boardRepo.save(board);
+            currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
+            responseMap.put("message", laserResult.get("message"));
+            responseMap.put("route", route);
+            responseMap.put("response", HttpStatus.OK);
+            responseMap.put("board", boardService.createBoardMap(currentDisposition));
 
-            return new ResponseEntity<>("OK", HttpStatus.OK);
+            return responseMap;
         } catch (RuntimeException e) {
-            return new ResponseEntity<>("Incorrect Movement", HttpStatus.BAD_REQUEST);
+            responseMap.put("message", "Incorrect Movement");
+            responseMap.put("response", HttpStatus.BAD_REQUEST);
+            return responseMap;
         }
 
     }
