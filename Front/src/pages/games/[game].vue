@@ -9,6 +9,7 @@
   import Grid from '~/components/GridComp.vue';
   
   export default {
+    
     components: {
       Grid
     }
