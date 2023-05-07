@@ -26,5 +26,5 @@ public class Player {
     String lastName;
 
     @OneToMany(mappedBy = "player")
-    List<Player_Play_Match> matches;
+    List<PlayerPlayMatch> matches;
 }

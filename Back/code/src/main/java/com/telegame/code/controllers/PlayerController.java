@@ -1,7 +1,7 @@
 package com.telegame.code.controllers;
 
 import com.telegame.code.exceptions.EmailException;
-import com.telegame.code.exceptions.InputPlayerFormException;
+import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.LoginException;
 import com.telegame.code.exceptions.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
@@ -29,7 +29,7 @@ public class PlayerController {
     public ResponseEntity<String> signUp(@RequestBody PlayerForm playerForm) throws NoSuchAlgorithmException {
         try {
             return new ResponseEntity<>(playerService.signUp(playerForm), HttpStatus.OK);
-        } catch (InputPlayerFormException e) {
+        } catch (InputFormException e) {
             return new ResponseEntity<>("Player form error", HttpStatus.BAD_REQUEST);
         } catch (EmailException e) {
             return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
@@ -42,7 +42,7 @@ public class PlayerController {
     public ResponseEntity<String> login(@RequestBody LoginForm loginForm) throws NoSuchAlgorithmException {
         try {
             return new ResponseEntity<>(playerService.login(loginForm), HttpStatus.OK);
-        } catch (InputPlayerFormException e) {
+        } catch (InputFormException e) {
             return new ResponseEntity<>("Player form error", HttpStatus.BAD_REQUEST);
         } catch (LoginException e) {
             return new ResponseEntity<>("Wrong user, email or password already exists", HttpStatus.BAD_REQUEST);

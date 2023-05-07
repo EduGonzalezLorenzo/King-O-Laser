@@ -23,7 +23,8 @@ public class GameMatch {
     Boolean isPublic;
 
     @OneToMany(mappedBy = "gameMatch")
-    List<Player_Play_Match> players;
+    @Singular
+    List<PlayerPlayMatch> players;
     @OneToOne(mappedBy = "gameMatch")
     Board board;
 }
