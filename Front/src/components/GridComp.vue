@@ -1,20 +1,12 @@
 <template>
-  <canvas ref="canvas"
-          :width="canvasWidth"
-          :height="canvasHeight"
-          :mouseX="mouseX" 
-          :mouseY="mouseY"
-  />
+  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY" @:click="handleClick"/>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+<script setup lang="ts">
+import { defineComponent, ref, onMounted, defineEmits } from 'vue';
 import { Cell } from '~/types/Cell';
 import createCell from '~/utils/createCell';
 
-export default defineComponent({
-  name: 'CanvasTable',
-  setup() {
     const canvas = ref<HTMLCanvasElement | null>(null);
     const canvasWidth = 1200;
     const canvasHeight = 1500;
@@ -22,6 +14,8 @@ export default defineComponent({
     const tableColumns = 8;
     const mouseX = ref<number>(0);
     const mouseY = ref<number>(0);
+
+
 
     const drawTable = (ctx: CanvasRenderingContext2D) => {
       const cellWidth = canvasWidth / tableColumns;
@@ -50,7 +44,6 @@ export default defineComponent({
       }
 
 
-
       console.log({ board })
     };
 
@@ -58,15 +51,22 @@ export default defineComponent({
       const ctx = canvas.value?.getContext('2d');
       if (ctx) {
         drawTable(ctx);
-        canvas.value?.addEventListener('click', (event) => {
-          mouseX.value = Math.floor(event.offsetX/(canvasWidth/tableColumns));
-          mouseY.value = Math.floor(event.offsetY/(canvasHeight/tableRows));
-          console.log(mouseY.value, mouseX.value)
-        })
       }
+
     });
 
-    return { canvasWidth, canvasHeight, canvas, mouseX, mouseY };
-  },
-});
+    const emit = defineEmits<{
+      (e: 'sendPosition', posY: number, posX: number): void
+    }>()
+
+    // const emit = defineEmits(['sendPosition'])
+
+    const handleClick = (event: MouseEvent) => {
+      mouseX.value = Math.floor(event.offsetX / (canvasWidth / tableColumns));
+      mouseY.value = Math.floor(event.offsetY / (canvasHeight / tableRows));
+      console.log(mouseY.value, mouseX.value)
+      emit('sendPosition', mouseY.value, mouseX.value)
+
+    };
+
 </script>
