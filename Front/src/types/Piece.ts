@@ -1,14 +1,9 @@
 
 
 export interface Piece{
-    posY: Number;
-    posX: Number;
-    token: string
-}
-
-
-
-export interface LaserPiece extends Piece{
-    type: string;
+    owner: string;
+    posY: number;
+    posX: number;
     rotation: string;
+    class: string;
 }
