@@ -123,14 +123,14 @@ const boardDisposition = {
 
 
 
-const board = new Array(tableRows)
+const board = ref(new Array(tableRows))
 for (let x = 0; x < tableRows; x++) {
-  board[x] = new Array(tableColumns)
+  board.value[x] = new Array(tableColumns)
 }
 
 for (let x = 0; x < tableRows; x++) {
   for (let y = 0; y < tableColumns; y++) {
-    board[x][y] = createCell(cellWidth, cellHeight, x, y, "#fff")
+    board.value[x][y] = createCell(cellWidth, cellHeight, x, y, "#fff")
   }
 }
 
@@ -141,7 +141,7 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
 
   for (let x = 0; x < tableRows; x++) {
     for (let y = 0; y < tableColumns; y++) {
-      showCell(board[x][y])
+      showCell(board.value[x][y])
     }
   }
 
@@ -168,7 +168,39 @@ const handleClick = (event: MouseEvent) => {
   mouseX.value = Math.floor(event.offsetX / (canvasWidth / tableColumns));
   mouseY.value = Math.floor(event.offsetY / (canvasHeight / tableRows));
 
-  console.log(board[mouseY.value][mouseX.value])
+  const ctx = canvas.value?.getContext('2d');
+
+
+  if (ctx) {
+    if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+      drawGrid(ctx);
+      drawBoard(ctx, boardDisposition)
+      for (let i = mouseX.value - 1; i <= mouseX.value + 1; i++) {
+        for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
+          if (i >= 0 && i < board.value.length && j >= 0 && j < board.value[i].length) {
+            if (board.value[j][i] instanceof Piece) {
+              ctx.fillStyle = 'rgb(250,10,10, 0.5)';
+              ctx.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth)
+            } else {
+              ctx.fillStyle = 'rgb(10,250,10, 0.5)';
+              ctx.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth)
+            }
+
+            // ctx.fillStyle = 'rgb(100,10,10, 0.2)';
+            // ctx.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth)
+
+
+            // if (board.value[i][j].revealed == false) {
+            //     discoverCell(i,j);
+            // }
+
+          }
+        }
+      }
+    }
+  }
+
 
   emit('sendPosition', mouseY.value, mouseX.value)
 };
@@ -177,32 +209,30 @@ const handleClick = (event: MouseEvent) => {
 //     return this.posX < mouseX && this.posX + cellWidth > mouseX && this.posY < mouseY && this.posY + cellWidth > mouseY
 // }
 
-// const drawBoard = (ctx: CanvasRenderingContext2D, boardDisposition: BoardDisposition) => {
-//   const pieceList: Piece[] = boardDisposition.board
-//   pieceList.forEach(piece => {
-//     // piece = new Piece(piece.owner, piece.posY, piece.posX, piece.rotation, piece.pieceClass)
-//     board.value[mouseX.value][mouseY.value].empty = false;
-//     board.value[mouseX.value][mouseY.value] = new Piece(piece.owner, piece.posY, piece.posX, piece.rotation, piece.pieceClass)
-//     ctx.fillStyle = piece.owner === 'PLAYER_ONE' ? 'darkred' : 'darkblue';
-//     ctx.fillRect(piece.posX * cellHeight, piece.posY * cellWidth, cellHeight, cellWidth)
-//     ctx.font = "20px Arial";
-//     ctx.fillStyle = '#fff'
-//     ctx.fillText(`Y${piece.posY}:X${piece.posX}`, (piece.posX * cellHeight) + 10, (piece.posY * cellWidth) + 50)
-//     ctx.fillText(`rotation: ${piece.rotation}`, (piece.posX * cellHeight) + 10, (piece.posY * cellWidth) + 70)
-//   });
-//   console.log(board.value)
-// }
+const drawBoard = (ctx: CanvasRenderingContext2D, boardDisposition: BoardDisposition) => {
+  const pieceList: Piece[] = boardDisposition.board
+  pieceList.forEach(piece => {
+    piece = new Piece(piece.owner, piece.posY, piece.posX, piece.rotation, piece.pieceClass)
+    board.value[piece.posY][piece.posX].empty = false;
+    board.value[piece.posY][piece.posX] = new Piece(piece.owner, piece.posY, piece.posX, piece.rotation, piece.pieceClass)
+    ctx.fillStyle = piece.owner === 'PLAYER_ONE' ? 'darkred' : 'darkblue';
+    ctx.fillRect(piece.posX * cellHeight, piece.posY * cellWidth, cellHeight, cellWidth)
+    ctx.font = "20px Arial";
+    ctx.fillStyle = '#fff'
+    ctx.fillText(`Y${piece.posY}:X${piece.posX}`, (piece.posX * cellHeight) + 10, (piece.posY * cellWidth) + 50)
+    ctx.fillText(`rotation: ${piece.rotation}`, (piece.posX * cellHeight) + 10, (piece.posY * cellWidth) + 70)
+  });
+}
 
 onMounted(() => {
   const ctx = canvas.value?.getContext('2d');
 
   if (ctx) {
     drawGrid(ctx);
-    // drawBoard(ctx, boardDisposition)
+    drawBoard(ctx, boardDisposition)
     // if(imagesLoaded()) {
     //   ctx.drawImage(images[0], 0, 0)
     // }
-    // console.log(board.value)
   }
 });
 
