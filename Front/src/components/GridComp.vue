@@ -130,7 +130,7 @@ for (let x = 0; x < tableRows; x++) {
 
 for (let x = 0; x < tableRows; x++) {
   for (let y = 0; y < tableColumns; y++) {
-    board.value[x][y] = createCell(cellWidth, cellHeight, x, y, "#fff")
+    board.value[x][y] = new Cell(cellWidth, cellHeight, x, y, false)
   }
 }
 
@@ -157,12 +157,9 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
 
 };
 
-
-
 const emit = defineEmits<{
   (e: 'sendPosition', posY: number, posX: number): void
 }>()
-
 
 const handleClick = (event: MouseEvent) => {
   mouseX.value = Math.floor(event.offsetX / (canvasWidth / tableColumns));
@@ -170,44 +167,51 @@ const handleClick = (event: MouseEvent) => {
 
   const ctx = canvas.value?.getContext('2d');
 
+  console.log(board.value[mouseY.value][mouseX.value])
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight)
       drawGrid(ctx);
       drawBoard(ctx, boardDisposition)
+      for (let x = 0; x < tableRows; x++) {
+        for (let y = 0; y < tableColumns; y++) {
+          if (board.value[x][y] instanceof Cell) {
+            board.value[x][y].selectable = false;
+          }
+        }
+      }
+
       for (let i = mouseX.value - 1; i <= mouseX.value + 1; i++) {
         for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
           if (i >= 0 && i < board.value.length && j >= 0 && j < board.value[i].length) {
             if (board.value[j][i] instanceof Piece) {
+
+              // for (let x = 0; x < tableRows; x++) {
+              //   for (let y = 0; y < tableColumns; y++) {
+              //     if (board.value[x][y] instanceof Cell) {
+              //       board.value[x][y].selectable = false;
+              //     }
+              //   }
+              // }
+
               ctx.fillStyle = 'rgb(250,10,10, 0.5)';
               ctx.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth)
-            } else {
+            } else if (board.value[j][i] instanceof Cell) {
               ctx.fillStyle = 'rgb(10,250,10, 0.5)';
               ctx.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth)
+              board.value[j][i].selectable = true;
+
+
             }
-
-            // ctx.fillStyle = 'rgb(100,10,10, 0.2)';
-            // ctx.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth)
-
-
-            // if (board.value[i][j].revealed == false) {
-            //     discoverCell(i,j);
-            // }
-
           }
         }
       }
     }
   }
 
-
   emit('sendPosition', mouseY.value, mouseX.value)
 };
-
-// function contains(mouseX: number, mouseY: number, cellWidth: number) {
-//     return this.posX < mouseX && this.posX + cellWidth > mouseX && this.posY < mouseY && this.posY + cellWidth > mouseY
-// }
 
 const drawBoard = (ctx: CanvasRenderingContext2D, boardDisposition: BoardDisposition) => {
   const pieceList: Piece[] = boardDisposition.board
