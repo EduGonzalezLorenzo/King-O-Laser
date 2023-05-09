@@ -15,6 +15,7 @@ public class PlayerPlayMatch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    LocalDateTime lastUpdate;
 
     @ManyToOne
     @JoinColumn(name = "player_id")
@@ -23,6 +24,4 @@ public class PlayerPlayMatch {
     @ManyToOne
     @JoinColumn(name = "game_match_id")
     GameMatch gameMatch;
-
-    LocalDateTime matchCreation;
 }

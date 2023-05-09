@@ -25,6 +25,6 @@ public class Player {
     String firstName;
     String lastName;
 
-    @OneToMany(mappedBy = "player")
+    @OneToMany(mappedBy = "player", cascade = CascadeType.REMOVE)
     List<PlayerPlayMatch> matches;
 }
