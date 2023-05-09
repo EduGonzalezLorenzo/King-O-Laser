@@ -1,6 +1,14 @@
 <template>
-  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
-    @:click="handleClick" />
+  <canvas
+    ref="canvas"
+    :width="canvasWidth"
+    :height="canvasHeight"
+    :mouseX="mouseX"
+    :mouseY="mouseY"
+    @:click="handleClick"
+  />
+
+
 </template>
 
 <script setup lang="ts">
@@ -9,7 +17,6 @@ import { Cell } from '~/types/Cell';
 import { Piece } from '~/types/Piece'
 import createCell from '~/utils/createCell';
 import { BoardDisposition } from '~/types/BoardDisposition'
-// import BoardImage from "../public/Board.jpg";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const canvasWidth = 960;
@@ -109,11 +116,12 @@ const boardDisposition = {
 }
 
 
-// const backimage = new Image()
-// backimage.src = 'C:/Users/G513/Desktop/DAW/Programacion/King-O-Laser/Front/src/static/kingolaser/Board.jpg'
 
-// const srcs: string[] = ['/Board.jpg'];
+
+// const srcs: string[] = ['_nuxt/static/img/kingolaser/Board.jpg'];
 // const images = srcs.map((src) => {
+//   // eslint-disable-next-line
+//   debugger
 //     const image = new Image();
 //     image.src = src;
 //     return image;
@@ -186,23 +194,12 @@ const handleClick = (event: MouseEvent) => {
         for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
           if (i >= 0 && i < board.value.length && j >= 0 && j < board.value[i].length) {
             if (board.value[j][i] instanceof Piece) {
-
-              // for (let x = 0; x < tableRows; x++) {
-              //   for (let y = 0; y < tableColumns; y++) {
-              //     if (board.value[x][y] instanceof Cell) {
-              //       board.value[x][y].selectable = false;
-              //     }
-              //   }
-              // }
-
               ctx.fillStyle = 'rgb(250,10,10, 0.5)';
               ctx.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth)
             } else if (board.value[j][i] instanceof Cell) {
               ctx.fillStyle = 'rgb(10,250,10, 0.5)';
               ctx.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth)
               board.value[j][i].selectable = true;
-
-
             }
           }
         }
@@ -246,6 +243,6 @@ onMounted(() => {
 canvas {
   margin-top: -100px;
   scale: 0.8;
-  /* background-image: url(../public/img/kingolaser/Board.jpg); */
+  /* background-image: url(../static/img/kingolaser/Board.jpg); */
 }
 </style>
