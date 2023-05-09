@@ -1,9 +1,7 @@
 package com.telegame.code.services;
 
 import com.telegame.code.Utils.HashUtils;
-import com.telegame.code.exceptions.GameNoExistsException;
-import com.telegame.code.exceptions.InputFormException;
-import com.telegame.code.exceptions.PlayerNameException;
+import com.telegame.code.exceptions.*;
 import com.telegame.code.forms.MatchForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,7 +39,7 @@ public class MatchService {
 
         PlayerPlayMatch playerOnePlayMatch = PlayerPlayMatch.builder()
                 .player(playerOneCandidate.get())
-                .matchCreation(LocalDateTime.now())
+                .lastUpdate(LocalDateTime.now())
                 .build();
 
         GameMatch newGameMatch = GameMatch.builder()
@@ -49,6 +48,7 @@ public class MatchService {
                 .password(matchForm.getIsPublic() ? null : HashUtils.getHashSHA256(matchForm.getPassword()))
                 .player(playerOnePlayMatch)
                 .board(getBoard(matchForm.getGame()))
+                .matchCreation(LocalDateTime.now())
                 .build();
 
         playerOnePlayMatch.setGameMatch(newGameMatch);
@@ -67,4 +67,42 @@ public class MatchService {
             default -> throw new GameNoExistsException();
         };
     }
+
+    public String joinMatch(Long matchId, String playerName) {
+        Optional<GameMatch> gameMatchCandidate = gameMatchRepo.findById(matchId);
+        if (gameMatchCandidate.isEmpty()) throw new MatchNoExistsException();
+        GameMatch gameMatch = checkGameMatch(gameMatchCandidate.get());
+
+        Optional<Player> playerOneCandidate = playerRepo.findByPlayerNameEquals(playerName);
+        if (playerOneCandidate.isEmpty()) throw new PlayerNameException();
+        Player player = checkPlayer(playerOneCandidate.get(), gameMatch);
+
+        PlayerPlayMatch playerPlayMatch = PlayerPlayMatch.builder()
+                .gameMatch(gameMatch)
+                .player(player)
+                .lastUpdate(LocalDateTime.now())
+                .build();
+
+        gameMatch.addPlayer(playerPlayMatch);
+
+        return "ok";
+    }
+
+    private Player checkPlayer(Player playerTwo, GameMatch gameMatch) {
+        Player playerOne = gameMatch.getPlayers().get(0).getPlayer();
+        if (playerOne.getPlayerName().equals(playerTwo.getPlayerName())) throw new PlayerAlreadyInMatchException();
+        return playerTwo;
+    }
+
+    private GameMatch checkGameMatch(GameMatch gameMatch) {
+        int size = gameMatch.getPlayers().size();
+        if (size > 1) throw new FilledMatchException();
+        if (size == 0) {
+            gameMatchRepo.delete(gameMatch);
+            throw new MatchNoExistsException();
+        }
+        return gameMatch;
+    }
+
+
 }
