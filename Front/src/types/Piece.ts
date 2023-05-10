@@ -26,8 +26,4 @@ export class Piece {
     this.rotation = rotation;
     this.pieceClass = pieceClass;
   }
-
-//   contains(mouseX: number, mouseY: number, cellWidth: number) {
-//     return this.posX < mouseX && this.posX + cellWidth > mouseX && this.posY < mouseY && this.posY + cellWidth > mouseY
-// }
 }

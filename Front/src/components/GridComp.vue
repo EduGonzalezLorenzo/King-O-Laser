@@ -7,15 +7,12 @@
     :mouseY="mouseY"
     @:click="handleClick"
   />
-
-
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, defineEmits, reactive } from 'vue';
 import { Cell } from '~/types/Cell';
 import { Piece } from '~/types/Piece'
-import createCell from '~/utils/createCell';
 import { BoardDisposition } from '~/types/BoardDisposition'
 
 const canvas = ref<HTMLCanvasElement | null>(null);
