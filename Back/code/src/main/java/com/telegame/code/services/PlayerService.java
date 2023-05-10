@@ -1,10 +1,9 @@
 package com.telegame.code.services;
 
-import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
 import com.telegame.code.exceptions.EmailException;
-import com.telegame.code.exceptions.InputPlayerFormException;
+import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.LoginException;
 import com.telegame.code.exceptions.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
@@ -32,7 +31,7 @@ public class PlayerService {
 
     public String signUp(PlayerForm playerForm) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<PlayerForm>> formErrorList = validatorFactory.getValidator().validate(playerForm);
-        if (!formErrorList.isEmpty()) throw new InputPlayerFormException();
+        if (!formErrorList.isEmpty()) throw new InputFormException();
 
         if (playerRepo.findByEmailEquals(playerForm.getEmail()).isPresent()) throw new EmailException();
         if (playerRepo.findByPlayerNameEquals(playerForm.getPlayerName()).isPresent()) throw new PlayerNameException();
@@ -44,7 +43,7 @@ public class PlayerService {
 
     public String login(LoginForm loginForm) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<LoginForm>> formErrorList = validatorFactory.getValidator().validate(loginForm);
-        if (!formErrorList.isEmpty()) throw new InputPlayerFormException();
+        if (!formErrorList.isEmpty()) throw new InputFormException();
 
         if (loginForm.getPlayerName() != null && loginForm.getEmail() != null) throw new LoginException();
         Player player = getPlayer(loginForm);

@@ -1,190 +1,108 @@
 package com.telegame.code.services;
 
-import com.telegame.code.builder.MatchBuilder;
-import com.telegame.code.exceptions.InputPlayerFormException;
-import com.telegame.code.exceptions.MatchFormException;
+import com.telegame.code.Utils.HashUtils;
+import com.telegame.code.exceptions.*;
 import com.telegame.code.forms.MatchForm;
-import com.telegame.code.forms.MovementForm;
-import com.telegame.code.forms.PlayerForm;
-import com.telegame.code.models.*;
-import com.telegame.code.models.kingolaser.LaserBeam;
-import com.telegame.code.models.kingolaser.pieces.King;
-import com.telegame.code.models.kingolaser.pieces.Piece;
-import com.telegame.code.repos.BoardRepo;
-import com.telegame.code.repos.MatchRepo;
-import com.telegame.code.repos.PieceRepo;
+import com.telegame.code.models.Board;
+import com.telegame.code.models.GameMatch;
+import com.telegame.code.models.Player;
+import com.telegame.code.models.PlayerPlayMatch;
+import com.telegame.code.repos.GameMatchRepo;
+import com.telegame.code.repos.PlayerPlayMatchRepo;
+import com.telegame.code.repos.PlayerRepo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
-import jdk.jshell.Snippet;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class MatchService {
-
     private ValidatorFactory validatorFactory;
-    private MatchRepo matchRepo;
+    private PlayerRepo playerRepo;
+    private GameMatchRepo gameMatchRepo;
+    private PlayerPlayMatchRepo playerPlayMatchRepo;
 
-    private PieceRepo pieceRepo;
+    public String createMatch(MatchForm matchForm, String playerName) throws NoSuchAlgorithmException {
+        Set<ConstraintViolation<MatchForm>> formErrorList = validatorFactory.getValidator().validate(matchForm);
+        if (!formErrorList.isEmpty()) throw new InputFormException();
 
-    private BoardRepo boardRepo;
+        Optional<Player> playerOneCandidate = playerRepo.findByPlayerNameEquals(playerName);
+        if (playerOneCandidate.isEmpty()) throw new PlayerNameException();
+        if (!matchForm.getIsPublic() && matchForm.getPassword() != null) throw new InputFormException();
 
-    @Autowired
-    PPMService ppmService;
+        PlayerPlayMatch playerOnePlayMatch = PlayerPlayMatch.builder()
+                .player(playerOneCandidate.get())
+                .lastUpdate(LocalDateTime.now())
+                .build();
 
-    @Autowired
-    BoardService boardService;
+        GameMatch newGameMatch = GameMatch.builder()
+                .name(matchForm.getMatchName())
+                .isPublic(matchForm.getIsPublic())
+                .password(matchForm.getIsPublic() ? null : HashUtils.getHashSHA256(matchForm.getPassword()))
+                .player(playerOnePlayMatch)
+                .board(getBoard(matchForm.getGame()))
+                .matchCreation(LocalDateTime.now())
+                .build();
 
-    public GameMatch createMatch(MatchForm matchForm,
-                                 Board board, Player_Play_Match ppm) {
+        playerOnePlayMatch.setGameMatch(newGameMatch);
 
-//        Set<ConstraintViolation<MatchForm>> formErrorList = validatorFactory.getValidator().validate(matchForm);
-//        if (!formErrorList.isEmpty()) throw new MatchFormException();
+        gameMatchRepo.save(newGameMatch);
+        playerPlayMatchRepo.save(playerOnePlayMatch);
 
-        GameMatch gameMatch = MatchBuilder.fromForm(matchForm, board, ppm);
-        matchRepo.save(gameMatch);
+        return "Ok";
+
+    }
+
+    private Board getBoard(String game) {
+        return switch (game) {
+            case "LASER_BOARD" -> null;
+            case "TIC_TAC_TOE" -> null;
+            default -> throw new GameNoExistsException();
+        };
+    }
+
+    public String joinMatch(Long matchId, String playerName) {
+        Optional<GameMatch> gameMatchCandidate = gameMatchRepo.findById(matchId);
+        if (gameMatchCandidate.isEmpty()) throw new MatchNoExistsException();
+        GameMatch gameMatch = checkGameMatch(gameMatchCandidate.get());
+
+        Optional<Player> playerOneCandidate = playerRepo.findByPlayerNameEquals(playerName);
+        if (playerOneCandidate.isEmpty()) throw new PlayerNameException();
+        Player player = checkPlayer(playerOneCandidate.get(), gameMatch);
+
+        PlayerPlayMatch playerPlayMatch = PlayerPlayMatch.builder()
+                .gameMatch(gameMatch)
+                .player(player)
+                .lastUpdate(LocalDateTime.now())
+                .build();
+
+        gameMatch.addPlayer(playerPlayMatch);
+
+        return "ok";
+    }
+
+    private Player checkPlayer(Player playerTwo, GameMatch gameMatch) {
+        Player playerOne = gameMatch.getPlayers().get(0).getPlayer();
+        if (playerOne.getPlayerName().equals(playerTwo.getPlayerName())) throw new PlayerAlreadyInMatchException();
+        return playerTwo;
+    }
+
+    private GameMatch checkGameMatch(GameMatch gameMatch) {
+        int size = gameMatch.getPlayers().size();
+        if (size > 1) throw new FilledMatchException();
+        if (size == 0) {
+            gameMatchRepo.delete(gameMatch);
+            throw new MatchNoExistsException();
+        }
         return gameMatch;
     }
 
 
-    public List<GameMatch> getMatchList() {
-        List<GameMatch> matchList = new ArrayList<>();
-        return matchList;
-    }
-
-    public GameMatch getMatch(Long matchId) {
-        return matchRepo.getReferenceById(matchId);
-    }
-
-    public Map<String, Object> updateMatch(Long matchId, MovementForm movementForm) {
-        Map<String, Object> responseMap = new HashMap<>();
-        try {
-            GameMatch gameMatch = matchRepo.getReferenceById(matchId);
-            Board board = gameMatch.getBoard();
-            Board.MatchStatus matchStatus = board.getStatus();
-
-            List<Piece> currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(movementForm.getCurrentPosY(), movementForm.getCurrentPosX(), board.getId());
-
-            Piece piece = currentDisposition.get(0);
-            if((matchStatus == Board.MatchStatus.PLAYER_ONE_TURN && piece.getOwner() == Piece.Owner.PLAYER_ONE) ||
-                    (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN && piece.getOwner() == Piece.Owner.PLAYER_TWO)) {
-                if (movementForm.getRotateTo() == null) {
-                    if(!piece.move(movementForm.getNewPosY(), movementForm.getNewPosX())) {
-                        responseMap.put("message", "Incorrect Movement");
-                        responseMap.put("response", HttpStatus.BAD_REQUEST);
-                        return responseMap;
-                    }
-                } else {
-                    if(!piece.rotate(movementForm.getRotateTo(), piece)) {
-                        responseMap.put("message", "Incorrect Rotation Value");
-                        responseMap.put("response", HttpStatus.BAD_REQUEST);
-                        return responseMap;
-                    }
-                }
-            } else {
-                System.out.println("Turno incorrecto");
-                responseMap.put("message", "Wrong turn");
-                responseMap.put("response", HttpStatus.BAD_REQUEST);
-                return responseMap;
-            }
-
-            pieceRepo.save(piece);
-            boardRepo.save(board);
-
-            if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(9, 7, board.getId());
-            if(matchStatus == Board.MatchStatus.PLAYER_TWO_TURN) currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(0, 0, board.getId());
-
-            piece = currentDisposition.get(0);
-
-            currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
-
-            LaserBeam laserBeam = new LaserBeam();
-            Map<String, Object> laserResult = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
-            List<int[]> route = (List<int[]>) laserResult.get("route");
-            if ("HIT".equals(laserResult.get("message"))) {
-
-                int[] lastStep = route.get(route.size() -1);
-                List<Piece> pieceList = pieceRepo.findByPosYAndPosXAndLaserBoardId(lastStep[0], lastStep[1], board.getId());
-                piece = pieceList.get(0);
-                if(piece.getClass() == King.class) {
-                    Piece.Owner owner = piece.getOwner();
-                    if(owner == Piece.Owner.PLAYER_ONE) board.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
-                    if(owner == Piece.Owner.PLAYER_TWO) board.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
-                    pieceRepo.delete(piece);
-                    currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
-                    responseMap.put("message", "ENDGAME");
-                    responseMap.put("route", route);
-                    responseMap.put("response", HttpStatus.OK);
-                    responseMap.put("board", boardService.createBoardMap(currentDisposition));
-                    boardRepo.save(board);
-                    return responseMap;
-                }
-                pieceRepo.delete(piece);
-                if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
-                    board.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
-                } else {
-                    board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
-                }
-                boardRepo.save(board);
-                currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
-
-                responseMap.put("message", laserResult.get("message"));
-                responseMap.put("route", route);
-                responseMap.put("response", HttpStatus.OK);
-                responseMap.put("board", boardService.createBoardMap(currentDisposition));
-
-                return responseMap;
-            }
-
-
-            if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
-                board.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
-            } else {
-                board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
-            }
-            boardRepo.save(board);
-            currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
-            responseMap.put("message", laserResult.get("message"));
-            responseMap.put("route", route);
-            responseMap.put("response", HttpStatus.OK);
-            responseMap.put("board", boardService.createBoardMap(currentDisposition));
-
-            return responseMap;
-        } catch (RuntimeException e) {
-            responseMap.put("message", "Incorrect Movement");
-            responseMap.put("response", HttpStatus.BAD_REQUEST);
-            return responseMap;
-        }
-
-    }
-
-    public Message deleteMatch(Long matchId, Object candidate) {
-        return new Message();
-    }
-
-    public String joinGameMatch(Long matchId, Player playerTwo) {
-
-        GameMatch gameMatch = matchRepo.getReferenceById(matchId);
-        List<Player_Play_Match> players = gameMatch.getPlayers();
-
-        Player_Play_Match ppm = ppmService.createPpm(playerTwo);
-        ppm.setPlayerNumber(Piece.Owner.PLAYER_TWO);
-        ppm.setGameMatch(gameMatch);
-
-        players.add(ppm);
-
-        gameMatch.setPlayers(players);
-        Board laserBoard = gameMatch.getBoard();
-        laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
-
-        matchRepo.save(gameMatch);
-
-        return "OK";
-    }
 }
