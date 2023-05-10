@@ -1,6 +1,11 @@
 package com.telegame.code.controllers;
 
 import com.telegame.code.exceptions.*;
+import com.telegame.code.exceptions.match.FilledMatchException;
+import com.telegame.code.exceptions.match.MatchInfoException;
+import com.telegame.code.exceptions.match.MatchNoExistsException;
+import com.telegame.code.exceptions.match.PlayerAlreadyInMatchException;
+import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.MatchForm;
 import com.telegame.code.services.MatchService;
 import com.telegame.code.services.PlayerService;
@@ -28,7 +33,11 @@ public class MatchController {
         } catch (InputFormException e) {
             return new ResponseEntity<>("Match form error", HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Player no exists", HttpStatus.BAD_REQUEST);
+        } catch (MatchInfoException e){
+            return new ResponseEntity<>("Game Metadata Error", HttpStatus.CONFLICT);
+        } catch (GameNoExistsException e){
+            return new ResponseEntity<>("Game no exists", HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -1,7 +1,12 @@
 package com.telegame.code.services;
 
 import com.telegame.code.Utils.HashUtils;
+import com.telegame.code.builder.games.kingolaser.KingOLaserBoardBuilder;
 import com.telegame.code.exceptions.*;
+import com.telegame.code.exceptions.match.FilledMatchException;
+import com.telegame.code.exceptions.match.MatchNoExistsException;
+import com.telegame.code.exceptions.match.PlayerAlreadyInMatchException;
+import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.MatchForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
@@ -17,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -42,14 +46,7 @@ public class MatchService {
                 .lastUpdate(LocalDateTime.now())
                 .build();
 
-        GameMatch newGameMatch = GameMatch.builder()
-                .name(matchForm.getMatchName())
-                .isPublic(matchForm.getIsPublic())
-                .password(matchForm.getIsPublic() ? null : HashUtils.getHashSHA256(matchForm.getPassword()))
-                .player(playerOnePlayMatch)
-                .board(getBoard(matchForm.getGame()))
-                .matchCreation(LocalDateTime.now())
-                .build();
+        GameMatch newGameMatch = buildGameMatch(matchForm, playerOnePlayMatch);
 
         playerOnePlayMatch.setGameMatch(newGameMatch);
 
@@ -60,9 +57,20 @@ public class MatchService {
 
     }
 
-    private Board getBoard(String game) {
+    private GameMatch buildGameMatch(MatchForm matchForm, PlayerPlayMatch playerOnePlayMatch) throws NoSuchAlgorithmException {
+        return GameMatch.builder()
+                .name(matchForm.getMatchName())
+                .isPublic(matchForm.getIsPublic())
+                .password(matchForm.getIsPublic() ? null : HashUtils.getHashSHA256(matchForm.getPassword()))
+                .player(playerOnePlayMatch)
+                .board(getBoard(matchForm.getGame(), matchForm.getMetadata()))
+                .matchCreation(LocalDateTime.now())
+                .build();
+    }
+
+    private Board getBoard(String game, String metadata) {
         return switch (game) {
-            case "LASER_BOARD" -> null;
+            case "LASER_BOARD" -> KingOLaserBoardBuilder.getBoardDisposition(metadata);
             case "TIC_TAC_TOE" -> null;
             default -> throw new GameNoExistsException();
         };

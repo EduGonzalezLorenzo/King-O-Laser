@@ -2,10 +2,10 @@ package com.telegame.code.services;
 
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
-import com.telegame.code.exceptions.EmailException;
+import com.telegame.code.exceptions.player.EmailException;
 import com.telegame.code.exceptions.InputFormException;
-import com.telegame.code.exceptions.LoginException;
-import com.telegame.code.exceptions.PlayerNameException;
+import com.telegame.code.exceptions.player.LoginException;
+import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
 import com.telegame.code.forms.PlayerForm;
 import com.telegame.code.models.Player;
