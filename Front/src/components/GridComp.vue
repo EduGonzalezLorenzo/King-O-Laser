@@ -1,12 +1,6 @@
 <template>
-  <canvas
-    ref="canvas"
-    :width="canvasWidth"
-    :height="canvasHeight"
-    :mouseX="mouseX"
-    :mouseY="mouseY"
-    @:click="handleClick"
-  />
+  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
+    @:click="handleClick" />
 </template>
 
 <script setup lang="ts">
@@ -87,15 +81,40 @@ const boardDisposition = {
   ],
 };
 
-// const srcs: string[] = ['_nuxt/static/img/kingolaser/Board.jpg'];
-// const images = srcs.map((src) => {
-//   // eslint-disable-next-line
-//   debugger
-//     const image = new Image();
-//     image.src = src;
-//     return image;
-// });
-// const imagesLoaded = () => images.every((image) => image.complete);
+const imagePaths = [
+  "/img/kingolaser/UnknownPiece.jpg",
+  "/img/kingolaser/BlueKing.png",
+  "/img/kingolaser/BlueBlockN.png",
+  "/img/kingolaser/BlueBlockS.png",
+  "/img/kingolaser/BlueBlockE.png",
+  "/img/kingolaser/BlueBlockW.png",
+  "/img/kingolaser/BlueBouncerNS.png",
+  "/img/kingolaser/BlueBouncerEW.png",
+  "/img/kingolaser/BlueDeflectorN.png",
+  "/img/kingolaser/BlueDeflectorS.png",
+  "/img/kingolaser/BlueDeflectorE.png",
+  "/img/kingolaser/BlueDeflectorW.png",
+  "/img/kingolaser/BlueLaserN.jpg",
+  "/img/kingolaser/BlueLaserS.jpg",
+  "/img/kingolaser/BlueLaserE.jpg",
+  "/img/kingolaser/BlueLaserW.jpg",
+
+  "/img/kingolaser/RedKing.png",
+  "/img/kingolaser/RedBlockN.png",
+  "/img/kingolaser/RedBlockS.png",
+  "/img/kingolaser/RedBlockE.png",
+  "/img/kingolaser/RedBlockW.png",
+  "/img/kingolaser/RedBouncerNS.png",
+  "/img/kingolaser/RedBouncerEW.png",
+  "/img/kingolaser/RedDeflectorN.png",
+  "/img/kingolaser/RedDeflectorS.png",
+  "/img/kingolaser/RedDeflectorE.png",
+  "/img/kingolaser/RedDeflectorW.png",
+  "/img/kingolaser/RedLaserN.jpg",
+  "/img/kingolaser/RedLaserS.jpg",
+  "/img/kingolaser/RedLaserE.jpg",
+  "/img/kingolaser/RedLaserW.jpg",
+];
 
 const board = ref(new Array(tableRows));
 for (let x = 0; x < tableRows; x++) {
@@ -130,8 +149,8 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
       cell.posX * cellHeight + 50,
       cell.posY * cellWidth + 100
     );
-    ctx.fillStyle = "rgba(150,150,255, 0.5)";
-    ctx.fill();
+    // ctx.fillStyle = "rgba(150,150,255, 0.5)";
+    // ctx.fill();
   }
 };
 
@@ -151,7 +170,11 @@ const handleClick = (event: MouseEvent) => {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       drawGrid(ctx);
-      drawBoard(ctx, boardDisposition);
+      chargeImages(imagePaths).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
       for (let x = 0; x < tableRows; x++) {
         for (let y = 0; y < tableColumns; y++) {
           if (board.value[x][y] instanceof Cell) {
@@ -197,7 +220,8 @@ const handleClick = (event: MouseEvent) => {
 
 const drawBoard = (
   ctx: CanvasRenderingContext2D,
-  boardDisposition: BoardDisposition
+  boardDisposition: BoardDisposition,
+  images: HTMLImageElement[]
 ) => {
   const pieceList: Piece[] = boardDisposition.board;
   pieceList.forEach((piece) => {
@@ -216,88 +240,192 @@ const drawBoard = (
       piece.rotation,
       piece.pieceClass
     );
-    ctx.fillStyle = piece.owner === "PLAYER_ONE" ? "darkred" : "darkblue";
-    ctx.fillRect(
-      piece.posX * cellHeight,
-      piece.posY * cellWidth,
-      cellHeight,
-      cellWidth
-    );
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "#fff";
-    ctx.fillText(
-      `Y${piece.posY}:X${piece.posX}`,
-      piece.posX * cellHeight + 10,
-      piece.posY * cellWidth + 50
-    );
-    ctx.fillText(
-      `rotation: ${piece.rotation}`,
-      piece.posX * cellHeight + 10,
-      piece.posY * cellWidth + 70
-    );
+    const image = getPieceImage(piece, images)
+    ctx.drawImage(image, piece.posX * cellHeight, piece.posY * cellWidth, cellHeight, cellWidth)
+    // ctx.fillStyle = piece.owner === "PLAYER_ONE" ? "darkred" : "darkblue";
+    // ctx.fillRect(
+    //   piece.posX * cellHeight,
+    //   piece.posY * cellWidth,
+    //   cellHeight,
+    //   cellWidth
+    // );
+    // ctx.font = "20px Arial";
+    // ctx.fillStyle = "#fff";
+    // ctx.fillText(
+    //   `Y${piece.posY}:X${piece.posX}`,
+    //   piece.posX * cellHeight + 10,
+    //   piece.posY * cellWidth + 50
+    // );
+    // ctx.fillText(
+    //   `rotation: ${piece.rotation}`,
+    //   piece.posX * cellHeight + 10,
+    //   piece.posY * cellWidth + 70
+    // );
   });
 };
 
-onMounted(() => {
-  const ctx = canvas.value?.getContext("2d");
-
-  if (ctx) {
-    drawGrid(ctx);
-    drawBoard(ctx, boardDisposition);
-    const imagePaths = [
-      "/img/kingolaser/Board.jpg",
-      "/img/kingolaser/BlueKing.png",
-      "/img/kingolaser/RedKing.png",
-      "/img/kingolaser/BlueBlock.png",
-      "/img/kingolaser/RedBlock.png",
-      "/img/kingolaser/BlueBouncer.png",
-      "/img/kingolaser/RedBouncer.png",
-      "/img/kingolaser/BlueDeflector.png",
-      "/img/kingolaser/RedDeflector.png",
-      "/img/kingolaser/BlueLaser.png",
-      "/img/kingolaser/RedLaser.png",
-    ];
-    chargeImages(imagePaths).then((images) => {
-      if (imagesLoaded(images)) {
-        ctx.drawImage(images[0], 0, 0);
-      }
-    });
-  }
-});
-
-function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
-  return Promise.all(
-    imagePaths.map((path) => {
-      return new Promise<HTMLImageElement>((resolve, reject) => {
-        const img = new Image();
-        img.src = path;
-
-        img.onload = () => {
-          resolve(img);
-        };
-
-        img.onerror = (err) => {
-          reject(err);
-        };
-      });
-    })
-  );
-}
-
-function imagesLoaded(images: HTMLImageElement[]): boolean {
-  for (let i = 0; i < images.length; i++) {
-    if (!images[i].complete) {
-      return false;
+function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
+  if (piece.owner == "PLAYER_ONE") {
+    switch (piece.pieceClass) {
+      case "com.telegame.code.models.kingolaser.pieces.King":
+        return images[1];
+        break;
+      case "com.telegame.code.models.kingolaser.pieces.Defender":
+        switch (piece.rotation) {
+          case "NORTH":
+            return images[2]
+          case "SOUTH":
+            return images[3]
+          case "EAST":
+            return images[4]
+          case "WEST":
+            return images[5]
+        }
+        return images[0]
+      case "com.telegame.code.models.kingolaser.pieces.Bouncer":
+        switch (piece.rotation) {
+          case "NORTH":
+            return images[6]
+          case "SOUTH":
+            return images[6]
+          case "EAST":
+            return images[7]
+          case "WEST":
+            return images[7]
+        }
+        return images[0]
+      case "com.telegame.code.models.kingolaser.pieces.Deflector":
+        switch (piece.rotation) {
+          case "NORTH":
+            return images[8]
+          case "SOUTH":
+            return images[9]
+          case "EAST":
+            return images[10]
+          case "WEST":
+            return images[11]
+        }
+        return images[0]
+      case "com.telegame.code.models.kingolaser.pieces.Laser":
+        switch (piece.rotation) {
+          case "NORTH":
+            return images[12]
+          case "SOUTH":
+            return images[13]
+          case "EAST":
+            return images[14]
+          case "WEST":
+            return images[15]
+        }
+        return images[0]
+      default:
+        return images[0]
+    }
+  } else {
+    switch (piece.pieceClass) {
+      case "com.telegame.code.models.kingolaser.pieces.King":
+        return images[16];
+        break;
+      case "com.telegame.code.models.kingolaser.pieces.Defender":
+        switch (piece.rotation) {
+          case "NORTH":
+            return images[17]
+          case "SOUTH":
+            return images[18]
+          case "EAST":
+            return images[19]
+          case "WEST":
+            return images[20]
+        }
+        return images[0]
+      case "com.telegame.code.models.kingolaser.pieces.Bouncer":
+        switch (piece.rotation) {
+          case "NORTH":
+            return images[21]
+          case "SOUTH":
+            return images[21]
+          case "EAST":
+            return images[22]
+          case "WEST":
+            return images[22]
+        }
+        return images[0]
+      case "com.telegame.code.models.kingolaser.pieces.Deflector":
+        switch (piece.rotation) {
+          case "NORTH":
+            return images[23]
+          case "SOUTH":
+            return images[24]
+          case "EAST":
+            return images[25]
+          case "WEST":
+            return images[26]
+        }
+        return images[0]
+      case "com.telegame.code.models.kingolaser.pieces.Laser":
+        switch (piece.rotation) {
+          case "NORTH":
+            return images[27]
+          case "SOUTH":
+            return images[28]
+          case "EAST":
+            return images[29]
+          case "WEST":
+            return images[30]
+        }
+        return images[0]
+      default:
+        return images[0]
     }
   }
-  return true;
 }
+
+  onMounted(() => {
+    const ctx = canvas.value?.getContext("2d");
+
+    if (ctx) {
+      drawGrid(ctx);
+      chargeImages(imagePaths).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
+  });
+
+  function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
+    return Promise.all(
+      imagePaths.map((path) => {
+        return new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new Image();
+          img.src = path;
+
+          img.onload = () => {
+            resolve(img);
+          };
+
+          img.onerror = (err) => {
+            reject(err);
+          };
+        });
+      })
+    );
+  }
+
+  function imagesLoaded(images: HTMLImageElement[]): boolean {
+    for (let i = 0; i < images.length; i++) {
+      if (!images[i].complete) {
+        return false;
+      }
+    }
+    return true;
+  }
 </script>
 
 <style>
 canvas {
   margin-top: -100px;
   scale: 0.8;
-  /* background-image: url(../static/img/kingolaser/Board.jpg); */
+  background-image: url(../public/img/kingolaser/Board.jpg);
 }
 </style>
