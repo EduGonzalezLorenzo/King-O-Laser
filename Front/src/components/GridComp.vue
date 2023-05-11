@@ -26,12 +26,12 @@ const boardDisposition = {
     [1, 0],
     [2, 0],
     [3, 0],
-    [4, 0],
-    [5, 0],
-    [6, 0],
-    [7, 0],
-    [8, 0],
-    [9, 0],
+    [4, 1],
+    [4, 2],
+    [4, 3],
+    [4, 4],
+    [4, 5],
+    [4, 6],
   ],
   response: "OK",
   message: "OUT",
@@ -98,7 +98,6 @@ const imagePaths = [
   "/img/kingolaser/BlueLaserS.jpg",
   "/img/kingolaser/BlueLaserE.jpg",
   "/img/kingolaser/BlueLaserW.jpg",
-
   "/img/kingolaser/RedKing.png",
   "/img/kingolaser/RedBlockN.png",
   "/img/kingolaser/RedBlockS.png",
@@ -225,13 +224,6 @@ const drawBoard = (
 ) => {
   const pieceList: Piece[] = boardDisposition.board;
   pieceList.forEach((piece) => {
-    piece = new Piece(
-      piece.owner,
-      piece.posY,
-      piece.posX,
-      piece.rotation,
-      piece.pieceClass
-    );
     board.value[piece.posY][piece.posX].empty = false;
     board.value[piece.posY][piece.posX] = new Piece(
       piece.owner,
@@ -380,46 +372,86 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
   }
 }
 
-  onMounted(() => {
-    const ctx = canvas.value?.getContext("2d");
+function drawLaser(ctx: CanvasRenderingContext2D, boardDisposition: BoardDisposition,) {
+  const initialPositionY = boardDisposition.route[0][0]
+  const initialPositionX = boardDisposition.route[0][1]
+  const thickness = 20
+  const direction = ["NORTH", "SOUTH", "EAST", "WEST"]
 
-    if (ctx) {
-      drawGrid(ctx);
-      chargeImages(imagePaths).then((images) => {
-        if (imagesLoaded(images)) {
-          drawBoard(ctx, boardDisposition, images);
-        }
-      });
-    }
+  ctx.fillStyle = "rgb(100, 255, 100)"
+  ctx.beginPath()
+
+  boardDisposition.route.forEach(target => {
+    // ctx.beginPath()
+    // let currentY = initialPositionY*cellHeight
+    // let currentX = initialPositionX*cellWidth
+    // const newY = target[0]*cellHeight
+    // const newX = target[1]*cellWidth
+    // let adding = 1
+
+    // for (let y = currentY; y < newY; y++) {
+    //   for (let x = currentX; x < newX; x++) {
+
+    //     ctx.arc((currentX * cellWidth + (cellWidth / 2) + adding), (currentY * cellHeight + (cellWidth / 2) + adding), thickness, 0, 2 * Math.PI)
+    //     adding ++
+    //   }
+    //   ctx.arc((currentX * cellWidth + (cellWidth / 2) + adding), (currentY * cellHeight + (cellWidth / 2) + adding), thickness, 0, 2 * Math.PI)
+    // }
+    // currentY = target[0]*cellHeight
+    // currentX = target[1]*cellWidth
+    ctx.arc(target[1] * cellWidth + (cellWidth / 2), target[0] * cellHeight + (cellWidth / 2), thickness, 0, 2 * Math.PI)
+    // ctx.fill()
   });
 
-  function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
-    return Promise.all(
-      imagePaths.map((path) => {
-        return new Promise<HTMLImageElement>((resolve, reject) => {
-          const img = new Image();
-          img.src = path;
+  // ctx.fillStyle = "rgb(200, 10,10)"
+  // ctx.beginPath()
+  // ctx.arc(initialPositionX*cellWidth + (cellWidth/2), initialPositionY*cellHeight - (cellWidth/2), thickness, 0, 2*Math.PI)
+  ctx.fill()
+}
 
-          img.onload = () => {
-            resolve(img);
-          };
+onMounted(() => {
+  const ctx = canvas.value?.getContext("2d");
 
-          img.onerror = (err) => {
-            reject(err);
-          };
-        });
-      })
-    );
-  }
+  if (ctx) {
+    drawGrid(ctx);
+    chargeImages(imagePaths).then((images) => {
+      if (imagesLoaded(images)) {
+        drawBoard(ctx, boardDisposition, images);
 
-  function imagesLoaded(images: HTMLImageElement[]): boolean {
-    for (let i = 0; i < images.length; i++) {
-      if (!images[i].complete) {
-        return false;
       }
-    }
-    return true;
+      drawLaser(ctx, boardDisposition)
+    });
+
   }
+});
+
+function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
+  return Promise.all(
+    imagePaths.map((path) => {
+      return new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new Image();
+        img.src = path;
+
+        img.onload = () => {
+          resolve(img);
+        };
+
+        img.onerror = (err) => {
+          reject(err);
+        };
+      });
+    })
+  );
+}
+
+function imagesLoaded(images: HTMLImageElement[]): boolean {
+  for (let i = 0; i < images.length; i++) {
+    if (!images[i].complete) {
+      return false;
+    }
+  }
+  return true;
+}
 </script>
 
 <style>
