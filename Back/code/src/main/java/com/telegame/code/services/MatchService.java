@@ -1,5 +1,7 @@
 package com.telegame.code.services;
 
+import com.telegame.code.DTO.BoardDTO;
+import com.telegame.code.DTO.GameMatchDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
@@ -11,10 +13,12 @@ import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.PlayerPlayMatch;
+import com.telegame.code.models.games.kingolaser.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerPlayMatchRepo;
 import com.telegame.code.repos.PlayerRepo;
+import com.telegame.code.repos.games.PieceRepo;
 import com.telegame.code.services.games.KingOLaserService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
@@ -23,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,15 +41,14 @@ public class MatchService {
     private PlayerPlayMatchRepo playerPlayMatchRepo;
     private BoardRepo boardRepo;
     private KingOLaserService kingOLaserService;
+    private PieceRepo pieceRepo;
 
     public String createMatch(MatchForm matchForm, String playerName) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<MatchForm>> formErrorList = validatorFactory.getValidator().validate(matchForm);
         if (!formErrorList.isEmpty()) throw new InputFormException();
         if (privacyInconsistency(matchForm)) throw new InputFormException();
 
-        Optional<Player> playerOneCandidate = playerRepo.findByPlayerNameEquals(playerName);
-        if (playerOneCandidate.isEmpty()) throw new PlayerNameException();
-        Player playerOne = playerOneCandidate.get();
+        Player playerOne = getPlayer(playerName);
 
         PlayerPlayMatch playerOnePlayMatch = PlayerPlayMatch.builder()
                 .player(playerOne)
@@ -53,7 +58,7 @@ public class MatchService {
         GameMatch newGameMatch = buildGameMatch(matchForm, playerOnePlayMatch);
         playerOnePlayMatch.setGameMatch(newGameMatch);
 
-        boardRepo.save(getBoard(newGameMatch, matchForm.getGame(), matchForm.getMetadata()));
+        boardRepo.save(getBoardForGame(newGameMatch, matchForm.getGame(), matchForm.getMetadata()));
         playerPlayMatchRepo.save(playerOnePlayMatch);
 
         return "Ok";
@@ -73,7 +78,7 @@ public class MatchService {
                 .build();
     }
 
-    private Board getBoard(GameMatch newGameMatch, String game, String metadata) {
+    private Board getBoardForGame(GameMatch newGameMatch, String game, String metadata) {
         return switch (game) {
             case "LASER_BOARD" -> kingOLaserService.generateBoard(newGameMatch, metadata);
             case "TIC_TAC_TOE" -> null;
@@ -82,13 +87,9 @@ public class MatchService {
     }
 
     public String joinMatch(Long matchId, JoinMatchForm joinMatchForm, String playerName) throws NoSuchAlgorithmException {
-        Optional<GameMatch> gameMatchCandidate = gameMatchRepo.findById(matchId);
-        if (gameMatchCandidate.isEmpty()) throw new MatchNoExistsException();
-        GameMatch gameMatch = checkGameMatch(gameMatchCandidate.get(), joinMatchForm);
+        GameMatch gameMatch = checkGameMatch(getGameMatch(matchId), joinMatchForm);
 
-        Optional<Player> playerOneCandidate = playerRepo.findByPlayerNameEquals(playerName);
-        if (playerOneCandidate.isEmpty()) throw new PlayerNameException();
-        Player player = checkPlayer(playerOneCandidate.get(), gameMatch);
+        Player player = checkPlayer(getPlayer(playerName), gameMatch);
 
         PlayerPlayMatch playerPlayMatch = PlayerPlayMatch.builder()
                 .gameMatch(gameMatch)
@@ -123,13 +124,70 @@ public class MatchService {
     }
 
     private void setBoardStatusReady(GameMatch gameMatch) {
-        Optional<Board> boardOptional = boardRepo.findBoardByGameMatch(gameMatch);
-        if (boardOptional.isEmpty()) throw new BoardNoExistsException();
-        Board board = boardOptional.get();
+        Board board = getBoard(gameMatch);
 
         if (Math.random() < 0.5) board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
         else board.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
 
         boardRepo.save(board);
+    }
+
+
+    public List<GameMatchDTO> getPlayerCurrentMatches(String playerName) {
+        Player player = getPlayer(playerName);
+
+        List<PlayerPlayMatch> playerPlayMatchList = playerPlayMatchRepo.findByPlayerEquals(player);
+
+        return generateGameMatchDTOsList(playerPlayMatchList);
+    }
+
+    private List<GameMatchDTO> generateGameMatchDTOsList(List<PlayerPlayMatch> playerPlayMatchList) {
+        List<GameMatchDTO> gameMatchDTOList = new ArrayList<>();
+        for (PlayerPlayMatch playerPlayMatch : playerPlayMatchList) {
+            gameMatchDTOList.add(generateGameMatchDTO(playerPlayMatch.getGameMatch()));
+        }
+        return gameMatchDTOList;
+    }
+
+    private GameMatchDTO generateGameMatchDTO(GameMatch gameMatch) {
+        Board board = getBoard(gameMatch);
+        return GameMatchDTO.builder()
+                .id(gameMatch.getId())
+                .isPublic(gameMatch.getIsPublic())
+                .matchCreation(gameMatch.getMatchCreation())
+                .name(gameMatch.getName())
+                .currentPlayers(gameMatch.getPlayers().size())
+                .status(board.getStatus().toString())
+                .build();
+    }
+
+    public Object getMatchInfo(Long matchId, String playerName) {
+        return null;
+    }
+
+    private BoardDTO generateBoardDTO(Board board) {
+        List<Piece> pieceList = new ArrayList<>();
+        return BoardDTO.builder()
+                .id(board.getId())
+                .pieceList(pieceList)
+                .build();
+    }
+
+    private Player getPlayer(String playerName) {
+        Optional<Player> playerOptional = playerRepo.findByPlayerNameEquals(playerName);
+        if (playerOptional.isEmpty()) throw new PlayerNameException();
+        return playerOptional.get();
+    }
+
+    private GameMatch getGameMatch(Long matchId) {
+        Optional<GameMatch> gameMatchCandidate = gameMatchRepo.findById(matchId);
+        if (gameMatchCandidate.isEmpty()) throw new MatchNoExistsException();
+        return gameMatchCandidate.get();
+    }
+
+    private Board getBoard(GameMatch gameMatch) {
+        Optional<Board> boardOptional = boardRepo.findBoardByGameMatch(gameMatch);
+        if (boardOptional.isEmpty()) throw new BoardNoExistsException();
+        return boardOptional.get();
     }
 }
