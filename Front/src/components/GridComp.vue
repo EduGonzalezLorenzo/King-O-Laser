@@ -7,8 +7,6 @@
     :mouseY="mouseY"
     @:click="handleClick"
   />
-
-
 </template>
 
 <script setup lang="ts">
