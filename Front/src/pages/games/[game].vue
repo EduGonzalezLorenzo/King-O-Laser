@@ -3,7 +3,7 @@
     <h1>My Grid Component</h1>
     <h1>X: {{ posX }}</h1>
     <h1>Y: {{ posY }}</h1>
-    <Grid @sendPosition="showClick" />
+    <Grid @sendPosition="sendPosition" />
   </div>
 </template>
   
@@ -14,7 +14,7 @@ const posY = ref(0);
 const posX = ref(0);
 
 
-const showClick = (newPosY: number, newPosX: number) => {
+const sendPosition = (newPosY: number, newPosX: number) => {
   posY.value = newPosY
   posX.value = newPosX
   console.log("from game: " + posY.value + ":" + posX.value)

@@ -20,6 +20,10 @@ const cellWidth = canvasWidth / tableColumns;
 const cellHeight = canvasHeight / tableRows;
 const mouseX = ref<number>(0);
 const mouseY = ref<number>(0);
+const selectedPieceY = ref<number>(0)
+const selectedPieceX = ref<number>(0)
+const selectedMovementY = ref<number>(0)
+const selectedMovementX = ref<number>(0)
 
 const boardDisposition = {
   route: [
@@ -163,10 +167,14 @@ const handleClick = (event: MouseEvent) => {
 
   const ctx = canvas.value?.getContext("2d");
 
-  console.log(board.value[mouseY.value][mouseX.value]);
+  // console.log(board.value[mouseY.value][mouseX.value]);
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
+
+      selectedPieceY.value = mouseY.value
+      selectedPieceX.value = mouseX.value
+
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       drawGrid(ctx);
       chargeImages(imagePaths).then((images) => {
@@ -211,6 +219,11 @@ const handleClick = (event: MouseEvent) => {
           }
         }
       }
+    } else if (board.value[mouseY.value][mouseX.value] instanceof Cell && board.value[mouseY.value][mouseX.value].selectable == true) {
+
+      selectedMovementY.value = mouseY.value
+      selectedMovementX.value = mouseX.value
+      console.log("SELECTABLE")
     }
   }
 
@@ -234,25 +247,6 @@ const drawBoard = (
     );
     const image = getPieceImage(piece, images)
     ctx.drawImage(image, piece.posX * cellHeight, piece.posY * cellWidth, cellHeight, cellWidth)
-    // ctx.fillStyle = piece.owner === "PLAYER_ONE" ? "darkred" : "darkblue";
-    // ctx.fillRect(
-    //   piece.posX * cellHeight,
-    //   piece.posY * cellWidth,
-    //   cellHeight,
-    //   cellWidth
-    // );
-    // ctx.font = "20px Arial";
-    // ctx.fillStyle = "#fff";
-    // ctx.fillText(
-    //   `Y${piece.posY}:X${piece.posX}`,
-    //   piece.posX * cellHeight + 10,
-    //   piece.posY * cellWidth + 50
-    // );
-    // ctx.fillText(
-    //   `rotation: ${piece.rotation}`,
-    //   piece.posX * cellHeight + 10,
-    //   piece.posY * cellWidth + 70
-    // );
   });
 };
 
@@ -373,40 +367,15 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
 }
 
 function drawLaser(ctx: CanvasRenderingContext2D, boardDisposition: BoardDisposition,) {
-  const initialPositionY = boardDisposition.route[0][0]
-  const initialPositionX = boardDisposition.route[0][1]
-  const thickness = 20
-  const direction = ["NORTH", "SOUTH", "EAST", "WEST"]
 
+  const thickness = 20
   ctx.fillStyle = "rgb(100, 255, 100)"
-  ctx.beginPath()
 
   boardDisposition.route.forEach(target => {
-    // ctx.beginPath()
-    // let currentY = initialPositionY*cellHeight
-    // let currentX = initialPositionX*cellWidth
-    // const newY = target[0]*cellHeight
-    // const newX = target[1]*cellWidth
-    // let adding = 1
-
-    // for (let y = currentY; y < newY; y++) {
-    //   for (let x = currentX; x < newX; x++) {
-
-    //     ctx.arc((currentX * cellWidth + (cellWidth / 2) + adding), (currentY * cellHeight + (cellWidth / 2) + adding), thickness, 0, 2 * Math.PI)
-    //     adding ++
-    //   }
-    //   ctx.arc((currentX * cellWidth + (cellWidth / 2) + adding), (currentY * cellHeight + (cellWidth / 2) + adding), thickness, 0, 2 * Math.PI)
-    // }
-    // currentY = target[0]*cellHeight
-    // currentX = target[1]*cellWidth
+    ctx.beginPath()
     ctx.arc(target[1] * cellWidth + (cellWidth / 2), target[0] * cellHeight + (cellWidth / 2), thickness, 0, 2 * Math.PI)
-    // ctx.fill()
+    ctx.fill()
   });
-
-  // ctx.fillStyle = "rgb(200, 10,10)"
-  // ctx.beginPath()
-  // ctx.arc(initialPositionX*cellWidth + (cellWidth/2), initialPositionY*cellHeight - (cellWidth/2), thickness, 0, 2*Math.PI)
-  ctx.fill()
 }
 
 onMounted(() => {
