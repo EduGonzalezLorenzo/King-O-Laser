@@ -10,10 +10,10 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class LaserBoard extends Board {
     @OneToMany(mappedBy = "laserBoard")
     List<Piece> pieceList;

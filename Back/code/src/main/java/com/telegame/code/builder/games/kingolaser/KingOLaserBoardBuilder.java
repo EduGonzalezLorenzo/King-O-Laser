@@ -1,6 +1,8 @@
 package com.telegame.code.builder.games.kingolaser;
 
 import com.telegame.code.exceptions.match.MatchInfoException;
+import com.telegame.code.models.Board;
+import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.games.kingolaser.LaserBoard;
 import com.telegame.code.models.games.kingolaser.pieces.Piece;
 
@@ -9,16 +11,21 @@ import java.util.List;
 
 public class KingOLaserBoardBuilder {
 
-    public static LaserBoard getBoardDisposition(String metadata) {
+    public static LaserBoard getKingOLaserBoard(GameMatch newGameMatch, String metadata) {
         List<Piece> piecesList = switch (metadata) {
             case "A" -> getBoardDispositionA();
             case "B" -> getBoardDispositionB();
             case "C" -> getBoardDispositionC();
             default -> throw new MatchInfoException();
         };
-        return LaserBoard.builder()
+
+        LaserBoard laserBoard = LaserBoard.builder()
                 .pieceList(piecesList)
                 .build();
+        laserBoard.setGameMatch(newGameMatch);
+        laserBoard.setStatus(Board.MatchStatus.WAITING);
+
+        return laserBoard;
     }
 
     private static List<Piece> getBoardDispositionA() {

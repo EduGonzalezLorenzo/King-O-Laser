@@ -25,10 +25,9 @@ public class GameMatch {
     @OneToMany(mappedBy = "gameMatch")
     @Singular
     List<PlayerPlayMatch> players;
-    @OneToOne(mappedBy = "gameMatch", cascade = CascadeType.REMOVE)
-    Board board;
 
     public void addPlayer(PlayerPlayMatch newPlayer) {
         this.players.add(newPlayer);
     }
+
 }

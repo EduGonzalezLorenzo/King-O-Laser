@@ -10,6 +10,7 @@ import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.games.kingolaser.LaserBoard;
+import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerRepo;
 import com.telegame.code.services.games.KingOLaserService;
@@ -28,6 +29,7 @@ public class PlayerPlayMatchService {
     private GameMatchRepo gameMatchRepo;
     private PlayerRepo playerRepo;
     private KingOLaserService kingOLaserService;
+    private BoardRepo boardRepo;
 
     public String doAction(ActionForm actionForm, Long matchId, String playerName) {
         Set<ConstraintViolation<ActionForm>> formErrorList = validatorFactory.getValidator().validate(actionForm);
@@ -41,7 +43,10 @@ public class PlayerPlayMatchService {
         if (playerOptional.isEmpty()) throw new PlayerNameException();
         Player player = playerOptional.get();
 
-        Board board = gameMatch.getBoard();
+        Optional<Board> boardOptional = boardRepo.findBoardByGameMatch(gameMatch);
+        if (boardOptional.isEmpty()) throw new MatchInfoException();
+        Board board = boardOptional.get();
+
         String message;
         if (board instanceof LaserBoard) {
             LaserBoardMoveForm laserBoardMoveForm = (LaserBoardMoveForm) actionForm;

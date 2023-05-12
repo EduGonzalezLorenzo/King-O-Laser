@@ -6,6 +6,7 @@ import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.MatchNoExistsException;
 import com.telegame.code.exceptions.match.PlayerAlreadyInMatchException;
 import com.telegame.code.exceptions.player.PlayerNameException;
+import com.telegame.code.forms.JoinMatchForm;
 import com.telegame.code.forms.MatchForm;
 import com.telegame.code.services.MatchService;
 import com.telegame.code.services.PlayerService;
@@ -34,17 +35,17 @@ public class MatchController {
             return new ResponseEntity<>("Match form error", HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
             return new ResponseEntity<>("Player no exists", HttpStatus.BAD_REQUEST);
-        } catch (MatchInfoException e){
+        } catch (MatchInfoException e) {
             return new ResponseEntity<>("Game Metadata Error", HttpStatus.CONFLICT);
-        } catch (GameNoExistsException e){
+        } catch (GameNoExistsException e) {
             return new ResponseEntity<>("Game no exists", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/match/{matchId}")
-    public ResponseEntity<String> joinMatch(@PathVariable Long matchId, HttpServletRequest request) {
+    public ResponseEntity<String> joinMatch(@RequestBody JoinMatchForm joinMatchForm, @PathVariable Long matchId, HttpServletRequest request) throws NoSuchAlgorithmException {
         try {
-            return new ResponseEntity<>(matchService.joinMatch(matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
+            return new ResponseEntity<>(matchService.joinMatch(matchId, joinMatchForm, request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (FilledMatchException e) {
             return new ResponseEntity<>("The match has no empty seats", HttpStatus.LOCKED);
         } catch (MatchNoExistsException e) {
@@ -53,6 +54,8 @@ public class MatchController {
             return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
         } catch (PlayerAlreadyInMatchException e) {
             return new ResponseEntity<>("You are already in this match", HttpStatus.CONFLICT);
+        } catch (MatchInfoException e){
+            return new ResponseEntity<>("Wrong password", HttpStatus.CONFLICT);
         }
     }
 }
