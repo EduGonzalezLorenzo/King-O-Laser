@@ -4,7 +4,7 @@ import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.player.PlayerNameException;
-import com.telegame.code.forms.ActionForm;
+import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.services.PlayerPlayMatchService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class PlayerPlayMatchController {
     PlayerPlayMatchService playerPlayMatchService;
 
     @PostMapping("/match/{matchId}/action")
-    public ResponseEntity<String> doAction(@RequestBody ActionForm actionForm, @PathVariable Long matchId, HttpServletRequest request) {
+    public ResponseEntity<String> doAction(@RequestBody LaserBoardMoveForm actionForm, @PathVariable Long matchId, HttpServletRequest request) {
         try {
             return new ResponseEntity<>(playerPlayMatchService.doAction(actionForm, matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (InputFormException e) {

@@ -4,7 +4,6 @@ import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.MatchNoExistsException;
 import com.telegame.code.exceptions.player.PlayerNameException;
-import com.telegame.code.forms.ActionForm;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
@@ -31,8 +30,8 @@ public class PlayerPlayMatchService {
     private LaserBoardService laserBoardService;
     private BoardRepo boardRepo;
 
-    public String doAction(ActionForm actionForm, Long matchId, String playerName) {
-        Set<ConstraintViolation<ActionForm>> formErrorList = validatorFactory.getValidator().validate(actionForm);
+    public String doAction(LaserBoardMoveForm actionForm, Long matchId, String playerName) {
+        Set<ConstraintViolation<LaserBoardMoveForm>> formErrorList = validatorFactory.getValidator().validate(actionForm);
         if (!formErrorList.isEmpty()) throw new InputFormException();
 
         Optional<GameMatch> gameMatchOptional = gameMatchRepo.findById(matchId);
@@ -49,8 +48,7 @@ public class PlayerPlayMatchService {
 
         String message;
         if (board instanceof LaserBoard) {
-            LaserBoardMoveForm laserBoardMoveForm = (LaserBoardMoveForm) actionForm;
-            message = laserBoardService.movePiece(laserBoardMoveForm, player, gameMatch);
+            message = laserBoardService.movePiece(actionForm, player, gameMatch);
         } else throw new MatchInfoException();
 
         return message;
