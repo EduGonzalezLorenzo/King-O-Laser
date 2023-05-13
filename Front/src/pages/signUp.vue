@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const msg = ref<string>("");
 async function createUser() {
   const firstName = (document.getElementById("firstname") as HTMLInputElement)
     .value;
@@ -25,10 +26,10 @@ async function createUser() {
   });
 
   if (response.ok) {
-    console.log("User created!");
-    // Aquí puedes redirigir a otra página si lo deseas
+    navigateTo("/login")
+
   } else {
-    console.error("Error creating user.");
+    msg.value = "Error Creating User"
   }
 }
 
@@ -76,7 +77,6 @@ function isStrongPassword(value: string) {
 
 <template>
   <div>
-    <a href="/">Home</a>
     <div
       id="home"
       class="text-black flex flex-col items-center justify-center h-screen"
@@ -98,7 +98,7 @@ function isStrongPassword(value: string) {
           <input
             id="firstname"
             type="text"
-            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             placeholder="Jhon"
             required
           >
@@ -111,7 +111,7 @@ function isStrongPassword(value: string) {
           <input
             id="lastname"
             type="text"
-            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             placeholder="Presley"
             required
           >
@@ -124,7 +124,7 @@ function isStrongPassword(value: string) {
           <input
             id="email"
             type="email"
-            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             placeholder="name@email.com"
             required
           >
@@ -137,7 +137,7 @@ function isStrongPassword(value: string) {
           <input
             id="username"
             type="text"
-            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             placeholder="Player1234"
             required
           >
@@ -145,12 +145,12 @@ function isStrongPassword(value: string) {
         <div class="mb-6">
           <label
             for="password"
-            class="block mb-2 text-sm font-medium text-gray-900"
+            class="block mb-2 text-sm font-medium text-white"
           >Your password</label>
           <input
             id="password"
             type="password"
-            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
             @change="(event:Event) => isStrongPassword((event.target as HTMLInputElement).value)"
@@ -160,12 +160,12 @@ function isStrongPassword(value: string) {
         <div class="mb-6">
           <label
             for="repeat-password"
-            class="block mb-2 text-sm font-medium text-gray-900"
+            class="block mb-2 text-sm font-medium text-white"
           >Repeat password</label>
           <input
             id="repeat-password"
             type="password"
-            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
           >
@@ -182,13 +182,27 @@ function isStrongPassword(value: string) {
           </div>
           <label
             for="terms"
-            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            class="ml-2 text-sm font-medium text-white dark:text-gray-300"
           >I agree with the
             <a
               href="#"
               class="text-blue-600 hover:underline dark:text-blue-500"
             >terms and conditions</a></label>
         </div>
+        <p
+          v-if="msg === '' "
+          class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
+        >
+          {{ msg }}
+        </p>
+        <NuxtLink
+          to="/login"
+          class="text-blue-600 underline hover:text-red-600"
+        >
+          <p class="mb-4">
+            Already have an Account ?
+          </p>
+        </NuxtLink>
         <button
           id="submit"
           type="submit"
