@@ -21,10 +21,13 @@ public class KingOLaserService {
     }
 
     public Board generateBoard(GameMatch newGameMatch, String metadata) {
-        LaserBoard laserBoard = KingOLaserBoardBuilder.getKingOLaserBoard(newGameMatch, metadata);
-        for (Piece piece : laserBoard.getPieceList()) {
+        return KingOLaserBoardBuilder.getKingOLaserBoard(newGameMatch, metadata);
+    }
+
+    public void savePieces(LaserBoard board) {
+        for (Piece piece : board.getPieceList()) {
+            piece.setLaserBoard(board);
             pieceRepo.save(piece);
         }
-        return laserBoard;
     }
 }

@@ -13,14 +13,12 @@ import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.PlayerPlayMatch;
+import com.telegame.code.models.games.kingolaser.LaserBoard;
 import com.telegame.code.models.games.kingolaser.pieces.Piece;
-import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerPlayMatchRepo;
 import com.telegame.code.repos.PlayerRepo;
-import com.telegame.code.repos.games.PieceRepo;
-import com.telegame.code.services.games.KingOLaserService;
 import com.telegame.code.services.games.KingOLaserService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
@@ -43,7 +41,6 @@ public class MatchService {
     private PlayerPlayMatchRepo playerPlayMatchRepo;
     private BoardRepo boardRepo;
     private KingOLaserService kingOLaserService;
-    private PieceRepo pieceRepo;
 
     public String createMatch(MatchForm matchForm, String playerName) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<MatchForm>> formErrorList = validatorFactory.getValidator().validate(matchForm);
@@ -60,7 +57,10 @@ public class MatchService {
         GameMatch newGameMatch = buildGameMatch(matchForm, playerOnePlayMatch);
         playerOnePlayMatch.setGameMatch(newGameMatch);
 
-        boardRepo.save(getBoard(newGameMatch, matchForm.getGame(), matchForm.getMetadata()));
+        Board board = createBoard(newGameMatch, matchForm.getGame(), matchForm.getMetadata());
+        boardRepo.save(board);
+        saveBoardComponents(matchForm.getGame(), board);
+
         playerPlayMatchRepo.save(playerOnePlayMatch);
 
         return "Ok";
@@ -80,12 +80,20 @@ public class MatchService {
                 .build();
     }
 
-    private Board getBoardForGame(GameMatch newGameMatch, String game, String metadata) {
+    private Board createBoard(GameMatch newGameMatch, String game, String metadata) {
         return switch (game) {
             case "LASER_BOARD" -> kingOLaserService.generateBoard(newGameMatch, metadata);
             case "TIC_TAC_TOE" -> null;
             default -> throw new GameNoExistsException();
         };
+    }
+
+    private void saveBoardComponents(String game, Board board) {
+        switch (game) {
+            case "LASER_BOARD" -> kingOLaserService.savePieces((LaserBoard) board);
+            case "TIC_TAC_TOE" -> System.out.println();
+            default -> throw new GameNoExistsException();
+        }
     }
 
     public String joinMatch(Long matchId, JoinMatchForm joinMatchForm, String playerName) throws NoSuchAlgorithmException {
