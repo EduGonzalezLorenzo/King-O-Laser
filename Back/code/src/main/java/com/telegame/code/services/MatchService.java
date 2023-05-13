@@ -105,6 +105,7 @@ public class MatchService {
 
     private GameMatch checkGameMatch(GameMatch gameMatch, JoinMatchForm joinMatchForm) throws NoSuchAlgorithmException {
         if (!gameMatch.getIsPublic()) checkPassword(joinMatchForm, gameMatch.getPassword());
+        //TODO check empty match case
         if (gameMatch.getPlayers().size() != 1) throw new FilledMatchException();
         return gameMatch;
     }
@@ -162,7 +163,10 @@ public class MatchService {
     }
 
     public Object getMatchInfo(Long matchId, String playerName) {
-        return null;
+        Player player = getPlayer(playerName);
+        GameMatch gameMatch = getGameMatch(matchId);
+        //TODO check if player is in game. If not throw error
+        return generateBoardDTO(getBoard(gameMatch));
     }
 
     private BoardDTO generateBoardDTO(Board board) {
