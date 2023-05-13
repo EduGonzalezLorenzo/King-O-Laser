@@ -24,6 +24,7 @@ public class KingOLaserBoardBuilder {
                 .build();
         laserBoard.setGameMatch(newGameMatch);
         laserBoard.setStatus(Board.MatchStatus.WAITING);
+        laserBoard.setLastAction("Waiting for start");
 
         return laserBoard;
     }

@@ -1,7 +1,7 @@
 package com.telegame.code.services;
 
-import com.telegame.code.DTO.BoardDTO;
 import com.telegame.code.DTO.GameMatchDTO;
+import com.telegame.code.DTO.games.kingolaser.LaserBoardDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
@@ -14,12 +14,11 @@ import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.PlayerPlayMatch;
 import com.telegame.code.models.games.kingolaser.LaserBoard;
-import com.telegame.code.models.games.kingolaser.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerPlayMatchRepo;
 import com.telegame.code.repos.PlayerRepo;
-import com.telegame.code.services.games.KingOLaserService;
+import com.telegame.code.services.games.LaserBoardService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
 import lombok.AllArgsConstructor;
@@ -40,7 +39,7 @@ public class MatchService {
     private GameMatchRepo gameMatchRepo;
     private PlayerPlayMatchRepo playerPlayMatchRepo;
     private BoardRepo boardRepo;
-    private KingOLaserService kingOLaserService;
+    private LaserBoardService laserBoardService;
 
     public String createMatch(MatchForm matchForm, String playerName) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<MatchForm>> formErrorList = validatorFactory.getValidator().validate(matchForm);
@@ -82,7 +81,7 @@ public class MatchService {
 
     private Board createBoard(GameMatch newGameMatch, String game, String metadata) {
         return switch (game) {
-            case "LASER_BOARD" -> kingOLaserService.generateBoard(newGameMatch, metadata);
+            case "LASER_BOARD" -> laserBoardService.generateBoard(newGameMatch, metadata);
             case "TIC_TAC_TOE" -> null;
             default -> throw new GameNoExistsException();
         };
@@ -90,7 +89,7 @@ public class MatchService {
 
     private void saveBoardComponents(String game, Board board) {
         switch (game) {
-            case "LASER_BOARD" -> kingOLaserService.savePieces((LaserBoard) board);
+            case "LASER_BOARD" -> laserBoardService.savePieces((LaserBoard) board);
             case "TIC_TAC_TOE" -> System.out.println();
             default -> throw new GameNoExistsException();
         }
@@ -172,19 +171,23 @@ public class MatchService {
                 .build();
     }
 
-    public Object getMatchInfo(Long matchId, String playerName) {
-        Player player = getPlayer(playerName);
+    public LaserBoardDTO getMatchInfo(Long matchId, String playerName) {
         GameMatch gameMatch = getGameMatch(matchId);
-        //TODO check if player is in game. If not throw error
+        Player player = getPlayer(playerName);
+        checkPlayerInMatch(player, gameMatch);
+
         return generateBoardDTO(getBoard(gameMatch));
     }
 
-    private BoardDTO generateBoardDTO(Board board) {
-        List<Piece> pieceList = new ArrayList<>();
-        return BoardDTO.builder()
-                .id(board.getId())
-                .pieceList(pieceList)
-                .build();
+    private void checkPlayerInMatch(Player player, GameMatch gameMatch) {
+        if (playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch).isEmpty()){
+            throw new PlayerNoInMatchException();
+        }
+    }
+
+    private LaserBoardDTO generateBoardDTO(Board board) {
+        if (board instanceof LaserBoard) return laserBoardService.generateLaserBoardDTO((LaserBoard) board);
+        else return null;
     }
 
     private Player getPlayer(String playerName) {
@@ -204,4 +207,11 @@ public class MatchService {
         if (boardOptional.isEmpty()) throw new BoardNoExistsException();
         return boardOptional.get();
     }
+
+    public List<GameMatchDTO> getAvailableMatches() {
+        List<PlayerPlayMatch> matchList = playerPlayMatchRepo.findAll();
+
+        return generateGameMatchDTOsList(matchList);
+    }
+
 }
