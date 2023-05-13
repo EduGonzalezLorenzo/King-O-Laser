@@ -1,6 +1,8 @@
 <template>
-  <div class="canvas_container">
-    <Grid @sendMovement="sendMovement" />
+  <div class="game_container">
+    <div class="canvas_container">
+      <Grid @sendMovement="sendMovement" />
+    </div>
     <div class="send_menu" v-if="openSendMenu">
       <h1>SelectedPieceY: {{ newSelectedPieceY }}</h1>
       <h1>SelectedPieceX: {{ newSelectedPieceX }}</h1>
@@ -36,16 +38,22 @@ const closeSendMenu = () => {
 
 </script>
 <style scoped>
-.canvas_container {
+.game_container {
+  /* position: relative; */
   display: flex;
   align-items: flex-start;
-  /* justify-content: center; */
   align-items: center;
+  width: 100%;
+  height: 100%;
 }
 
-h1 {
-  font-size: 35px;
+.canvas_container {
+  position: relative;
 }
+
+/* h1 {
+  font-size: 35px;
+} */
 
 .send_menu {
   background-color: lightgrey;
@@ -58,7 +66,7 @@ button {
   border: 1px solid black;
   padding: 1em;
   margin: 0.5em;
-  font-size: 25px;
+  /* font-size: 25px; */
 }
 
 button:hover {

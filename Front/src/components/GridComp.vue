@@ -1,15 +1,35 @@
 <template>
-  <canvas ref="canvas" 
-          :width="canvasWidth" 
-          :height="canvasHeight" 
-          :mouseX="mouseX" 
-          :mouseY="mouseY" 
-          :selectedPieceY="selectedPieceY"
-          :selectedPieceX="selectedPieceX"
-          :selectedMovementY="selectedMovementY"
-          :selectedMovementX="selectedMovementX"
-          @:click="handleClick" 
+  <canvas
+    ref="canvas"
+    :width="canvasWidth"
+    :height="canvasHeight"
+    :mouseX="mouseX"
+    :mouseY="mouseY"
+    :selectedPieceY="selectedPieceY"
+    :selectedPieceX="selectedPieceX"
+    :selectedMovementY="selectedMovementY"
+    :selectedMovementX="selectedMovementX"
+    @:click="handleClick"
   />
+  <div
+    id="custom-menu"
+    class="custom-menu"
+  >
+    <ul class="custom-menu-list">
+      <li
+        id="menu-item-1"
+        class="cursor-pointer hover:bg-blue-700"
+      >
+        Rotar Izquierda
+      </li>
+      <li
+        id="menu-item-2"
+        class="custom-menu-item"
+      >
+        Rotar Derecha
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -33,6 +53,7 @@ const selectedPieceY = ref<number>(0)
 const selectedPieceX = ref<number>(0)
 const selectedMovementY = ref<number>(0)
 const selectedMovementX = ref<number>(0)
+
 
 const boardDisposition = {
   route: [
@@ -178,8 +199,6 @@ const handleClick = (event: MouseEvent) => {
 
   const ctx = canvas.value?.getContext("2d");
 
-  // console.log(board.value[mouseY.value][mouseX.value]);
-
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
 
@@ -231,16 +250,9 @@ const handleClick = (event: MouseEvent) => {
         }
       }
     } else if (board.value[mouseY.value][mouseX.value] instanceof Cell && board.value[mouseY.value][mouseX.value].selectable == true) {
-
-      // selectedMovementY.value = mouseY.value
-      // selectedMovementX.value = mouseX.value
       emit("sendMovement", selectedPieceY.value, selectedPieceX.value, mouseY.value, mouseX.value)
     }
   }
-
-
-
-  // emit("sendMovement", selectedPieceY.value, selectedPieceX.value, selectedMovementY.value, selectedMovementX.value);
 };
 
 const drawBoard = (
@@ -403,8 +415,28 @@ onMounted(() => {
       }
       drawLaser(ctx, boardDisposition)
     });
-
   }
+  const menu = document.getElementById("custom-menu") as HTMLElement;
+  canvas.value?.addEventListener("contextmenu", function (event) {
+    if (event.button === 2) {
+      event.preventDefault();
+      menu.style.top = event.pageY + "px";
+      menu.style.left = event.pageX + "px";
+      menu.classList.add("show");
+    }
+  });
+  const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
+  const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
+
+  menuItem1.addEventListener("click", function () {
+    console.log("Rotar Izquierda");
+    menu.classList.remove("show");
+  });
+
+  menuItem2.addEventListener("click", function () {
+    console.log("Rotar Derecha");
+    menu.classList.remove("show");
+  });
 });
 
 function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
@@ -438,8 +470,17 @@ function imagesLoaded(images: HTMLImageElement[]): boolean {
 
 <style>
 canvas {
-  margin-top: -100px;
-  scale: 0.8;
+  /* margin-top: -100px; */
+  /* scale: 0.8;  */
   background-image: url(../public/img/kingolaser/Board.jpg);
+  width: 100%;
+  height: 100%;
+}
+
+.show {
+  position: absolute;
+  background-color: beige;
+  padding: 10px;
+  border-radius: 10px;
 }
 </style>
