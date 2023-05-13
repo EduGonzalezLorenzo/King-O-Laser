@@ -31,7 +31,7 @@
 
 
 function handleClick(title: string) {
-  return navigateTo({ path: `/games/${title}` });
+  return navigateTo({ path: `/create-match/${title}` });
 }
 
 </script>
