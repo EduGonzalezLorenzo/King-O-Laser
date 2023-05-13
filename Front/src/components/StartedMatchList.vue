@@ -59,14 +59,14 @@
       {
           gameName: "Ejemplo3",
           vsName:"User 3",
-          profileImg: "/img/kingolaser/BlueBouncer.png",
+          profileImg: "/img/kingolaser/BlueBouncerNS.png",
           loggedIn: false,
           turn:false
       },
       {
           gameName: "Ejemplo4",
           vsName:"User 4",
-          profileImg: "/img/kingolaser/RedBouncer.png",
+          profileImg: "/img/kingolaser/RedBouncerNS.png",
           loggedIn: true,
           turn:true
       }
