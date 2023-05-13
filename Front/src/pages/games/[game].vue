@@ -1,9 +1,25 @@
 <template>
-  <div class="game_container">
-    <div class="canvas_container">
-      <Grid @sendMovement="sendMovement" />
+  <div class="grid grid-cols-4 game_container">
+    <div class="justify-self-start">
+      <UserProfileGameCard />
+      <StartedMatchList />
     </div>
-    <div class="send_menu" v-if="openSendMenu">
+    <div class="grid h-screen place-items-center">
+      <div class="canvas_container">
+        <h1 class="text-center">
+          My Grid Component
+        </h1>
+        <h1 class="text-center">
+          X: {{ posX }}
+        </h1>
+        <h1 class="text-center">
+          Y: {{ posY }}
+        </h1>
+        <div class="justify-self-center">
+          <Grid @sendPosition="showClick" />
+        </div>
+      </div>
+      <div class="send_menu" v-if="openSendMenu">
       <h1>SelectedPieceY: {{ newSelectedPieceY }}</h1>
       <h1>SelectedPieceX: {{ newSelectedPieceX }}</h1>
       <h1>SelectedMovementY: {{ newSelectedMovementY }}</h1>
@@ -13,15 +29,20 @@
     </div>
   </div>
 </template>
+
+
   
 <script setup lang="ts">
 import Grid from '~/components/GridComp.vue';
+import UserProfileGameCard from '~/components/UserProfileGameCard.vue';
+import StartedMatchListVue from '~/components/StartedMatchList.vue';
 
 const newSelectedPieceY = ref(0)
 const newSelectedPieceX = ref(0)
 const newSelectedMovementY = ref(0)
 const newSelectedMovementX = ref(0)
 const openSendMenu = ref(false)
+
 
 const sendMovement = (selectedPieceY: number, selectedPieceX: number, selectedMovementY: number, selectedMovementX: number) => {
   newSelectedPieceY.value = selectedPieceY

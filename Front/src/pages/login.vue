@@ -1,5 +1,7 @@
 <script setup lang="ts">
+const msg = ref<string>("");
 const is_email = ref<boolean>(true);
+
 function isEmail(value: string) {
   if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
     is_email.value = true;
@@ -8,18 +10,19 @@ function isEmail(value: string) {
   }
 }
 
-async function LogUser(event:Event) {
-  event.preventDefault()
+async function LogUser(event: Event) {
+  event.preventDefault();
   const password = (document.getElementById("password") as HTMLInputElement)
     .value;
 
-    let content = {}
+  let content = {};
   if (is_email.value) {
     const email = (document.getElementById("email") as HTMLInputElement).value;
-    content = {email,password}
+    content = { email, password };
   } else {
-    const playerName = (document.getElementById("email") as HTMLInputElement).value;
-    content = {playerName,password}
+    const playerName = (document.getElementById("email") as HTMLInputElement)
+      .value;
+    content = { playerName, password };
   }
   const response = await fetch("http://localhost:8080/login", {
     method: "POST",
@@ -31,10 +34,9 @@ async function LogUser(event:Event) {
 
   if (response.ok) {
     console.log("User Loged!");
-     return await navigateTo({ path: '/select-game' })
-
+    return await navigateTo({ path: "/select-game" });
   } else {
-    console.error("Error logging user.");
+   msg.value = "Error logging user !!";
   }
 }
 function isStrongPassword(value: string) {
@@ -55,7 +57,6 @@ function isStrongPassword(value: string) {
 
 <template>
   <div>
-    <a href="/">Home</a>
     <div
       id="home"
       class="text-black flex flex-col items-center justify-center h-screen"
@@ -117,13 +118,27 @@ function isStrongPassword(value: string) {
               class="text-blue-600 hover:underline dark:text-blue-500"
             >terms and conditions</a></label>
         </div>
+        <p
+          v-if="msg === '' "
+          class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
+        >
+          {{ msg }}
+        </p>
+        <NuxtLink
+          to="/signup"
+          class="text-blue-600 underline hover:text-red-600"
+        >
+          <p class="mb-4">
+            Dont have an Account?
+          </p>
+        </NuxtLink>
         <button
           id="submit"
           type="submit"
           class="signup font-bold py-2 px-4 rounded"
           disabled="true"
         >
-          Sign Up
+          Login
         </button>
       </form>
     </div>
