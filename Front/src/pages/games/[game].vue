@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-4">
+  <div class="grid grid-cols-4 game_container">
     <div class="justify-self-start">
       <UserProfileGameCard />
       <StartedMatchList />
@@ -19,6 +19,13 @@
           <Grid @sendPosition="showClick" />
         </div>
       </div>
+      <div class="send_menu" v-if="openSendMenu">
+      <h1>SelectedPieceY: {{ newSelectedPieceY }}</h1>
+      <h1>SelectedPieceX: {{ newSelectedPieceX }}</h1>
+      <h1>SelectedMovementY: {{ newSelectedMovementY }}</h1>
+      <h1>SelectedMovementY: {{ newSelectedMovementX }}</h1>
+      <button class="confirm_button">Confirm Movement</button>
+      <button class="cancel_button" @click="closeSendMenu">Cancel</button>
     </div>
   </div>
 </template>
@@ -29,21 +36,61 @@
 import Grid from '~/components/GridComp.vue';
 import UserProfileGameCard from '~/components/UserProfileGameCard.vue';
 import StartedMatchListVue from '~/components/StartedMatchList.vue';
-const posY = ref(0);
-const posX = ref(0);
+
+const newSelectedPieceY = ref(0)
+const newSelectedPieceX = ref(0)
+const newSelectedMovementY = ref(0)
+const newSelectedMovementX = ref(0)
+const openSendMenu = ref(false)
 
 
-const showClick = (newPosY: number, newPosX: number) => {
-  posY.value = newPosY
-  posX.value = newPosX
-  console.log("from game: " + posY.value + ":" + posX.value)
+const sendMovement = (selectedPieceY: number, selectedPieceX: number, selectedMovementY: number, selectedMovementX: number) => {
+  newSelectedPieceY.value = selectedPieceY
+  newSelectedPieceX.value = selectedPieceX
+  newSelectedMovementY.value = selectedMovementY
+  newSelectedMovementX.value = selectedMovementX
+  openSendMenu.value = true
+
 };
 
+const closeSendMenu = () => {
+  openSendMenu.value = false
+}
+
 </script>
-<style>
+<style scoped>
+.game_container {
+  /* position: relative; */
+  display: flex;
+  align-items: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
 .canvas_container {
-display: flex;
-flex-direction: column;
-align-items: flex-start;
+  position: relative;
+}
+
+/* h1 {
+  font-size: 35px;
+} */
+
+.send_menu {
+  background-color: lightgrey;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  border: 1px solid black;
+  padding: 1em;
+  margin: 0.5em;
+  /* font-size: 25px; */
+}
+
+button:hover {
+  background-color: lightgreen;
 }
 </style>
