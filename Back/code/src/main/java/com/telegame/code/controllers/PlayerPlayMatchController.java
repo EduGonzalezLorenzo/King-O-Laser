@@ -19,7 +19,7 @@ public class PlayerPlayMatchController {
     PlayerPlayMatchService playerPlayMatchService;
 
     @PostMapping("/match/{matchId}/action")
-    public ResponseEntity<String> createMatch(@RequestBody ActionForm actionForm, @PathVariable Long matchId, HttpServletRequest request) {
+    public ResponseEntity<String> doAction(@RequestBody ActionForm actionForm, @PathVariable Long matchId, HttpServletRequest request) {
         try {
             return new ResponseEntity<>(playerPlayMatchService.doAction(actionForm, matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (InputFormException e) {

@@ -1,10 +1,8 @@
 package com.telegame.code.controllers;
 
-import com.telegame.code.exceptions.*;
-import com.telegame.code.exceptions.match.FilledMatchException;
-import com.telegame.code.exceptions.match.MatchInfoException;
-import com.telegame.code.exceptions.match.MatchNoExistsException;
-import com.telegame.code.exceptions.match.PlayerAlreadyInMatchException;
+import com.telegame.code.exceptions.GameNoExistsException;
+import com.telegame.code.exceptions.InputFormException;
+import com.telegame.code.exceptions.match.*;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.JoinMatchForm;
 import com.telegame.code.forms.MatchForm;
@@ -54,8 +52,36 @@ public class MatchController {
             return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
         } catch (PlayerAlreadyInMatchException e) {
             return new ResponseEntity<>("You are already in this match", HttpStatus.CONFLICT);
-        } catch (MatchInfoException e){
+        } catch (MatchInfoException e) {
             return new ResponseEntity<>("Wrong password", HttpStatus.CONFLICT);
+        }
+    }
+    @GetMapping("/matches")
+    public ResponseEntity<?> getAvailableMatches() {
+        try {
+            return new ResponseEntity<>(matchService.getAvailableMatches(), HttpStatus.OK);
+        } catch (PlayerNameException e) {
+            return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/match")
+    public ResponseEntity<?> getPlayerCurrentMatches(HttpServletRequest request) {
+        try {
+            return new ResponseEntity<>(matchService.getPlayerCurrentMatches(request.getAttribute("playerName").toString()), HttpStatus.OK);
+        } catch (PlayerNameException e) {
+            return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/match/{matchId}")
+    public ResponseEntity<?> getMatchInfo(@PathVariable Long matchId, HttpServletRequest request) {
+        try {
+            return new ResponseEntity<>(matchService.getMatchInfo(matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
+        } catch (PlayerNameException e) {
+            return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
+        } catch (PlayerNoInMatchException e){
+            return new ResponseEntity<>("The player is not in this match", HttpStatus.CONFLICT);
         }
     }
 }

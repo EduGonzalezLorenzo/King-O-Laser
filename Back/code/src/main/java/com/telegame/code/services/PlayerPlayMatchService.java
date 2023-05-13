@@ -13,7 +13,7 @@ import com.telegame.code.models.games.kingolaser.LaserBoard;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerRepo;
-import com.telegame.code.services.games.KingOLaserService;
+import com.telegame.code.services.games.LaserBoardService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
 import lombok.AllArgsConstructor;
@@ -28,7 +28,7 @@ public class PlayerPlayMatchService {
     private ValidatorFactory validatorFactory;
     private GameMatchRepo gameMatchRepo;
     private PlayerRepo playerRepo;
-    private KingOLaserService kingOLaserService;
+    private LaserBoardService laserBoardService;
     private BoardRepo boardRepo;
 
     public String doAction(ActionForm actionForm, Long matchId, String playerName) {
@@ -50,7 +50,7 @@ public class PlayerPlayMatchService {
         String message;
         if (board instanceof LaserBoard) {
             LaserBoardMoveForm laserBoardMoveForm = (LaserBoardMoveForm) actionForm;
-            message = kingOLaserService.movePiece(laserBoardMoveForm, player, gameMatch);
+            message = laserBoardService.movePiece(laserBoardMoveForm, player, gameMatch);
         } else throw new MatchInfoException();
 
         return message;

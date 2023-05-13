@@ -50,8 +50,8 @@ public class PlayerController {
     }
 
     @GetMapping("/getPlayer")
-    public Player getPlayerInfo(HttpServletRequest request) {
-        return playerService.getPlayerInfo(request.getAttribute("player"));
+    public ResponseEntity<String> getPlayerInfo(HttpServletRequest request) {
+        return  new ResponseEntity<>(playerService.getPlayerInfo(request.getAttribute("playerName").toString()), HttpStatus.OK);
     }
 
     @PutMapping("/update/{PlayerId}")
