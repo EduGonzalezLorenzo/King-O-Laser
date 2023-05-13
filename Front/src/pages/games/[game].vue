@@ -1,36 +1,33 @@
 <template>
-  <div class="grid grid-cols-4 game_container">
-    <div class="justify-self-start">
+  <div class="grid grid-cols-3 gap-24 game_container">
+    <div class="col-span-1 mt-0 mb-auto">
       <UserProfileGameCard />
       <StartedMatchList />
     </div>
-    <div class="grid h-screen place-items-center">
+    <div class="col-span-2 grid h-screen place-items-center">
       <div class="canvas_container">
         <div class="justify-self-center">
-          <Grid @sendMovement="sendMovement" />
+          <Grid @send-movement="sendMovement" />
         </div>
       </div>
-      <div
-        v-if="openSendMenu"
-        class="send_menu"
+    </div>
+    <div
+      v-if="openSendMenu"
+      class="send_menu fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+    >
+      <button class="confirm_button hover:bg-green-300">
+        Confirm Movement
+      </button>
+      <button
+        class="cancel_button hover:bg-red-300"
+        @click="closeSendMenu"
       >
-        <h1>SelectedPieceY: {{ newSelectedPieceY }}</h1>
-        <h1>SelectedPieceX: {{ newSelectedPieceX }}</h1>
-        <h1>SelectedMovementY: {{ newSelectedMovementY }}</h1>
-        <h1>SelectedMovementY: {{ newSelectedMovementX }}</h1>
-        <button class="confirm_button">
-          Confirm Movement
-        </button>
-        <button
-          class="cancel_button"
-          @click="closeSendMenu"
-        >
-          Cancel
-        </button>
-      </div>
+        Cancel
+      </button>
     </div>
   </div>
 </template>
+
 
 
   
@@ -79,20 +76,18 @@ const closeSendMenu = () => {
 } */
 
 .send_menu {
-  background-color: lightgrey;
+  background-color: rgba(211, 211, 211, 0.516);
   padding: 1em;
   display: flex;
   flex-direction: column;
+
 }
 
 button {
+  background-color: azure;
   border: 1px solid black;
   padding: 1em;
   margin: 0.5em;
   /* font-size: 25px; */
-}
-
-button:hover {
-  background-color: lightgreen;
 }
 </style>

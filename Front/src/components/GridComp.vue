@@ -9,7 +9,7 @@
     :selectedPieceX="selectedPieceX"
     :selectedMovementY="selectedMovementY"
     :selectedMovementX="selectedMovementX"
-    @:click="handleClick"
+    @click="handleClick"
   />
   <div
     id="custom-menu"
@@ -33,12 +33,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineEmits, reactive } from "vue";
+import { ref, onMounted, defineEmits } from "vue";
 import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
-import createCell from "~/utils/createCell";
 import { BoardDisposition } from "~/types/BoardDisposition";
-import { m } from "@unhead/vue/dist/createHead-26c9c4af";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const canvasWidth = 960;
@@ -53,7 +51,6 @@ const selectedPieceY = ref<number>(0)
 const selectedPieceX = ref<number>(0)
 const selectedMovementY = ref<number>(0)
 const selectedMovementX = ref<number>(0)
-
 
 const boardDisposition = {
   route: [
@@ -420,8 +417,8 @@ onMounted(() => {
   canvas.value?.addEventListener("contextmenu", function (event) {
     if (event.button === 2) {
       event.preventDefault();
-      menu.style.top = event.pageY + "px";
-      menu.style.left = event.pageX + "px";
+      menu.style.top = event.offsetY + "px";
+      menu.style.left = event.offsetX + "px";
       menu.classList.add("show");
     }
   });
@@ -476,8 +473,11 @@ canvas {
   width: 100%;
   height: 100%;
 }
-
+.custom-menu{
+  display: none;
+}
 .show {
+  display: block;
   position: absolute;
   background-color: beige;
   padding: 10px;
