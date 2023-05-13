@@ -1,6 +1,15 @@
 <template>
-  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
-    @:click="handleClick" />
+  <canvas ref="canvas" 
+          :width="canvasWidth" 
+          :height="canvasHeight" 
+          :mouseX="mouseX" 
+          :mouseY="mouseY" 
+          :selectedPieceY="selectedPieceY"
+          :selectedPieceX="selectedPieceX"
+          :selectedMovementY="selectedMovementY"
+          :selectedMovementX="selectedMovementX"
+          @:click="handleClick" 
+  />
 </template>
 
 <script setup lang="ts">
@@ -158,8 +167,10 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
 };
 
 const emit = defineEmits<{
-  (e: "sendPosition", posY: number, posX: number): void;
+  (e: "sendMovement", selectedPieceY: number, selectedPieceX: number, selectedMovementY: number, selectedMovementX: number): void;
 }>();
+
+
 
 const handleClick = (event: MouseEvent) => {
   mouseX.value = Math.floor(event.offsetX / (canvasWidth / tableColumns));
@@ -221,13 +232,15 @@ const handleClick = (event: MouseEvent) => {
       }
     } else if (board.value[mouseY.value][mouseX.value] instanceof Cell && board.value[mouseY.value][mouseX.value].selectable == true) {
 
-      selectedMovementY.value = mouseY.value
-      selectedMovementX.value = mouseX.value
-      console.log("SELECTABLE")
+      // selectedMovementY.value = mouseY.value
+      // selectedMovementX.value = mouseX.value
+      emit("sendMovement", selectedPieceY.value, selectedPieceX.value, mouseY.value, mouseX.value)
     }
   }
 
-  emit("sendPosition", mouseY.value, mouseX.value);
+
+
+  // emit("sendMovement", selectedPieceY.value, selectedPieceX.value, selectedMovementY.value, selectedMovementX.value);
 };
 
 const drawBoard = (
