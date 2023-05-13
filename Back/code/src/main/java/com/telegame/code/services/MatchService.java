@@ -15,10 +15,12 @@ import com.telegame.code.models.Player;
 import com.telegame.code.models.PlayerPlayMatch;
 import com.telegame.code.models.games.kingolaser.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
+import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerPlayMatchRepo;
 import com.telegame.code.repos.PlayerRepo;
 import com.telegame.code.repos.games.PieceRepo;
+import com.telegame.code.services.games.KingOLaserService;
 import com.telegame.code.services.games.KingOLaserService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
@@ -58,7 +60,7 @@ public class MatchService {
         GameMatch newGameMatch = buildGameMatch(matchForm, playerOnePlayMatch);
         playerOnePlayMatch.setGameMatch(newGameMatch);
 
-        boardRepo.save(getBoardForGame(newGameMatch, matchForm.getGame(), matchForm.getMetadata()));
+        boardRepo.save(getBoard(newGameMatch, matchForm.getGame(), matchForm.getMetadata()));
         playerPlayMatchRepo.save(playerOnePlayMatch);
 
         return "Ok";

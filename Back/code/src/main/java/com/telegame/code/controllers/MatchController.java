@@ -1,7 +1,7 @@
 package com.telegame.code.controllers;
 
-import com.telegame.code.DTO.GameMatchDTO;
-import com.telegame.code.exceptions.*;
+import com.telegame.code.exceptions.GameNoExistsException;
+import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.FilledMatchException;
 import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.MatchNoExistsException;
@@ -9,19 +9,16 @@ import com.telegame.code.exceptions.match.PlayerAlreadyInMatchException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.JoinMatchForm;
 import com.telegame.code.forms.MatchForm;
-import com.telegame.code.models.GameMatch;
 import com.telegame.code.services.MatchService;
 import com.telegame.code.services.PlayerService;
 import com.telegame.code.services.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 @CrossOrigin()
 @RestController
