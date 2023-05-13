@@ -1,6 +1,5 @@
 package com.telegame.code.builder;
 
-import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.forms.PlayerForm;
 import com.telegame.code.models.Player;
@@ -18,9 +17,4 @@ public class PlayerBuilder {
                 .build();
     }
 
-    public static PlayerDTO fromJWT(String userName, long iat) {
-        return PlayerDTO.builder()
-                .userName(userName)
-                .build();
-    }
 }

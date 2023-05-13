@@ -21,7 +21,7 @@ public class CodeApplication implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         //URLs where you need to be logged
         registry.addInterceptor(tokenInterceptor)
-                .addPathPatterns("/game/**")
+                .addPathPatterns("/match/**")
                 .addPathPatterns("/getPlayer")
                 .addPathPatterns("/update/**");
 

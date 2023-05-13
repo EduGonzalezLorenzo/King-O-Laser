@@ -12,23 +12,21 @@ async function LogUser(event:Event) {
   event.preventDefault()
   const password = (document.getElementById("password") as HTMLInputElement)
     .value;
-  let playerName = "";
-  let email = "";
+
+    let content = {}
   if (is_email.value) {
-    email = (document.getElementById("email") as HTMLInputElement).value;
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    content = {email,password}
   } else {
-    playerName = (document.getElementById("email") as HTMLInputElement).value;
+    const playerName = (document.getElementById("email") as HTMLInputElement).value;
+    content = {playerName,password}
   }
   const response = await fetch("http://localhost:8080/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      playerName,
-      email,
-      password,
-    }),
+    body: JSON.stringify(content),
   });
 
   if (response.ok) {
