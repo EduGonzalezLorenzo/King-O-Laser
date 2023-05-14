@@ -17,7 +17,7 @@
         <div class="flex ml-auto items-end flex-row">
           <NuxtLink
             to="/"
-            class="transition duration-300 hover:bg-gray-200 hover:rounded hover:p-1 hover:text-gray-600 hover:shadow text-slate-500"
+            class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500"
           >
             <img
               src="/img/commonIcon/home.png"
@@ -26,7 +26,7 @@
           </NuxtLink>
           <NuxtLink
             to="/create-match"
-            class="transition duration-300 hover:bg-gray-200 hover:rounded hover:p-1 hover:text-gray-600 hover:shadow text-slate-500"
+            class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500"
           >
             <img
               src="/img/commonIcon/create.png"
@@ -34,7 +34,7 @@
             >
           </NuxtLink>
           <NuxtLink
-            class="transition duration-300 hover:bg-gray-200 hover:rounded hover:p-1 hover:text-gray-600 hover:shadow text-slate-500 hover:cursor-pointer"
+            class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500 hover:cursor-pointer"
             @click="logout"
           >
             <img
