@@ -23,7 +23,7 @@
       >
         <img
           src="/img/commonIcon/arrowRight.png"
-          class="w-12"
+          class="w-12 min-w-[48px]"
         >
       </li>
       <li
@@ -32,7 +32,7 @@
       >
         <img
           src="/img/commonIcon/arrowLeft.png"
-          class="w-12	rotate-240"
+          class="w-12 rotate-240 min-w-[48px]"
         >
       </li>
     </ul>
