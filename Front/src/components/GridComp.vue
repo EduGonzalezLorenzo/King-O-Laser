@@ -277,10 +277,10 @@ const imagePaths = [
   "/img/kingolaser/BlueDeflectorS.png",
   "/img/kingolaser/BlueDeflectorE.png",
   "/img/kingolaser/BlueDeflectorW.png",
-  "/img/kingolaser/BlueLaserN.jpg",
-  "/img/kingolaser/BlueLaserS.jpg",
-  "/img/kingolaser/BlueLaserE.jpg",
-  "/img/kingolaser/BlueLaserW.jpg",
+  "/img/kingolaser/BlueLaserN.png",
+  "/img/kingolaser/BlueLaserS.png",
+  "/img/kingolaser/BlueLaserE.png",
+  "/img/kingolaser/BlueLaserW.png",
   "/img/kingolaser/RedKing.png",
   "/img/kingolaser/RedBlockN.png",
   "/img/kingolaser/RedBlockS.png",
@@ -292,10 +292,10 @@ const imagePaths = [
   "/img/kingolaser/RedDeflectorS.png",
   "/img/kingolaser/RedDeflectorE.png",
   "/img/kingolaser/RedDeflectorW.png",
-  "/img/kingolaser/RedLaserN.jpg",
-  "/img/kingolaser/RedLaserS.jpg",
-  "/img/kingolaser/RedLaserE.jpg",
-  "/img/kingolaser/RedLaserW.jpg",
+  "/img/kingolaser/RedLaserN.png",
+  "/img/kingolaser/RedLaserS.png",
+  "/img/kingolaser/RedLaserE.png",
+  "/img/kingolaser/RedLaserW.png",
 ];
 
 const board = ref(new Array(tableRows));
@@ -325,12 +325,12 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
       cell.width
     );
     ctx.stroke();
-    ctx.font = "30px Arial";
-    ctx.fillText(
-      `${cell.posY}:${cell.posX}`,
-      cell.posX * cellHeight + 50,
-      cell.posY * cellWidth + 100
-    );
+    // ctx.font = "30px Arial";
+    // ctx.fillText(
+    //   `${cell.posY}:${cell.posX}`,
+    //   cell.posX * cellHeight + 50,
+    //   cell.posY * cellWidth + 100
+    // );
     // ctx.fillStyle = "rgba(150,150,255, 0.5)";
     // ctx.fill();
   }
@@ -596,7 +596,7 @@ onMounted(() => {
         drawBoard(ctx, boardDisposition, images);
       }
 
-      drawLaser(ctx, boardDisposition);
+      // drawLaser(ctx, boardDisposition);
 
     });
   }
