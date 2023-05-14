@@ -19,6 +19,8 @@ public abstract class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    String lastAction;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_id", referencedColumnName = "id")
     GameMatch gameMatch;
