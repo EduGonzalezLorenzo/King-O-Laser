@@ -180,7 +180,7 @@ public class MatchService {
     }
 
     private void checkPlayerInMatch(Player player, GameMatch gameMatch) {
-        if (playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch).isEmpty()){
+        if (playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch).isEmpty()) {
             throw new PlayerNoInMatchException();
         }
     }
