@@ -9,24 +9,31 @@
     :selectedPieceX="selectedPieceX"
     :selectedMovementY="selectedMovementY"
     :selectedMovementX="selectedMovementX"
+    :rotationValue="rotationValue"
     @click="handleClick"
   />
   <div
     id="custom-menu"
     class="custom-menu"
   >
-    <ul class="custom-menu-list">
+    <ul class="custom-menu-list flex flex-row">
       <li
         id="menu-item-1"
         class="cursor-pointer hover:bg-blue-700"
       >
-        Rotar Izquierda
+        <img
+          src="/img/commonIcon/arrowRight.png"
+          class="w-12"
+        >
       </li>
       <li
         id="menu-item-2"
-        class="custom-menu-item"
+        class="custom-menu-item cursor-pointer"
       >
-        Rotar Derecha
+        <img
+          src="/img/commonIcon/arrowLeft.png"
+          class="w-12	rotate-240"
+        >
       </li>
     </ul>
   </div>
@@ -47,10 +54,11 @@ const cellWidth = canvasWidth / tableColumns;
 const cellHeight = canvasHeight / tableRows;
 const mouseX = ref<number>(0);
 const mouseY = ref<number>(0);
-const selectedPieceY = ref<number>(0)
-const selectedPieceX = ref<number>(0)
-const selectedMovementY = ref<number>(0)
-const selectedMovementX = ref<number>(0)
+const selectedPieceY = ref<number>(0);
+const selectedPieceX = ref<number>(0);
+const selectedMovementY = ref<number>(0);
+const selectedMovementX = ref<number>(0);
+const rotationValue = ref<string>("");
 
 const boardDisposition = {
   route: [
@@ -185,12 +193,19 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
 };
 
 const emit = defineEmits<{
-  (e: "sendMovement", selectedPieceY: number, selectedPieceX: number, selectedMovementY: number, selectedMovementX: number): void;
+  (
+    e: "sendMovement",
+    selectedPieceY: number,
+    selectedPieceX: number,
+    selectedMovementY: number,
+    selectedMovementX: number,
+    rotationValue: string
+  ): void;
 }>();
 
-
-
 const handleClick = (event: MouseEvent) => {
+  const menu = document.getElementById("custom-menu") as HTMLElement;
+
   mouseX.value = Math.floor(event.offsetX / (canvasWidth / tableColumns));
   mouseY.value = Math.floor(event.offsetY / (canvasHeight / tableRows));
 
@@ -198,9 +213,12 @@ const handleClick = (event: MouseEvent) => {
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
+      menu.style.top = event.offsetY + "px";
+      menu.style.left = event.offsetX + "px";
+      menu.classList.add("show");
 
-      selectedPieceY.value = mouseY.value
-      selectedPieceX.value = mouseX.value
+      selectedPieceY.value = mouseY.value;
+      selectedPieceX.value = mouseX.value;
 
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       drawGrid(ctx);
@@ -246,8 +264,18 @@ const handleClick = (event: MouseEvent) => {
           }
         }
       }
-    } else if (board.value[mouseY.value][mouseX.value] instanceof Cell && board.value[mouseY.value][mouseX.value].selectable == true) {
-      emit("sendMovement", selectedPieceY.value, selectedPieceX.value, mouseY.value, mouseX.value)
+    } else if (
+      board.value[mouseY.value][mouseX.value] instanceof Cell &&
+      board.value[mouseY.value][mouseX.value].selectable == true
+    ) {
+      emit(
+        "sendMovement",
+        selectedPieceY.value,
+        selectedPieceX.value,
+        mouseY.value,
+        mouseX.value,
+        rotationValue.value
+      );
     }
   }
 };
@@ -267,8 +295,14 @@ const drawBoard = (
       piece.rotation,
       piece.pieceClass
     );
-    const image = getPieceImage(piece, images)
-    ctx.drawImage(image, piece.posX * cellHeight, piece.posY * cellWidth, cellHeight, cellWidth)
+    const image = getPieceImage(piece, images);
+    ctx.drawImage(
+      image,
+      piece.posX * cellHeight,
+      piece.posY * cellWidth,
+      cellHeight,
+      cellWidth
+    );
   });
 };
 
@@ -281,53 +315,53 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
       case "com.telegame.code.models.kingolaser.pieces.Defender":
         switch (piece.rotation) {
           case "NORTH":
-            return images[2]
+            return images[2];
           case "SOUTH":
-            return images[3]
+            return images[3];
           case "EAST":
-            return images[4]
+            return images[4];
           case "WEST":
-            return images[5]
+            return images[5];
         }
-        return images[0]
+        return images[0];
       case "com.telegame.code.models.kingolaser.pieces.Bouncer":
         switch (piece.rotation) {
           case "NORTH":
-            return images[6]
+            return images[6];
           case "SOUTH":
-            return images[6]
+            return images[6];
           case "EAST":
-            return images[7]
+            return images[7];
           case "WEST":
-            return images[7]
+            return images[7];
         }
-        return images[0]
+        return images[0];
       case "com.telegame.code.models.kingolaser.pieces.Deflector":
         switch (piece.rotation) {
           case "NORTH":
-            return images[8]
+            return images[8];
           case "SOUTH":
-            return images[9]
+            return images[9];
           case "EAST":
-            return images[10]
+            return images[10];
           case "WEST":
-            return images[11]
+            return images[11];
         }
-        return images[0]
+        return images[0];
       case "com.telegame.code.models.kingolaser.pieces.Laser":
         switch (piece.rotation) {
           case "NORTH":
-            return images[12]
+            return images[12];
           case "SOUTH":
-            return images[13]
+            return images[13];
           case "EAST":
-            return images[14]
+            return images[14];
           case "WEST":
-            return images[15]
+            return images[15];
         }
-        return images[0]
+        return images[0];
       default:
-        return images[0]
+        return images[0];
     }
   } else {
     switch (piece.pieceClass) {
@@ -337,66 +371,74 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
       case "com.telegame.code.models.kingolaser.pieces.Defender":
         switch (piece.rotation) {
           case "NORTH":
-            return images[17]
+            return images[17];
           case "SOUTH":
-            return images[18]
+            return images[18];
           case "EAST":
-            return images[19]
+            return images[19];
           case "WEST":
-            return images[20]
+            return images[20];
         }
-        return images[0]
+        return images[0];
       case "com.telegame.code.models.kingolaser.pieces.Bouncer":
         switch (piece.rotation) {
           case "NORTH":
-            return images[21]
+            return images[21];
           case "SOUTH":
-            return images[21]
+            return images[21];
           case "EAST":
-            return images[22]
+            return images[22];
           case "WEST":
-            return images[22]
+            return images[22];
         }
-        return images[0]
+        return images[0];
       case "com.telegame.code.models.kingolaser.pieces.Deflector":
         switch (piece.rotation) {
           case "NORTH":
-            return images[23]
+            return images[23];
           case "SOUTH":
-            return images[24]
+            return images[24];
           case "EAST":
-            return images[25]
+            return images[25];
           case "WEST":
-            return images[26]
+            return images[26];
         }
-        return images[0]
+        return images[0];
       case "com.telegame.code.models.kingolaser.pieces.Laser":
         switch (piece.rotation) {
           case "NORTH":
-            return images[27]
+            return images[27];
           case "SOUTH":
-            return images[28]
+            return images[28];
           case "EAST":
-            return images[29]
+            return images[29];
           case "WEST":
-            return images[30]
+            return images[30];
         }
-        return images[0]
+        return images[0];
       default:
-        return images[0]
+        return images[0];
     }
   }
 }
 
-function drawLaser(ctx: CanvasRenderingContext2D, boardDisposition: BoardDisposition,) {
+function drawLaser(
+  ctx: CanvasRenderingContext2D,
+  boardDisposition: BoardDisposition
+) {
+  const thickness = 20;
+  ctx.fillStyle = "rgb(100, 255, 100)";
 
-  const thickness = 20
-  ctx.fillStyle = "rgb(100, 255, 100)"
-
-  boardDisposition.route.forEach(target => {
-    ctx.beginPath()
-    ctx.arc(target[1] * cellWidth + (cellWidth / 2), target[0] * cellHeight + (cellWidth / 2), thickness, 0, 2 * Math.PI)
-    ctx.fill()
+  boardDisposition.route.forEach((target) => {
+    ctx.beginPath();
+    ctx.arc(
+      target[1] * cellWidth + cellWidth / 2,
+      target[0] * cellHeight + cellWidth / 2,
+      thickness,
+      0,
+      2 * Math.PI
+    );
+    ctx.fill();
   });
 }
 
@@ -408,30 +450,45 @@ onMounted(() => {
     chargeImages(imagePaths).then((images) => {
       if (imagesLoaded(images)) {
         drawBoard(ctx, boardDisposition, images);
-
       }
-      drawLaser(ctx, boardDisposition)
+      drawLaser(ctx, boardDisposition);
     });
   }
   const menu = document.getElementById("custom-menu") as HTMLElement;
   canvas.value?.addEventListener("contextmenu", function (event) {
     if (event.button === 2) {
+      handleClick(event);
       event.preventDefault();
-      menu.style.top = event.offsetY + "px";
-      menu.style.left = event.offsetX + "px";
-      menu.classList.add("show");
     }
   });
   const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
   const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
 
   menuItem1.addEventListener("click", function () {
-    console.log("Rotar Izquierda");
+    rotationValue.value = "R";
+    emit(
+      "sendMovement",
+      selectedPieceY.value,
+      selectedPieceX.value,
+      mouseY.value,
+      mouseX.value,
+      rotationValue.value
+    );
+    rotationValue.value = "";
     menu.classList.remove("show");
   });
 
   menuItem2.addEventListener("click", function () {
-    console.log("Rotar Derecha");
+    rotationValue.value = "L";
+    emit(
+      "sendMovement",
+      selectedPieceY.value,
+      selectedPieceX.value,
+      mouseY.value,
+      mouseX.value,
+      rotationValue.value
+    );
+    rotationValue.value = "";
     menu.classList.remove("show");
   });
 });
@@ -473,7 +530,7 @@ canvas {
   width: 100%;
   height: 100%;
 }
-.custom-menu{
+.custom-menu {
   display: none;
 }
 .show {

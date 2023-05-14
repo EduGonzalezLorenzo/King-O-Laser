@@ -4,17 +4,21 @@
       <UserProfileGameCard />
       <StartedMatchList />
     </div>
-    <div class="col-span-2 grid h-screen place-items-center">
-      <div class="canvas_container">
-        <div class="justify-self-center">
-          <Grid @send-movement="sendMovement" />
-        </div>
-      </div>
+    <div
+      class="col-span-2 grid h-screen place-items-center canvas_container justify-self-center"
+    >
+      <Grid @send-movement="sendMovement" />
     </div>
     <div
       v-if="openSendMenu"
       class="send_menu fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
     >
+      <p> R{{ newRotationValue }}</p>
+      <p> MX{{ newSelectedMovementX }}</p>
+      <p> MY{{ newSelectedMovementY }}</p>
+      <p> PX{{ newSelectedPieceX }}</p>
+      <p> PY{{ newSelectedPieceY }}</p>
+
       <button class="confirm_button hover:bg-green-300">
         Confirm Movement
       </button>
@@ -28,34 +32,36 @@
   </div>
 </template>
 
-
-
-  
 <script setup lang="ts">
-import Grid from '~/components/GridComp.vue';
-import UserProfileGameCard from '~/components/UserProfileGameCard.vue';
-import StartedMatchList from '~/components/StartedMatchList.vue';
+import Grid from "~/components/GridComp.vue";
+import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
+import StartedMatchList from "~/components/StartedMatchList.vue";
 
-const newSelectedPieceY = ref(0)
-const newSelectedPieceX = ref(0)
-const newSelectedMovementY = ref(0)
-const newSelectedMovementX = ref(0)
-const openSendMenu = ref(false)
+const newSelectedPieceY = ref(0);
+const newSelectedPieceX = ref(0);
+const newSelectedMovementY = ref(0);
+const newSelectedMovementX = ref(0);
+const newRotationValue = ref("");
+const openSendMenu = ref(false);
 
-
-const sendMovement = (selectedPieceY: number, selectedPieceX: number, selectedMovementY: number, selectedMovementX: number) => {
-  newSelectedPieceY.value = selectedPieceY
-  newSelectedPieceX.value = selectedPieceX
-  newSelectedMovementY.value = selectedMovementY
-  newSelectedMovementX.value = selectedMovementX
-  openSendMenu.value = true
-
+const sendMovement = (
+  selectedPieceY: number,
+  selectedPieceX: number,
+  selectedMovementY: number,
+  selectedMovementX: number,
+  rotationValue: string
+) => {
+  newSelectedPieceY.value = selectedPieceY;
+  newSelectedPieceX.value = selectedPieceX;
+  newSelectedMovementY.value = selectedMovementY;
+  newSelectedMovementX.value = selectedMovementX;
+  newRotationValue.value = rotationValue;
+  openSendMenu.value = true;
 };
 
 const closeSendMenu = () => {
-  openSendMenu.value = false
-}
-
+  openSendMenu.value = false;
+};
 </script>
 <style scoped>
 .game_container {
@@ -80,7 +86,6 @@ const closeSendMenu = () => {
   padding: 1em;
   display: flex;
   flex-direction: column;
-
 }
 
 button {
