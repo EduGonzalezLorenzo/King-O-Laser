@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { hmacWithPassword } from "iron-webcrypto";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -9,6 +8,7 @@ const isPublic = ref<boolean>(false);
 const boardDisposition = ref<string>("");
 const matchName = ref<string>("");
 const password = ref<string>("");
+const imgPath = ref<string>("");
 
 function isChecked(checked: boolean) {
   isPublic.value = checked;
@@ -23,7 +23,7 @@ onBeforeMount(async () => {
 async function createMatch() {
   const content = {
     isPublic: !isPublic.value,
-    boardDisposition: boardDisposition.value,
+    metadata: boardDisposition.value,
     game: game_type,
     password:password.value,
     matchName: matchName.value,
@@ -41,6 +41,27 @@ async function createMatch() {
   } else {
     console.error("Error creating match.");
   }
+}
+function showBoard(){
+  console.log(boardDisposition.value)
+  switch(boardDisposition.value){
+    case 'ace':
+      imgPath.value = "/img/kingolaser/AceBoard.jpg"
+      break;
+    
+    case 'std':
+      imgPath.value = "/img/kingolaser/StandardBoard.jpg"
+    break
+    case 'cur':
+      imgPath.value = "/img/kingolaser/CuriosityBoard.jpg"
+      break
+      case 'gr':
+      imgPath.value = "/img/kingolaser/GrailBoard.jpg"
+      break
+      case 'sh':
+      imgPath.value = "/img/kingolaser/SophieBoard.jpg"
+      break
+}
 }
 </script>
 <template>
@@ -80,6 +101,8 @@ async function createMatch() {
               v-model="boardDisposition"
               name="boardDisposition"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2 mb-10"
+              required
+              @change="() => showBoard()"
             >
               <option
                 value=""
@@ -145,8 +168,11 @@ async function createMatch() {
           </div>
         </form>
       </div>
-      <div>
-        <GridComp :game-mode="boardDisposition" />
+      <div class="m-10 overflow-y-hidden justify-self-center">
+        <img
+          :src="imgPath"
+          class="max-h-[100%]"
+        >
       </div>
     </div>
   </div>
