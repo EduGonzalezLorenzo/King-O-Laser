@@ -3,29 +3,74 @@ package com.telegame.code.services.games;
 import com.telegame.code.DTO.games.kingolaser.LaserBoardDTO;
 import com.telegame.code.DTO.games.kingolaser.PieceDTO;
 import com.telegame.code.builder.games.kingolaser.KingOLaserBoardBuilder;
+import com.telegame.code.exceptions.InputFormException;
+import com.telegame.code.exceptions.match.MatchInfoException;
+import com.telegame.code.exceptions.match.PieceNotFoundException;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.games.kingolaser.LaserBoard;
 import com.telegame.code.models.games.kingolaser.pieces.Piece;
+import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.games.PieceRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class LaserBoardService {
     private PieceRepo pieceRepo;
+    private BoardRepo boardRepo;
 
     public String movePiece(LaserBoardMoveForm laserBoardMoveForm, Player player, GameMatch gameMatch) {
 
+        Optional<Board> laserBoardOptional = boardRepo.findBoardByGameMatch(gameMatch);
+        if (laserBoardOptional.isEmpty()) throw new MatchInfoException();
+        LaserBoard laserBoard = (LaserBoard) laserBoardOptional.get();
 
+        Board.MatchStatus matchStatus = laserBoard.getStatus();
+        List<Piece> piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(
+                laserBoardMoveForm.getCurrentPosY(),
+                laserBoardMoveForm.getCurrentPosX(),
+                laserBoard.getId());
+        if (piecesList.size() == 0) throw new PieceNotFoundException();
+        //TODO El siguiente error tiene más implicaciones que hay que contemplar. Si pasara habría que borrar la partida
+        if (piecesList.size() != 1) throw new RuntimeException();
+        Piece piece = piecesList.get(0);
+
+        if (playerCanMove(matchStatus, piece)) {
+            if (laserBoardMoveForm.getRotateTo() == null || laserBoardMoveForm.getRotateTo().equals("")) {
+                if (!piece.move(laserBoardMoveForm.getNewPosY(), laserBoardMoveForm.getNewPosX())) {
+                    throw new InputFormException();
+                }
+            } else {
+                if (!piece.rotate(laserBoardMoveForm.getRotateTo(), piece)) throw new InputFormException();
+            }
+        } else throw new InputFormException();
+
+        pieceRepo.save(piece);
+
+        boardRepo.save(laserBoard);
 
         return "ok";
+    }
+
+
+    private static boolean playerCanMove(Board.MatchStatus matchStatus, Piece piece) {
+        return playerOneCanMove(matchStatus, piece) || playerTwoCanMove(matchStatus, piece);
+    }
+
+    private static boolean playerOneCanMove(Board.MatchStatus matchStatus, Piece piece) {
+        return matchStatus == Board.MatchStatus.PLAYER_ONE_TURN && piece.getOwner() == Piece.Owner.PLAYER_ONE;
+    }
+
+    private static boolean playerTwoCanMove(Board.MatchStatus matchStatus, Piece piece) {
+        return (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN && piece.getOwner() == Piece.Owner.PLAYER_TWO);
     }
 
     //TODO (Esta función la tenía en MatchService)

@@ -18,6 +18,6 @@ public class LaserBoardMoveForm {
     int newPosY;
     @Range(min = 0, max = 9)
     int newPosX;
-    @Pattern(regexp = "^([NSWE])$")
+//    @Pattern(regexp = "^([RL])$")
     String rotateTo;
 }
