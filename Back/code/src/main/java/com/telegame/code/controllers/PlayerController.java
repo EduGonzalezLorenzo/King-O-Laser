@@ -1,12 +1,11 @@
 package com.telegame.code.controllers;
 
-import com.telegame.code.exceptions.player.EmailException;
 import com.telegame.code.exceptions.InputFormException;
+import com.telegame.code.exceptions.player.EmailException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
 import com.telegame.code.forms.PlayerForm;
-import com.telegame.code.models.Player;
 import com.telegame.code.services.PlayerService;
 import com.telegame.code.services.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,7 +50,7 @@ public class PlayerController {
 
     @GetMapping("/getPlayer")
     public ResponseEntity<String> getPlayerInfo(HttpServletRequest request) {
-        return  new ResponseEntity<>(playerService.getPlayerInfo(request.getAttribute("playerName").toString()), HttpStatus.OK);
+        return new ResponseEntity<>(playerService.getPlayerInfo(request.getAttribute("playerName").toString()), HttpStatus.OK);
     }
 
     @PutMapping("/update/{PlayerId}")

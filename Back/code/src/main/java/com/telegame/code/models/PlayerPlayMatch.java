@@ -16,7 +16,7 @@ public class PlayerPlayMatch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     LocalDateTime lastUpdate;
-
+    String position;
     @ManyToOne
     @JoinColumn(name = "player_id")
     Player player;
