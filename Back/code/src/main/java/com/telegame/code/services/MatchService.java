@@ -51,6 +51,7 @@ public class MatchService {
         PlayerPlayMatch playerOnePlayMatch = PlayerPlayMatch.builder()
                 .player(playerOne)
                 .lastUpdate(LocalDateTime.now())
+                .position("P1")
                 .build();
 
         GameMatch newGameMatch = buildGameMatch(matchForm, playerOnePlayMatch);
@@ -104,6 +105,7 @@ public class MatchService {
                 .gameMatch(gameMatch)
                 .player(player)
                 .lastUpdate(LocalDateTime.now())
+                .position("P2")
                 .build();
 
         playerPlayMatchRepo.save(playerPlayMatch);
