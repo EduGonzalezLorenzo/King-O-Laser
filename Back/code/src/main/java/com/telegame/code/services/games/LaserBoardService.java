@@ -10,6 +10,7 @@ import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
+import com.telegame.code.models.games.kingolaser.LaserBeam;
 import com.telegame.code.models.games.kingolaser.LaserBoard;
 import com.telegame.code.models.games.kingolaser.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
@@ -17,9 +18,7 @@ import com.telegame.code.repos.games.PieceRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -54,10 +53,34 @@ public class LaserBoardService {
         } else throw new InputFormException();
 
         pieceRepo.save(piece);
+        boardRepo.save(laserBoard);
+
+        shootLaser(laserBoard, matchStatus, piecesList);
+
+        return "Ok";
+    }
+
+    private List<int[]> shootLaser(LaserBoard laserBoard, Board.MatchStatus matchStatus, List<Piece> piecesList) {
+        Piece piece;
+        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN)
+            piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(9, 7, laserBoard.getId());
+        if (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN)
+            piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(0, 0, laserBoard.getId());
+
+        piece = piecesList.get(0);
+        List<Piece> currentDisposition = pieceRepo.findByLaserBoardId(laserBoard.getId());
+
+        LaserBeam laserBeam = new LaserBeam();
+        Map<String, Object> laserResult = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
+
+        List<int[]> route = (List<int[]>) laserResult.get("route");
+
+        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
+        else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
 
         boardRepo.save(laserBoard);
 
-        return "ok";
+        return route;
     }
 
 
