@@ -15,7 +15,7 @@ function isChecked(checked: boolean) {
 }
 
 onBeforeMount(async () => {
-  if (!["TicTacToe", "King-0-Las3r"].includes(game_type)) {
+  if (!["TicTacToe", "LASER_BOARD"].includes(game_type)) {
     await navigateTo(`/select-game`);
   }
 });
