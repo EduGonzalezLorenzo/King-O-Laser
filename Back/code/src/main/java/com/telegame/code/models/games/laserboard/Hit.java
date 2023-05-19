@@ -1,7 +1,7 @@
-package com.telegame.code.models.games.kingolaser;
+package com.telegame.code.models.games.laserboard;
 
-import com.telegame.code.models.games.kingolaser.pieces.Piece;
-import com.telegame.code.models.games.kingolaser.pieces.PieceSide;
+import com.telegame.code.models.games.laserboard.pieces.Piece;
+import com.telegame.code.models.games.laserboard.pieces.PieceSide;
 
 
 public class Hit implements PieceSide {

@@ -1,11 +1,11 @@
 package com.telegame.code.repos.games;
 
-import com.telegame.code.models.games.kingolaser.pieces.Piece;
+import com.telegame.code.models.games.laserboard.pieces.Piece;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface KingOLaserPieceRepo extends JpaRepository<Piece, Long> {
+public interface LaserPieceRepo extends JpaRepository<Piece, Long> {
 
     List<Piece> findByLaserBoardId(long laserBoardId);
     List<Piece> findByPosYAndPosXAndLaserBoardId(int posy, int posx, Long laserBoardId);

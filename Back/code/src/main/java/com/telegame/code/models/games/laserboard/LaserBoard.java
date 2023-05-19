@@ -1,7 +1,7 @@
-package com.telegame.code.models.games.kingolaser;
+package com.telegame.code.models.games.laserboard;
 
 import com.telegame.code.models.Board;
-import com.telegame.code.models.games.kingolaser.pieces.Piece;
+import com.telegame.code.models.games.laserboard.pieces.Piece;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.*;

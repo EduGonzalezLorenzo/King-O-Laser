@@ -1,7 +1,7 @@
 package com.telegame.code.services;
 
 import com.telegame.code.DTO.GameMatchDTO;
-import com.telegame.code.DTO.games.kingolaser.LaserBoardDTO;
+import com.telegame.code.DTO.games.laserboard.LaserBoardDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
@@ -13,7 +13,7 @@ import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.PlayerPlayMatch;
-import com.telegame.code.models.games.kingolaser.LaserBoard;
+import com.telegame.code.models.games.laserboard.LaserBoard;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerPlayMatchRepo;

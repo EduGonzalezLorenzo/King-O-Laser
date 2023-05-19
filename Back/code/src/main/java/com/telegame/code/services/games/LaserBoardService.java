@@ -1,8 +1,8 @@
 package com.telegame.code.services.games;
 
-import com.telegame.code.DTO.games.kingolaser.LaserBoardDTO;
-import com.telegame.code.DTO.games.kingolaser.PieceDTO;
-import com.telegame.code.builder.games.kingolaser.KingOLaserBoardBuilder;
+import com.telegame.code.DTO.games.laserboard.LaserBoardDTO;
+import com.telegame.code.DTO.games.laserboard.PieceDTO;
+import com.telegame.code.builder.games.laserboard.LaserBoardBuilder;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.PieceNotFoundException;
@@ -10,9 +10,9 @@ import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
-import com.telegame.code.models.games.kingolaser.LaserBeam;
-import com.telegame.code.models.games.kingolaser.LaserBoard;
-import com.telegame.code.models.games.kingolaser.pieces.Piece;
+import com.telegame.code.models.games.laserboard.LaserBeam;
+import com.telegame.code.models.games.laserboard.LaserBoard;
+import com.telegame.code.models.games.laserboard.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.games.PieceRepo;
 import lombok.AllArgsConstructor;
@@ -148,7 +148,7 @@ public class LaserBoardService {
 //    }
 
     public Board generateBoard(GameMatch newGameMatch, String metadata) {
-        return KingOLaserBoardBuilder.getKingOLaserBoard(newGameMatch, metadata);
+        return LaserBoardBuilder.getKingOLaserBoard(newGameMatch, metadata);
     }
 
     public void savePieces(LaserBoard board) {

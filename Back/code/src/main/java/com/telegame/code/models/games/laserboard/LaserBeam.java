@@ -1,10 +1,10 @@
-package com.telegame.code.models.games.kingolaser;
+package com.telegame.code.models.games.laserboard;
 
-import com.telegame.code.builder.games.kingolaser.PieceBuilder;
+import com.telegame.code.builder.games.laserboard.PieceBuilder;
 import com.telegame.code.models.Board;
-import com.telegame.code.models.games.kingolaser.pieces.Bouncer;
-import com.telegame.code.models.games.kingolaser.pieces.Piece;
-import com.telegame.code.models.games.kingolaser.pieces.PieceSide;
+import com.telegame.code.models.games.laserboard.pieces.Bouncer;
+import com.telegame.code.models.games.laserboard.pieces.Piece;
+import com.telegame.code.models.games.laserboard.pieces.PieceSide;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
