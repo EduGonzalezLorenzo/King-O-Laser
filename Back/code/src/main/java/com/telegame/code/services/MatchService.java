@@ -156,12 +156,13 @@ public class MatchService {
     private List<GameMatchDTO> generateGameMatchDTOsList(List<PlayerPlayMatch> playerPlayMatchList) {
         List<GameMatchDTO> gameMatchDTOList = new ArrayList<>();
         for (PlayerPlayMatch playerPlayMatch : playerPlayMatchList) {
-            gameMatchDTOList.add(generateGameMatchDTO(playerPlayMatch.getGameMatch()));
+            gameMatchDTOList.add(generateGameMatchDTO(playerPlayMatch));
         }
         return gameMatchDTOList;
     }
 
-    private GameMatchDTO generateGameMatchDTO(GameMatch gameMatch) {
+    private GameMatchDTO generateGameMatchDTO(PlayerPlayMatch playerPlayMatch) {
+        GameMatch gameMatch = playerPlayMatch.getGameMatch();
         Board board = getBoard(gameMatch);
         return GameMatchDTO.builder()
                 .id(gameMatch.getId())
@@ -170,6 +171,7 @@ public class MatchService {
                 .name(gameMatch.getName())
                 .currentPlayers(gameMatch.getPlayers().size())
                 .status(board.getStatus().toString())
+                .position(playerPlayMatch.getPosition())
                 .build();
     }
 

@@ -16,4 +16,5 @@ public class GameMatchDTO {
     LocalDateTime matchCreation;
     int currentPlayers;
     String status;
+    String position;
 }
