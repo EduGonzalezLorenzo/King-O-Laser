@@ -1,8 +1,12 @@
 <template>
-  <div class="grid grid-cols-3 gap-24 game_container">
-    <div class="col-span-1 mt-0 mb-auto">
-      <UserProfileGameCard />
-      <StartedMatchList />
+  <div class="flex flex-row">
+    <div class="w-2/3">
+      <div class="grid grid-cols-2 gap-24 game_container">
+        <div class="mt-0 mb-auto">
+          <UserProfileGameCard />
+          <StartedMatchList />
+        </div>
+      </div>
     </div>
   </div>
 </template>

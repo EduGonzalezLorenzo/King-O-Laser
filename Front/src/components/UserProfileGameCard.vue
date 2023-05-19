@@ -13,7 +13,7 @@
           'rounded-full',
           'border-4',
           'shadow',
-          user.loggedIn() ? 'border-green-500' : 'border-red-500',
+          user.loggedIn ? 'border-green-500' : 'border-red-500',
         ]"
       >
         <img
@@ -65,7 +65,6 @@ const user = ref({
   name:String,
   loggedIn:Boolean,
   profileImg:String
-
 })
 
 onBeforeMount(async () =>{
@@ -80,7 +79,9 @@ onBeforeMount(async () =>{
     return response.json();
   })
   .then((data) => {
-    user.value = data;
+    user.value.name = data.playerName;
+    user.value.loggedIn = data.loggedIn;
+    user.value.profileImg = data.profileImg;
   });
 })
 
