@@ -24,21 +24,25 @@ async function LogUser(event: Event) {
       .value;
     content = { playerName, password };
   }
-  const response = await fetch("http://localhost:8080/login", {
+  await fetch("http://localhost:8080/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(content),
-  });
-
-  if (response.ok) {
-    return navigateTo({ path: "/select-game" });
-  } else {
-   msg.value = "Error logging user !!";
-  }
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        msg.value = "Error Logging User";
+      }
+    })
+    .then((data) => {
+      localStorage.setItem("jwt", data.message);
+      navigateTo(`/select-game`);
+    });
 }
-
 </script>
 
 <template>
@@ -102,7 +106,7 @@ async function LogUser(event: Event) {
               class="text-blue-600 hover:underline dark:text-blue-500"
             >terms and conditions</a></label>
         </div>
-        <p 
+        <p
           class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
         >
           {{ msg }}
