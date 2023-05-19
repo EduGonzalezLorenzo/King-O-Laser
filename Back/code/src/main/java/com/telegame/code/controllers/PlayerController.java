@@ -1,5 +1,6 @@
 package com.telegame.code.controllers;
 
+import com.telegame.code.DTO.Message;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.player.EmailException;
 import com.telegame.code.exceptions.player.LoginException;
@@ -25,41 +26,45 @@ public class PlayerController {
     TokenService tokenService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<String> signUp(@RequestBody PlayerForm playerForm) throws NoSuchAlgorithmException {
+    public ResponseEntity<Message> signUp(@RequestBody PlayerForm playerForm) throws NoSuchAlgorithmException {
         try {
-            return new ResponseEntity<>(playerService.signUp(playerForm), HttpStatus.OK);
+            return new ResponseEntity<>(Message.builder()
+                    .message(playerService.signUp(playerForm))
+                    .build(), HttpStatus.OK);
         } catch (InputFormException e) {
-            return new ResponseEntity<>("Player form error", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Player form error").build(), HttpStatus.BAD_REQUEST);
         } catch (EmailException e) {
-            return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Email already exists").build(), HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Username already exists").build(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginForm loginForm) throws NoSuchAlgorithmException {
+    public ResponseEntity<Message> login(@RequestBody LoginForm loginForm) throws NoSuchAlgorithmException {
         try {
-            return new ResponseEntity<>(playerService.login(loginForm), HttpStatus.OK);
+            return new ResponseEntity<>(Message.builder().message(playerService.login(loginForm)).build(), HttpStatus.OK);
         } catch (InputFormException e) {
-            return new ResponseEntity<>("Player form error", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Player form error").build(), HttpStatus.BAD_REQUEST);
         } catch (LoginException e) {
-            return new ResponseEntity<>("Wrong user, email or password already exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Wrong user, email or password").build(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/getPlayer")
-    public ResponseEntity<String> getPlayerInfo(HttpServletRequest request) {
-        return new ResponseEntity<>(playerService.getPlayerInfo(request.getAttribute("playerName").toString()), HttpStatus.OK);
+    public ResponseEntity<Message> getPlayerInfo(HttpServletRequest request) {
+        return new ResponseEntity<>(Message.builder()
+                .message(playerService.getPlayerInfo(request.getAttribute("playerName").toString()))
+                .build(), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{PlayerId}")
-    public Map<String, String> updatePlayerInfo(@RequestBody PlayerForm playerForm, @PathVariable Long playerId, HttpServletRequest request) {
-        return playerService.updatePlayerInfo(playerForm, playerId, request.getAttribute("player"));
-    }
-
-    @DeleteMapping("/update/{playerId}")
-    public Map<String, String> deletePlayer(@PathVariable Long playerId, HttpServletRequest request) {
-        return playerService.deletePlayerInfo(playerId, request.getAttribute("player"));
-    }
+//    @PutMapping("/update/{PlayerId}")
+//    public Map<String, String> updatePlayerInfo(@RequestBody PlayerForm playerForm, @PathVariable Long playerId, HttpServletRequest request) {
+//        return playerService.updatePlayerInfo(playerForm, playerId, request.getAttribute("player"));
+//    }
+//
+//    @DeleteMapping("/update/{playerId}")
+//    public Map<String, String> deletePlayer(@PathVariable Long playerId, HttpServletRequest request) {
+//        return playerService.deletePlayerInfo(playerId, request.getAttribute("player"));
+//    }
 }

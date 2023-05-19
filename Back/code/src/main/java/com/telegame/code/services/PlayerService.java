@@ -73,15 +73,17 @@ public class PlayerService {
         return player.orElse(null);
     }
 
-    public Map<String, String> updatePlayerInfo(PlayerForm playerForm, Long id, Object candidate) {
-        return new HashMap<>();
-    }
-
-    public Map<String, String> deletePlayerInfo(Long playerId, Object candidate) {
-        return new HashMap<>();
-    }
-
-    public String  getPlayerInfo(String playerName) {
+    public String getPlayerInfo(String playerName) {
         return playerName;
     }
+
+//    public Map<String, String> updatePlayerInfo(PlayerForm playerForm, Long id, Object candidate) {
+//        return new HashMap<>();
+//    }
+//
+//    public Map<String, String> deletePlayerInfo(Long playerId, Object candidate) {
+//        return new HashMap<>();
+//    }
+//
+
 }
