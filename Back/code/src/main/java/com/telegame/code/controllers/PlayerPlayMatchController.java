@@ -4,6 +4,8 @@ import com.telegame.code.DTO.Message;
 import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.MatchInfoException;
+import com.telegame.code.exceptions.match.MatchNoExistsException;
+import com.telegame.code.exceptions.match.PieceNotFoundException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.services.PlayerPlayMatchService;
@@ -27,12 +29,14 @@ public class PlayerPlayMatchController {
                     .build(), HttpStatus.OK);
         } catch (InputFormException e) {
             return new ResponseEntity<>(Message.builder().message("Action form error").build(), HttpStatus.BAD_REQUEST);
+        } catch (MatchNoExistsException e) {
+            return new ResponseEntity<>(Message.builder().message("Match no exists").build(), HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
             return new ResponseEntity<>(Message.builder().message("Player no exists").build(), HttpStatus.BAD_REQUEST);
         } catch (MatchInfoException e) {
-            return new ResponseEntity<>(Message.builder().message("Game Metadata Error").build(), HttpStatus.CONFLICT);
-        } catch (GameNoExistsException e) {
-            return new ResponseEntity<>(Message.builder().message("Game no exists").build(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Database error").build(), HttpStatus.CONFLICT);
+        } catch (PieceNotFoundException e) {
+            return new ResponseEntity<>(Message.builder().message("There is no piece in this coordinates").build(), HttpStatus.BAD_REQUEST);
         }
     }
 }
