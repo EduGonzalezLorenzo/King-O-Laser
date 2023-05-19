@@ -40,7 +40,7 @@ async function LogUser(event: Event) {
     })
     .then((data) => {
       localStorage.setItem("jwt", data.message);
-      navigateTo(`/select-game`);
+      navigateTo(`/profile/hola`);
     });
 }
 </script>

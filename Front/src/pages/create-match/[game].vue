@@ -38,12 +38,12 @@ async function createMatch(event:Event) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + `${jwt.value}`,
+      Authorization: "Bearer " + jwt.value,
     },
     body: JSON.stringify(content),
   }).then((response) => {
     if (response.ok) {
-      navigateTo(`/games/${game_type}`);
+      navigateTo(`/games/`+game_type);
     } else {
       msg.value = "Error creating match.";
     }

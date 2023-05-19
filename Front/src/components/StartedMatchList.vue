@@ -40,6 +40,20 @@
 </template>
   
   <script setup>
+  const jwt = ref(localStorage.getItem("jwt"));
+  await fetch("http://localhost:8080/match", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization:  "Bearer " + jwt.value,
+  },
+})
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    user.value = data;
+  });
   const user = {
     list: [
       {

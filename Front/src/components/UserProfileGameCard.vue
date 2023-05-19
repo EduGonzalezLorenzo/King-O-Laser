@@ -13,7 +13,7 @@
           'rounded-full',
           'border-4',
           'shadow',
-          user.loggedIn ? 'border-green-500' : 'border-red-500',
+          user.loggedIn() ? 'border-green-500' : 'border-red-500',
         ]"
       >
         <img
@@ -61,13 +61,20 @@
 
 <script setup lang="ts">
 const jwt = ref(localStorage.getItem("jwt"));
-const user = ref()
-await fetch("http://localhost:8080/getPlayer", {
+const user = ref({
+  name:String,
+  loggedIn:Boolean,
+  profileImg:String
+
+})
+
+onBeforeMount(async () =>{
+  await fetch("http://localhost:8080/getPlayer", {
   method: "GET",
   headers: {
     "Content-Type": "application/json",
-    Authorization:  "Bearer " + `${jwt.value}`,
-  },
+    Authorization:  "Bearer " + jwt.value,
+  }
 })
   .then((response) => {
     return response.json();
@@ -75,6 +82,7 @@ await fetch("http://localhost:8080/getPlayer", {
   .then((data) => {
     user.value = data;
   });
+})
 
 const logout = () => {
   localStorage.setItem("jwt", "");
