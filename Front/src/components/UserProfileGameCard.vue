@@ -60,24 +60,22 @@
 </template>
 
 <script setup lang="ts">
+const jwt = ref(localStorage.getItem("jwt"));
+const user = ref()
 await fetch("http://localhost:8080/getPlayer", {
   method: "GET",
   headers: {
     "Content-Type": "application/json",
-    Authorization: ` "Bearer " + ${localStorage.getItem("jwt")}`,
+    Authorization:  "Bearer " + `${jwt.value}`,
   },
 })
   .then((response) => {
-    console.log(response.json());
+    return response.json();
   })
   .then((data) => {
-    console.log(data);
+    user.value = data;
   });
-const user = {
-  name: "Ejemplo",
-  profileImg: "/img/kingolaser/BlueKing.png",
-  loggedIn: true,
-};
+
 const logout = () => {
   localStorage.setItem("jwt", "");
   localStorage.setItem("jwtExp", "");

@@ -38,7 +38,7 @@ async function createMatch(event:Event) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJKaG90YSIsImV4cCI6MTY4NDUxODEwN30.JsHtba7rsiAfaUdjm6KeDiZZXhMj8sVMvVG6d1SOxFZXP4ZIP9C1fjdE14xHIb1jMiIQ7qF7X44-xmVDtJJHWg`,
+      Authorization: "Bearer " + `${jwt.value}`,
     },
     body: JSON.stringify(content),
   }).then((response) => {
