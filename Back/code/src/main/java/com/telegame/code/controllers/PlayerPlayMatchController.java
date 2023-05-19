@@ -1,5 +1,6 @@
 package com.telegame.code.controllers;
 
+import com.telegame.code.DTO.Message;
 import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.MatchInfoException;
@@ -19,17 +20,19 @@ public class PlayerPlayMatchController {
     PlayerPlayMatchService playerPlayMatchService;
 
     @PostMapping("/match/{matchId}/action")
-    public ResponseEntity<String> doAction(@RequestBody LaserBoardMoveForm actionForm, @PathVariable Long matchId, HttpServletRequest request) {
+    public ResponseEntity<Message> doAction(@RequestBody LaserBoardMoveForm actionForm, @PathVariable Long matchId, HttpServletRequest request) {
         try {
-            return new ResponseEntity<>(playerPlayMatchService.doAction(actionForm, matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
+            return new ResponseEntity<>(Message.builder()
+                    .message(playerPlayMatchService.doAction(actionForm, matchId, request.getAttribute("playerName").toString()))
+                    .build(), HttpStatus.OK);
         } catch (InputFormException e) {
-            return new ResponseEntity<>("Action form error", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Action form error").build(), HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>("Player no exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Player no exists").build(), HttpStatus.BAD_REQUEST);
         } catch (MatchInfoException e) {
-            return new ResponseEntity<>("Game Metadata Error", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Game Metadata Error").build(), HttpStatus.CONFLICT);
         } catch (GameNoExistsException e) {
-            return new ResponseEntity<>("Game no exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Game no exists").build(), HttpStatus.BAD_REQUEST);
         }
     }
 }

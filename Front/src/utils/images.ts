@@ -11,7 +11,7 @@ export default function useImages() {
     {
       url: 'https://via.placeholder.com/300',
       alt: 'Placeholder Image 1',
-      title: 'King-0-Las3r',
+      title: 'LASER_BOARD',
     },
     {
       url: 'https://via.placeholder.com/300',
