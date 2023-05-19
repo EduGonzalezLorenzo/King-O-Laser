@@ -1,5 +1,7 @@
 <script setup lang="ts">
+
 const msg = ref<string>("");
+
 async function createUser() {
   const firstName = (document.getElementById("firstname") as HTMLInputElement)
     .value;
@@ -39,26 +41,18 @@ function checkPasswordsMatch() {
   const password2 = (
     document.getElementById("repeat-password") as HTMLInputElement
   ).value;
-
-  console.log(password1, password2);
   return password1 === password2;
 }
 
 function handleSubmit(event: any) {
   event.preventDefault();
-  if (checkPasswordsMatch()) {
-    console.log("Passwords match!");
-  } else {
-    console.log("Passwords do not match.");
+  if (!checkPasswordsMatch()) {
+    msg.value = "Passwords do not match"
+  }else{
+    createUser()
   }
 }
 
-if (typeof window !== "undefined") {
-  window.addEventListener("load", function () {
-    const form = document.getElementById("signUp") as HTMLFormElement;
-    form?.addEventListener("submit", handleSubmit);
-  });
-}
 function isStrongPassword(value: string) {
   const myButton = document.querySelector("#submit") as HTMLButtonElement;
   const msg = document.querySelector("#msg") as HTMLSpanElement;
@@ -88,7 +82,7 @@ function isStrongPassword(value: string) {
       <form
         id="signUp"
         class="bg-white rounded-lg text-black m-10 p-10"
-        @submit="createUser()"
+        @submit="handleSubmit"
       >
         <div class="mb-6">
           <label
@@ -145,7 +139,7 @@ function isStrongPassword(value: string) {
         <div class="mb-6">
           <label
             for="password"
-            class="block mb-2 text-sm font-medium text-white"
+            class="block mb-2 text-sm font-medium text-black"
           >Your password</label>
           <input
             id="password"
@@ -160,7 +154,7 @@ function isStrongPassword(value: string) {
         <div class="mb-6">
           <label
             for="repeat-password"
-            class="block mb-2 text-sm font-medium text-white"
+            class="block mb-2 text-sm font-medium text-black"
           >Repeat password</label>
           <input
             id="repeat-password"
@@ -190,7 +184,6 @@ function isStrongPassword(value: string) {
             >terms and conditions</a></label>
         </div>
         <p
-          v-if="msg === '' "
           class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
         >
           {{ msg }}
@@ -207,7 +200,6 @@ function isStrongPassword(value: string) {
           id="submit"
           type="submit"
           class="signup font-bold py-2 px-4 rounded"
-          disabled="true"
         >
           Sign Up
         </button>
