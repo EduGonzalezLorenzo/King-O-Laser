@@ -211,9 +211,15 @@ public class MatchService {
     }
 
     public List<GameMatchDTO> getAvailableMatches() {
-        List<PlayerPlayMatch> matchList = playerPlayMatchRepo.findAll();
-
-        return generateGameMatchDTOsList(matchList);
+        List<Long> matchesAvailable = playerPlayMatchRepo.findAvailableGames();
+        List<PlayerPlayMatch> result = new ArrayList<>();
+        for (Long matchId : matchesAvailable) {
+            Optional<GameMatch> gameMatchOptional = gameMatchRepo.findById(matchId);
+            if (gameMatchOptional.isEmpty()) continue;
+            GameMatch gameMatch = gameMatchOptional.get();
+            result.add(playerPlayMatchRepo.findByGameMatchEquals(gameMatch).get(0));
+        }
+        return generateGameMatchDTOsList(result);
     }
 
 }
