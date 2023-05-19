@@ -33,26 +33,12 @@ async function LogUser(event: Event) {
   });
 
   if (response.ok) {
-    console.log("User Loged!");
-    return await navigateTo({ path: "/select-game" });
+    return navigateTo({ path: "/select-game" });
   } else {
    msg.value = "Error logging user !!";
   }
 }
-function isStrongPassword(value: string) {
-  const myButton = document.querySelector("#submit") as HTMLButtonElement;
-  const msg = document.querySelector("#msg") as HTMLSpanElement;
-  msg.textContent = "Password is not Strong";
-  myButton.disabled = true;
-  if (
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,15}$/.test(
-      value
-    )
-  ) {
-    msg.textContent = "";
-    myButton.disabled = false;
-  }
-}
+
 </script>
 
 <template>
@@ -78,7 +64,7 @@ function isStrongPassword(value: string) {
           <input
             id="email"
             type="text"
-            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             placeholder="name@email.com"
             required
             @change="(event:Event) => isEmail((event.target as HTMLInputElement).value)"
@@ -87,17 +73,15 @@ function isStrongPassword(value: string) {
         <div class="mb-6">
           <label
             for="password"
-            class="block mb-2 text-sm font-medium text-gray-900"
+            class="block mb-2 text-sm font-medium text-black"
           >Your password</label>
           <input
             id="password"
             type="password"
-            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
-            @change="(event:Event) => isStrongPassword((event.target as HTMLInputElement).value)"
           >
-          <span id="msg" />
         </div>
         <div class="flex items-start mb-6">
           <div class="flex items-center h-5">
@@ -111,15 +95,14 @@ function isStrongPassword(value: string) {
           </div>
           <label
             for="terms"
-            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            class="ml-2 text-sm font-medium text-black dark:text-black"
           >I agree with the
             <a
               href="#"
               class="text-blue-600 hover:underline dark:text-blue-500"
             >terms and conditions</a></label>
         </div>
-        <p
-          v-if="msg === '' "
+        <p 
           class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
         >
           {{ msg }}
@@ -136,7 +119,6 @@ function isStrongPassword(value: string) {
           id="submit"
           type="submit"
           class="signup font-bold py-2 px-4 rounded"
-          disabled="true"
         >
           Login
         </button>
