@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import isLogged from "~/utils/isLogged";
 
+isLogged;
 const route = useRoute();
 const game_type = route.params.game as string;
 const isPublic = ref<boolean>(false);
@@ -16,52 +18,69 @@ function isChecked(checked: boolean) {
 
 onBeforeMount(async () => {
   if (!["TicTacToe", "LASER_BOARD"].includes(game_type)) {
-    await navigateTo(`/games/${game_type}`);
+    await navigateTo(`/select-game`);
   }
 });
 
 async function createMatch() {
-  const content = {
+  let content: {
+    password?: string;
+    isPublic: boolean;
+    metadata: string;
+    game: string;
+    matchName: string;
+  };
+
+  content = {
     isPublic: !isPublic.value,
     metadata: boardDisposition.value,
     game: game_type,
-    password:password.value,
     matchName: matchName.value,
   };
+
+  if (isPublic.value) {
+    content = {
+      password: password.value,
+      isPublic: !isPublic.value,
+      metadata: boardDisposition.value,
+      game: game_type,
+      matchName: matchName.value,
+    };
+  }
   const response = await fetch("http://localhost:8080/match", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${window.localStorage.getItem("jwt")}`,
     },
     body: JSON.stringify(content),
   });
   if (response.ok) {
     console.log("Match created!");
-    return await navigateTo({ path: "/select-game" });
+    return (window.location.href = `/games/${game_type}`);
   } else {
     console.error("Error creating match.");
   }
 }
-function showBoard(){
-  console.log(boardDisposition.value)
-  switch(boardDisposition.value){
-    case 'ace':
-      imgPath.value = "/img/kingolaser/AceBoard.jpg"
+function showBoard() {
+  console.log(boardDisposition.value);
+  switch (boardDisposition.value) {
+    case "ace":
+      imgPath.value = "/img/kingolaser/AceBoard.jpg";
       break;
-    
-    case 'std':
-      imgPath.value = "/img/kingolaser/StandardBoard.jpg"
-    break
-    case 'cur':
-      imgPath.value = "/img/kingolaser/CuriosityBoard.jpg"
-      break
-      case 'gr':
-      imgPath.value = "/img/kingolaser/GrailBoard.jpg"
-      break
-      case 'sh':
-      imgPath.value = "/img/kingolaser/SophieBoard.jpg"
-      break
-}
+    case "std":
+      imgPath.value = "/img/kingolaser/StandardBoard.jpg";
+      break;
+    case "cur":
+      imgPath.value = "/img/kingolaser/CuriosityBoard.jpg";
+      break;
+    case "gr":
+      imgPath.value = "/img/kingolaser/GrailBoard.jpg";
+      break;
+    case "sh":
+      imgPath.value = "/img/kingolaser/SophieBoard.jpg";
+      break;
+  }
 }
 </script>
 <template>
@@ -96,7 +115,7 @@ function showBoard(){
 
           <div class="mb-6">
             <select
-              v-if="game_type === 'King-0-Las3r'"
+              v-if="game_type === 'LASER_BOARD'"
               id="boardDisposition"
               v-model="boardDisposition"
               name="boardDisposition"

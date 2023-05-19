@@ -1,5 +1,6 @@
 package com.telegame.code.controllers;
 
+import com.telegame.code.DTO.Message;
 import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.*;
@@ -26,42 +27,47 @@ public class MatchController {
     TokenService tokenService;
 
     @PostMapping("/match")
-    public ResponseEntity<String> createMatch(@RequestBody MatchForm matchForm, HttpServletRequest request) throws NoSuchAlgorithmException {
+    public ResponseEntity<Message> createMatch(@RequestBody MatchForm matchForm, HttpServletRequest request) throws NoSuchAlgorithmException {
         try {
-            return new ResponseEntity<>(matchService.createMatch(matchForm, request.getAttribute("playerName").toString()), HttpStatus.OK);
+            return new ResponseEntity<>(Message.builder()
+                    .message(matchService.createMatch(matchForm, request.getAttribute("playerName").toString()))
+                    .build(), HttpStatus.OK);
         } catch (InputFormException e) {
-            return new ResponseEntity<>("Match form error", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Match form error").build(), HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>("Player no exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Player no exists").build(), HttpStatus.BAD_REQUEST);
         } catch (MatchInfoException e) {
-            return new ResponseEntity<>("Game Metadata Error", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Game Metadata Error").build(), HttpStatus.CONFLICT);
         } catch (GameNoExistsException e) {
-            return new ResponseEntity<>("Game no exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Game no exists").build(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/match/{matchId}")
-    public ResponseEntity<String> joinMatch(@RequestBody JoinMatchForm joinMatchForm, @PathVariable Long matchId, HttpServletRequest request) throws NoSuchAlgorithmException {
+    public ResponseEntity<Message> joinMatch(@RequestBody JoinMatchForm joinMatchForm, @PathVariable Long matchId, HttpServletRequest request) throws NoSuchAlgorithmException {
         try {
-            return new ResponseEntity<>(matchService.joinMatch(matchId, joinMatchForm, request.getAttribute("playerName").toString()), HttpStatus.OK);
+            return new ResponseEntity<>(Message.builder()
+                    .message(matchService.joinMatch(matchId, joinMatchForm, request.getAttribute("playerName").toString()))
+                    .build(), HttpStatus.OK);
         } catch (FilledMatchException e) {
-            return new ResponseEntity<>("The match has no empty seats", HttpStatus.LOCKED);
+            return new ResponseEntity<>(Message.builder().message("The match has no empty seats").build(), HttpStatus.LOCKED);
         } catch (MatchNoExistsException e) {
-            return new ResponseEntity<>("Match not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(Message.builder().message("Match not found").build(), HttpStatus.NOT_FOUND);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
         } catch (PlayerAlreadyInMatchException e) {
-            return new ResponseEntity<>("You are already in this match", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("You are already in this match").build(), HttpStatus.CONFLICT);
         } catch (MatchInfoException e) {
-            return new ResponseEntity<>("Wrong password", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Wrong password").build(), HttpStatus.CONFLICT);
         }
     }
+
     @GetMapping("/matches")
     public ResponseEntity<?> getAvailableMatches() {
         try {
             return new ResponseEntity<>(matchService.getAvailableMatches(), HttpStatus.OK);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
         }
     }
 
@@ -70,7 +76,7 @@ public class MatchController {
         try {
             return new ResponseEntity<>(matchService.getPlayerCurrentMatches(request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
         }
     }
 
@@ -79,9 +85,9 @@ public class MatchController {
         try {
             return new ResponseEntity<>(matchService.getMatchInfo(matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>("Player can no join match because he no exists", HttpStatus.CONFLICT);
-        } catch (PlayerNoInMatchException e){
-            return new ResponseEntity<>("The player is not in this match", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
+        } catch (PlayerNoInMatchException e) {
+            return new ResponseEntity<>(Message.builder().message("The player is not in this match").build(), HttpStatus.CONFLICT);
         }
     }
 }

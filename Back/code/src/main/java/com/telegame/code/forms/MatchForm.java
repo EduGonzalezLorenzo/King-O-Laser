@@ -15,7 +15,8 @@ public class MatchForm {
     @NotNull
     Boolean isPublic;
 
-    @Length(min = 1, max = 20)
+    @NotNull
+    @Length(max = 20)
     String password;
 
     @NotNull
