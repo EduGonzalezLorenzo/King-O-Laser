@@ -67,7 +67,7 @@ public class MatchService {
     }
 
     private boolean privacyInconsistency(MatchForm matchForm) {
-        return (!matchForm.getIsPublic() && matchForm.getPassword().equals("")) || (matchForm.getIsPublic() && matchForm.getPassword() != null);
+        return (!matchForm.getIsPublic() && matchForm.getPassword().equals("")) || (matchForm.getIsPublic() && !matchForm.getPassword().equals(""));
     }
 
     private GameMatch buildGameMatch(MatchForm matchForm, PlayerPlayMatch playerOnePlayMatch) throws NoSuchAlgorithmException {
