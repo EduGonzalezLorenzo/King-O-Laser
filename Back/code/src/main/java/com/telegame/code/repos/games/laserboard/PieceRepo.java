@@ -1,4 +1,4 @@
-package com.telegame.code.repos.games;
+package com.telegame.code.repos.games.laserboard;
 
 import com.telegame.code.models.games.laserboard.pieces.Piece;
 import org.springframework.data.jpa.repository.JpaRepository;

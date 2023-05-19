@@ -14,7 +14,7 @@ import com.telegame.code.models.games.laserboard.LaserBeam;
 import com.telegame.code.models.games.laserboard.LaserBoard;
 import com.telegame.code.models.games.laserboard.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
-import com.telegame.code.repos.games.PieceRepo;
+import com.telegame.code.repos.games.laserboard.PieceRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -78,9 +78,19 @@ public class LaserBoardService {
         if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
         else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
 
+        laserBoard.setLastAction(formatRoute(route));
+
         boardRepo.save(laserBoard);
 
         return route;
+    }
+
+    private String formatRoute(List<int[]> route) {
+        StringBuilder formattedRoute = new StringBuilder("[");
+        for (int[] coordinate : route) {
+            formattedRoute.append("[").append(coordinate[0]).append(", ").append(coordinate[1]).append("],");
+        }
+        return formattedRoute.append("]").toString();
     }
 
 
