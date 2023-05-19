@@ -1,17 +1,22 @@
 <template>
-  <canvas
-    ref="canvas"
-    :width="canvasWidth"
-    :height="canvasHeight"
-    :mouseX="mouseX"
-    :mouseY="mouseY"
-    :selectedPieceY="selectedPieceY"
-    :selectedPieceX="selectedPieceX"
-    :selectedMovementY="selectedMovementY"
-    :selectedMovementX="selectedMovementX"
-    :rotationValue="rotationValue"
-    @click="handleClick"
-  />
+  <div
+    id="container"
+    class="canvas_container"
+  >
+    <canvas
+      ref="canvas"
+      :width="canvasWidth"
+      :height="canvasHeight"
+      :mouseX="mouseX"
+      :mouseY="mouseY"
+      :selectedPieceY="selectedPieceY"
+      :selectedPieceX="selectedPieceX"
+      :selectedMovementY="selectedMovementY"
+      :selectedMovementX="selectedMovementX"
+      :rotationValue="rotationValue"
+      @click="handleClick"
+    />
+  </div>
   <div
     id="custom-menu"
     class="custom-menu"
@@ -46,12 +51,21 @@ import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
-const canvasWidth = 960;
-const canvasHeight = 1200;
+
+const canvasWidth = ref(400);
+const canvasHeight = ref(500);
+
+const updateCanvasSize = () => {
+      
+      // canvasHeight.value = window.innerHeight * 0.8; // Ajusta la altura al 80% de la altura de la pantalla
+      canvasWidth.value = window.innerWidth * 0.5; // Ajusta el ancho al 80% del ancho de la pantalla
+      canvasHeight.value = (canvasWidth.value*100)/80
+    };
+
 const tableRows = 10;
 const tableColumns = 8;
-const cellWidth = canvasWidth / tableColumns;
-const cellHeight = canvasHeight / tableRows;
+const cellWidth = canvasWidth.value / tableColumns;
+const cellHeight = canvasHeight.value / tableRows;
 const mouseX = ref<number>(0);
 const mouseY = ref<number>(0);
 const selectedPieceY = ref<number>(0);
@@ -59,6 +73,10 @@ const selectedPieceX = ref<number>(0);
 const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
+
+function aux() {
+  console.log(canvas.value)
+}
 
 const boardDisposition = {
   route: [
@@ -317,6 +335,7 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
   }
 
   function showCell(cell: Cell) {
+    ctx.fillStyle = "rgba(0,0,0, 0.5)";
     ctx.beginPath();
     ctx.rect(
       cell.posX * cellHeight,
@@ -325,14 +344,12 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
       cell.width
     );
     ctx.stroke();
-    // ctx.font = "30px Arial";
-    // ctx.fillText(
-    //   `${cell.posY}:${cell.posX}`,
-    //   cell.posX * cellHeight + 50,
-    //   cell.posY * cellWidth + 100
-    // );
-    // ctx.fillStyle = "rgba(150,150,255, 0.5)";
-    // ctx.fill();
+    ctx.font = "30px Arial";
+    ctx.fillText(
+      `${cell.posY}:${cell.posX}`,
+      cell.posX * cellHeight + 50,
+      cell.posY * cellWidth + 100
+    );
   }
 };
 
@@ -350,8 +367,8 @@ const emit = defineEmits<{
 const handleClick = (event: MouseEvent) => {
   const menu = document.getElementById("custom-menu") as HTMLElement;
 
-  mouseX.value = Math.floor(event.offsetX / (canvasWidth / tableColumns));
-  mouseY.value = Math.floor(event.offsetY / (canvasHeight / tableRows));
+  mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
+  mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
 
   const ctx = canvas.value?.getContext("2d");
 
@@ -364,7 +381,7 @@ const handleClick = (event: MouseEvent) => {
       selectedPieceY.value = mouseY.value;
       selectedPieceX.value = mouseX.value;
 
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
       drawGrid(ctx);
       chargeImages(imagePaths).then((images) => {
         if (imagesLoaded(images)) {
@@ -422,6 +439,7 @@ const handleClick = (event: MouseEvent) => {
       );
     }
   }
+  aux()
 };
 
 const drawBoard = (
@@ -587,6 +605,7 @@ function drawLaser(
 }
 
 onMounted(() => {
+  updateCanvasSize();
   const ctx = canvas.value?.getContext("2d");
 
   if (ctx) {
@@ -637,6 +656,7 @@ onMounted(() => {
     rotationValue.value = "";
     menu.classList.remove("show");
   });
+  window.addEventListener('resize', updateCanvasSize)
 });
 
 function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
@@ -669,12 +689,21 @@ function imagesLoaded(images: HTMLImageElement[]): boolean {
 </script>
 
 <style>
+
+.canvas_container {
+  display: flex;
+  /* height: 80vh;
+  width: fit-content; */
+}
+
 canvas {
   /* margin-top: -100px; */
   /* scale: 0.8;  */
   background-image: url(../public/img/kingolaser/Board.jpg);
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
+  max-height: 80vh;
+  width: fit-content;
 }
 .custom-menu {
   display: none;
