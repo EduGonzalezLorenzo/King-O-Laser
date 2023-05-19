@@ -1,6 +1,7 @@
 package com.telegame.code.controllers;
 
 import com.telegame.code.DTO.Message;
+import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.player.EmailException;
 import com.telegame.code.exceptions.player.LoginException;
@@ -52,10 +53,8 @@ public class PlayerController {
     }
 
     @GetMapping("/getPlayer")
-    public ResponseEntity<Message> getPlayerInfo(HttpServletRequest request) {
-        return new ResponseEntity<>(Message.builder()
-                .message(playerService.getPlayerInfo(request.getAttribute("playerName").toString()))
-                .build(), HttpStatus.OK);
+    public ResponseEntity<PlayerDTO> getPlayerInfo(HttpServletRequest request) {
+        return new ResponseEntity<>(playerService.getPlayerInfo(request.getAttribute("playerName")), HttpStatus.OK);
     }
 
 //    @PutMapping("/update/{PlayerId}")

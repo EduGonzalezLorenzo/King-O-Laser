@@ -1,5 +1,6 @@
 package com.telegame.code.services;
 
+import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
 import com.telegame.code.exceptions.player.EmailException;
@@ -73,8 +74,12 @@ public class PlayerService {
         return player.orElse(null);
     }
 
-    public String getPlayerInfo(String playerName) {
-        return playerName;
+    public PlayerDTO getPlayerInfo(Object request) {
+        return PlayerDTO.builder()
+                .playerName((String) request)
+                .profileImgUrl("")
+                .loggedIn(true)
+                .build();
     }
 
 //    public Map<String, String> updatePlayerInfo(PlayerForm playerForm, Long id, Object candidate) {
