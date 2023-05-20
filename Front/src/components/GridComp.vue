@@ -90,6 +90,10 @@ const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
 
+function aux() {
+  console.log(canvas.value)
+}
+
 const boardDisposition = {
   route: [
     [1, 0],
@@ -451,6 +455,7 @@ const handleClick = (event: MouseEvent) => {
       );
     }
   }
+  aux()
 };
 
 const drawBoard = (
