@@ -97,14 +97,6 @@ async function LogUser(event: Event) {
               required
             >
           </div>
-          <label
-            for="terms"
-            class="ml-2 text-sm font-medium text-black dark:text-black"
-          >I agree with the
-            <a
-              href="#"
-              class="text-blue-600 hover:underline dark:text-blue-500"
-            >terms and conditions</a></label>
         </div>
         <p
           class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"

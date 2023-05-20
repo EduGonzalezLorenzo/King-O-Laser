@@ -1,5 +1,6 @@
 export default
-watch(
+onBeforeMount(async () =>{
+  watch(
     () => localStorage.getItem('jwt'),
     async (newValue) => {
       const token = newValue || ''
@@ -17,3 +18,4 @@ watch(
     { immediate: true } 
   )
   
+})

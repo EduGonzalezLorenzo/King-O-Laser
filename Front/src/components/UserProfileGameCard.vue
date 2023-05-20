@@ -60,7 +60,8 @@
 </template>
 
 <script setup lang="ts">
-const jwt = ref(localStorage.getItem("jwt"));
+const jwt = ref<String>("")
+
 const user = ref({
   name:String,
   loggedIn:Boolean,
@@ -68,6 +69,9 @@ const user = ref({
 })
 
 onBeforeMount(async () =>{
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
+  
   await fetch("http://localhost:8080/getPlayer", {
   method: "GET",
   headers: {
