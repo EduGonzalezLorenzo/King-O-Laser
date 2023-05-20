@@ -10,7 +10,6 @@
     </div>
     <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
       <Grid
-        :board-disposition="boardDisposition"
         @send-movement="sendMovement"
       />
     </div>
@@ -24,7 +23,10 @@
       <p> PX{{ newSelectedPieceX }}</p>
       <p> PY{{ newSelectedPieceY }}</p>
 
-      <button class="confirm_button hover:bg-green-300">
+      <button
+        class="confirm_button hover:bg-green-300"
+        @click="fetchMovement"
+      >
         Confirm Movement
       </button>
       <button
@@ -41,13 +43,13 @@
 import Grid from "~/components/GridComp.vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
-import { BoardDisposition } from "~/types/BoardDisposition"
+// import { BoardDisposition } from "~/types/BoardDisposition"
 // import { onBeforeMount } from "nuxt/dist/app/compat/capi";
 
-const boardDisposition = reactive<BoardDisposition>({
-  lastAction: '',
-  pieces: []
-})
+// const boardDisposition = reactive<BoardDisposition>({
+//   lastAction: '',
+//   pieces: []
+// })
 
 // onBeforeMount(async () =>{
 //   const localStore = localStorage.getItem("jwt")
@@ -66,7 +68,9 @@ const boardDisposition = reactive<BoardDisposition>({
 //   });
 // })
 
-// const route = useRoute()
+
+
+const route = useRoute()
 
 const newSelectedPieceY = ref(0);
 const newSelectedPieceX = ref(0);
@@ -74,12 +78,33 @@ const newSelectedMovementY = ref(0);
 const newSelectedMovementX = ref(0);
 const newRotationValue = ref("");
 const openSendMenu = ref(false);
-// const id = ref(route.params.id);
-// const jwt = ref<String>("")
+const id = ref(route.params.id);
+const jwt = ref<String>("")
 
 
-
-
+async function fetchMovement() {
+  const currentPosY = newSelectedPieceY.value
+  const currentPosX = newSelectedPieceX.value
+  const newPosY = newSelectedMovementY.value
+  const newPosX = newSelectedMovementX.value
+  const rotateTo = newRotationValue.value
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
+  await fetch("http://localhost:8080/match/" + id.value + "/action", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+    body: JSON.stringify({
+      currentPosY,
+      currentPosX,
+      newPosY,
+      newPosX,
+      rotateTo
+    }),
+  });
+}
 
 
 const sendMovement = (

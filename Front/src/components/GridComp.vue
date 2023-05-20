@@ -10,7 +10,6 @@
     :selectedMovementY="selectedMovementY"
     :selectedMovementX="selectedMovementX"
     :rotationValue="rotationValue"
-    :board-disposition="boardDisposition"
     @click="handleClick"
   />
   <div
@@ -45,7 +44,7 @@ import { ref, onMounted, defineEmits } from "vue";
 import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
-import { PropType } from "nuxt/dist/app/compat/capi";
+// import { PropType } from "nuxt/dist/app/compat/capi";
 // import { onBeforeMount } from "nuxt/dist/app/compat/capi";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
@@ -113,13 +112,13 @@ const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
 
-const props = defineProps({
-  boardDisposition: {type: Object as PropType<BoardDisposition>, required: true}
-})
+// const props = defineProps({
+//   boardDisposition: {type: Object as PropType<BoardDisposition>, required: true}
+// })
 
 const boardDisposition = reactive<BoardDisposition>({
-  lastAction : props.boardDisposition.lastAction,
-  pieces: props.boardDisposition.pieces
+  lastAction : '',
+  pieces: []
 })
 
 const imagePaths = [
@@ -185,7 +184,7 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
     );
     ctx.stroke();
     ctx.fillStyle = "rgba(0,0,0)";
-    ctx.font = "30px Arial";
+    ctx.font = "15px Arial";
     ctx.fillText(
       `${cell.posY}:${cell.posX}`,
       cell.posX * cellHeight.value + (cellHeight.value/5),
