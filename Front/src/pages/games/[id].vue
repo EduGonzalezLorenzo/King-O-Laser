@@ -38,6 +38,7 @@
 import Grid from "~/components/GridComp.vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
+const route = useRoute()
 
 const newSelectedPieceY = ref(0);
 const newSelectedPieceX = ref(0);
@@ -45,6 +46,22 @@ const newSelectedMovementY = ref(0);
 const newSelectedMovementX = ref(0);
 const newRotationValue = ref("");
 const openSendMenu = ref(false);
+const id = ref(route.params.id);
+const jwt = ref<String>("")
+
+onBeforeMount(async () =>{
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
+  await fetch("http://localhost:8080/match/"+ id.value, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+  }).then((response) => {
+   console.log(response.json())
+  });
+})
 
 const sendMovement = (
   selectedPieceY: number,

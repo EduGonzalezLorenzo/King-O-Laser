@@ -5,7 +5,6 @@ import isLogged from "~/utils/isLogged";
 
 isLogged;
 const msg = ref("");
-const jwt = ref(localStorage.getItem("jwt"));
 const route = useRoute();
 const game_type = route.params.game as string;
 const isPublic = ref<boolean>(false);
@@ -13,6 +12,7 @@ const boardDisposition = ref<string>("");
 const matchName = ref<string>("");
 const password = ref<string>("");
 const imgPath = ref<string>("");
+const jwt = ref<String>("")
 
 function isChecked(checked: boolean) {
   isPublic.value = checked;
@@ -26,6 +26,8 @@ onBeforeMount(async () => {
 
 async function createMatch(event:Event) {
   event.preventDefault();
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
   const content = {
     password: password.value,
     isPublic: !isPublic.value,
@@ -43,7 +45,7 @@ async function createMatch(event:Event) {
     body: JSON.stringify(content),
   }).then((response) => {
     if (response.ok) {
-      navigateTo(`/games/`+game_type);
+      navigateTo(`/profile/`+"hola");
     } else {
       msg.value = "Error creating match.";
     }
