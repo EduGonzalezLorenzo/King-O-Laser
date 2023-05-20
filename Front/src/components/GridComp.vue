@@ -44,13 +44,59 @@ import { ref, onMounted, defineEmits } from "vue";
 import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
-// import { PropType } from "nuxt/dist/app/compat/capi";
-// import { onBeforeMount } from "nuxt/dist/app/compat/capi";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
-
 const canvasWidth = ref(560);
 const canvasHeight = ref(700);
+const tableRows = 10;
+const tableColumns = 8;
+const cellWidth = ref<number>(canvasWidth.value / tableColumns);
+const cellHeight = ref<number>(canvasHeight.value / tableRows);
+const mouseX = ref<number>(0);
+const mouseY = ref<number>(0);
+const selectedPieceY = ref<number>(0);
+const selectedPieceX = ref<number>(0);
+const selectedMovementY = ref<number>(0);
+const selectedMovementX = ref<number>(0);
+const rotationValue = ref<string>("");
+const boardDisposition = reactive<BoardDisposition>({
+  lastAction : '',
+  pieces: []
+})
+
+const imagePaths = [
+  "/img/kingolaser/UnknownPiece.jpg",
+  "/img/kingolaser/BlueKing.png",
+  "/img/kingolaser/BlueBlockN.png",
+  "/img/kingolaser/BlueBlockS.png",
+  "/img/kingolaser/BlueBlockE.png",
+  "/img/kingolaser/BlueBlockW.png",
+  "/img/kingolaser/BlueBouncerNS.png",
+  "/img/kingolaser/BlueBouncerEW.png",
+  "/img/kingolaser/BlueDeflectorN.png",
+  "/img/kingolaser/BlueDeflectorS.png",
+  "/img/kingolaser/BlueDeflectorE.png",
+  "/img/kingolaser/BlueDeflectorW.png",
+  "/img/kingolaser/BlueLaserN.png",
+  "/img/kingolaser/BlueLaserS.png",
+  "/img/kingolaser/BlueLaserE.png",
+  "/img/kingolaser/BlueLaserW.png",
+  "/img/kingolaser/RedKing.png",
+  "/img/kingolaser/RedBlockN.png",
+  "/img/kingolaser/RedBlockS.png",
+  "/img/kingolaser/RedBlockE.png",
+  "/img/kingolaser/RedBlockW.png",
+  "/img/kingolaser/RedBouncerNS.png",
+  "/img/kingolaser/RedBouncerEW.png",
+  "/img/kingolaser/RedDeflectorN.png",
+  "/img/kingolaser/RedDeflectorS.png",
+  "/img/kingolaser/RedDeflectorE.png",
+  "/img/kingolaser/RedDeflectorW.png",
+  "/img/kingolaser/RedLaserN.png",
+  "/img/kingolaser/RedLaserS.png",
+  "/img/kingolaser/RedLaserE.png",
+  "/img/kingolaser/RedLaserW.png",
+];
 
 const route = useRoute()
 const id = ref(route.params.id);
@@ -97,63 +143,8 @@ const updateCanvasSize = () => {
         cellWidth.value = 35
         cellHeight.value = 35
       }
+      // location.reload()
     }
-
-    
-const tableRows = 10;
-const tableColumns = 8;
-const cellWidth = ref<number>(canvasWidth.value / tableColumns);
-const cellHeight = ref<number>(canvasHeight.value / tableRows);
-const mouseX = ref<number>(0);
-const mouseY = ref<number>(0);
-const selectedPieceY = ref<number>(0);
-const selectedPieceX = ref<number>(0);
-const selectedMovementY = ref<number>(0);
-const selectedMovementX = ref<number>(0);
-const rotationValue = ref<string>("");
-
-// const props = defineProps({
-//   boardDisposition: {type: Object as PropType<BoardDisposition>, required: true}
-// })
-
-const boardDisposition = reactive<BoardDisposition>({
-  lastAction : '',
-  pieces: []
-})
-
-const imagePaths = [
-  "/img/kingolaser/UnknownPiece.jpg",
-  "/img/kingolaser/BlueKing.png",
-  "/img/kingolaser/BlueBlockN.png",
-  "/img/kingolaser/BlueBlockS.png",
-  "/img/kingolaser/BlueBlockE.png",
-  "/img/kingolaser/BlueBlockW.png",
-  "/img/kingolaser/BlueBouncerNS.png",
-  "/img/kingolaser/BlueBouncerEW.png",
-  "/img/kingolaser/BlueDeflectorN.png",
-  "/img/kingolaser/BlueDeflectorS.png",
-  "/img/kingolaser/BlueDeflectorE.png",
-  "/img/kingolaser/BlueDeflectorW.png",
-  "/img/kingolaser/BlueLaserN.png",
-  "/img/kingolaser/BlueLaserS.png",
-  "/img/kingolaser/BlueLaserE.png",
-  "/img/kingolaser/BlueLaserW.png",
-  "/img/kingolaser/RedKing.png",
-  "/img/kingolaser/RedBlockN.png",
-  "/img/kingolaser/RedBlockS.png",
-  "/img/kingolaser/RedBlockE.png",
-  "/img/kingolaser/RedBlockW.png",
-  "/img/kingolaser/RedBouncerNS.png",
-  "/img/kingolaser/RedBouncerEW.png",
-  "/img/kingolaser/RedDeflectorN.png",
-  "/img/kingolaser/RedDeflectorS.png",
-  "/img/kingolaser/RedDeflectorE.png",
-  "/img/kingolaser/RedDeflectorW.png",
-  "/img/kingolaser/RedLaserN.png",
-  "/img/kingolaser/RedLaserS.png",
-  "/img/kingolaser/RedLaserE.png",
-  "/img/kingolaser/RedLaserW.png",
-];
 
 const board = ref(new Array(tableRows));
 for (let x = 0; x < tableRows; x++) {
@@ -182,14 +173,14 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
       cellHeight.value,
       cellWidth.value
     );
-    ctx.stroke();
-    ctx.fillStyle = "rgba(0,0,0)";
-    ctx.font = "15px Arial";
-    ctx.fillText(
-      `${cell.posY}:${cell.posX}`,
-      cell.posX * cellHeight.value + (cellHeight.value/5),
-      cell.posY * cellWidth.value + (cellHeight.value/1.5)
-    );
+    // ctx.stroke();
+    // ctx.fillStyle = "rgba(0,0,0)";
+    // ctx.font = "15px Arial";
+    // ctx.fillText(
+    //   `${cell.posY}:${cell.posX}`,
+    //   cell.posX * cellHeight.value + (cellHeight.value/5),
+    //   cell.posY * cellWidth.value + (cellHeight.value/1.5)
+    // );
   }
 };
 
@@ -423,25 +414,30 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
   }
 }
 
-// function drawLaser(
-//   ctx: CanvasRenderingContext2D,
-//   boardDisposition: BoardDisposition
-// ) {
-//   const thickness = 20;
-//   ctx.fillStyle = "rgb(100, 255, 100)";
-
-//   boardDisposition.route.forEach((target) => {
-//     ctx.beginPath();
-//     ctx.arc(
-//       target[1] * cellWidth.value + cellWidth.value / 2,
-//       target[0] * cellHeight.value + cellWidth.value / 2,
-//       thickness,
-//       0,
-//       2 * Math.PI
-//     );
-//     ctx.fill();
-//   });
-// }
+function drawLaser(
+  ctx: CanvasRenderingContext2D,
+  boardDisposition: BoardDisposition
+) {
+  const trimmed = boardDisposition.lastAction
+  const steps = trimmed.split('*')
+  const route: number[][] = steps.map((step) => {
+    const coordinates = step.split(',')
+    return coordinates.map(Number)
+  })
+  const thickness = 15;
+  ctx.fillStyle = "rgb(100, 255, 100)";
+  route.forEach((target: number[]) => {
+    ctx.beginPath();
+    ctx.arc(
+      target[1] * cellWidth.value + cellWidth.value / 2,
+      target[0] * cellHeight.value + cellWidth.value / 2,
+      thickness,
+      0,
+      2 * Math.PI
+    );
+    ctx.fill();
+  });
+}
 
 onMounted(() => {
   const ctx = canvas.value?.getContext("2d");
@@ -454,7 +450,7 @@ onMounted(() => {
         drawBoard(ctx, boardDisposition, images);
       }
 
-      // drawLaser(ctx, boardDisposition);
+      drawLaser(ctx, boardDisposition);
 
     });
   }

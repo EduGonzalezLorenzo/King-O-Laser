@@ -43,32 +43,6 @@
 import Grid from "~/components/GridComp.vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
-// import { BoardDisposition } from "~/types/BoardDisposition"
-// import { onBeforeMount } from "nuxt/dist/app/compat/capi";
-
-// const boardDisposition = reactive<BoardDisposition>({
-//   lastAction: '',
-//   pieces: []
-// })
-
-// onBeforeMount(async () =>{
-//   const localStore = localStorage.getItem("jwt")
-//   jwt.value = localStore as String;
-//   await fetch("http://localhost:8080/match/"+ id.value, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: "Bearer " + jwt.value,
-//     },
-//   }).then((response) => {
-//    return response.json()
-//   }).then((data) => {
-//     boardDisposition.lastAction = data.lastAction,
-//     boardDisposition.pieces = data.pieces
-//   });
-// })
-
-
 
 const route = useRoute()
 
@@ -104,6 +78,7 @@ async function fetchMovement() {
       rotateTo
     }),
   });
+  location.reload()
 }
 
 
@@ -128,7 +103,6 @@ const closeSendMenu = () => {
 </script>
 <style scoped>
 .game_container {
-  /* position: relative; */
   display: flex;
   align-items: flex-start;
   align-items: center;
