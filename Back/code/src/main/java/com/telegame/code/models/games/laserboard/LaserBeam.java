@@ -1,10 +1,10 @@
-package com.telegame.code.models.games.kingolaser;
+package com.telegame.code.models.games.laserboard;
 
-import com.telegame.code.builder.games.kingolaser.PieceBuilder;
+import com.telegame.code.builder.games.laserboard.PieceBuilder;
 import com.telegame.code.models.Board;
-import com.telegame.code.models.games.kingolaser.pieces.Bouncer;
-import com.telegame.code.models.games.kingolaser.pieces.Piece;
-import com.telegame.code.models.games.kingolaser.pieces.PieceSide;
+import com.telegame.code.models.games.laserboard.pieces.Bouncer;
+import com.telegame.code.models.games.laserboard.pieces.Piece;
+import com.telegame.code.models.games.laserboard.pieces.PieceSide;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +23,6 @@ public class LaserBeam {
 
     Piece.Direction direction;
     List<int[]> route;
-
-//    public void setStep(int[] step) {
-//        this.route.add(step);
-//    }
 
     public Map<String, Object> shootLaser(Board.MatchStatus matchStatus, Piece.Direction direction, List<Piece> boardDisposition) {
 
@@ -111,17 +107,12 @@ public class LaserBeam {
                     returnMap.put("route", route);
                     return returnMap;
                 }
-
-
             }
         }
-//        LaserBeam.drawBoard(board);
-//        returnMap.put("message", "END");
-//        returnMap.put("route", route);
         return returnMap;
     }
 
-    public int[] forward(Piece.Direction direction, int[] currentPosition) {
+    private int[] forward(Piece.Direction direction, int[] currentPosition) {
         int posY = currentPosition[0];
         int posX = currentPosition[1];
         switch (direction) {
@@ -157,7 +148,6 @@ public class LaserBeam {
                     board[i][j] = "  " + i + ":" + j + " ";
                 } else if (board[i][j] instanceof Piece) {
                     Piece piece = (Piece) board[i][j];
-//                    board[i][j] = piece.getType().toString();
                     board[i][j] = piece.getRotation();
                 }
                 System.out.print(board[i][j] + "|");

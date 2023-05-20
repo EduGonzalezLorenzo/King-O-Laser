@@ -1,4 +1,4 @@
-package com.telegame.code.DTO.games.kingolaser;
+package com.telegame.code.DTO.games.laserboard;
 
 import lombok.*;
 

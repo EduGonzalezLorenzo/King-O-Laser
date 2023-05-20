@@ -1,7 +1,7 @@
 package com.telegame.code.services;
 
 import com.telegame.code.DTO.GameMatchDTO;
-import com.telegame.code.DTO.games.kingolaser.LaserBoardDTO;
+import com.telegame.code.DTO.games.laserboard.LaserBoardDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
@@ -13,7 +13,7 @@ import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.PlayerPlayMatch;
-import com.telegame.code.models.games.kingolaser.LaserBoard;
+import com.telegame.code.models.games.laserboard.LaserBoard;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerPlayMatchRepo;
@@ -156,12 +156,13 @@ public class MatchService {
     private List<GameMatchDTO> generateGameMatchDTOsList(List<PlayerPlayMatch> playerPlayMatchList) {
         List<GameMatchDTO> gameMatchDTOList = new ArrayList<>();
         for (PlayerPlayMatch playerPlayMatch : playerPlayMatchList) {
-            gameMatchDTOList.add(generateGameMatchDTO(playerPlayMatch.getGameMatch()));
+            gameMatchDTOList.add(generateGameMatchDTO(playerPlayMatch));
         }
         return gameMatchDTOList;
     }
 
-    private GameMatchDTO generateGameMatchDTO(GameMatch gameMatch) {
+    private GameMatchDTO generateGameMatchDTO(PlayerPlayMatch playerPlayMatch) {
+        GameMatch gameMatch = playerPlayMatch.getGameMatch();
         Board board = getBoard(gameMatch);
         return GameMatchDTO.builder()
                 .id(gameMatch.getId())
@@ -170,6 +171,7 @@ public class MatchService {
                 .name(gameMatch.getName())
                 .currentPlayers(gameMatch.getPlayers().size())
                 .status(board.getStatus().toString())
+                .position(playerPlayMatch.getPosition())
                 .build();
     }
 

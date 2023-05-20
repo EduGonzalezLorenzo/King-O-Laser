@@ -1,7 +1,7 @@
-package com.telegame.code.models.games.kingolaser.pieces;
+package com.telegame.code.models.games.laserboard.pieces;
 
-import com.telegame.code.builder.games.kingolaser.PieceBuilder;
-import com.telegame.code.models.games.kingolaser.LaserBoard;
+import com.telegame.code.builder.games.laserboard.PieceBuilder;
+import com.telegame.code.models.games.laserboard.LaserBoard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

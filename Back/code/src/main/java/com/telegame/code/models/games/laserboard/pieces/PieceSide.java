@@ -1,4 +1,4 @@
-package com.telegame.code.models.games.kingolaser.pieces;
+package com.telegame.code.models.games.laserboard.pieces;
 
 
 public interface PieceSide {
