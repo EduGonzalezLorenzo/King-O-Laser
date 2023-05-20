@@ -1,12 +1,14 @@
 <template>
-  <div class="grid grid-cols-3 gap-24 game_container">
-    <div class="col-span-1 mt-0 mb-auto">
-      <UserProfileGameCard />
-      <StartedMatchList />
+  <div class="grid grid-cols-2">
+    <div class="w-2/3">
+      <div class="grid grid-cols-1 gap-12 game_container">
+        <div class="mt-0 mb-auto">
+          <UserProfileGameCard />
+          <StartedMatchList />
+        </div>
+      </div>
     </div>
-    <div
-      class="col-span-2 grid h-screen place-items-center canvas_container justify-self-center"
-    >
+    <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
       <Grid @send-movement="sendMovement" />
     </div>
     <div

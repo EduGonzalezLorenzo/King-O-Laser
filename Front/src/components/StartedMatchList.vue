@@ -1,36 +1,33 @@
 <template>
-  <div class="flex flex-col bg-slate-300">
+  <div class="flex flex-col bg-slate-300 jusify-start">
     <ul class="grid grid-cols-1">
       <li
-        v-for="(player, index) in user.list"
+        v-for="(game, index) in users"
         :key="index"
         class="border-white border-4 p-4"
       >
-        <div class="flex items-center">
-          <div
-            :class="['flex', 'items-center', 'justify-center', 'w-16', 'h-16', 'rounded-full', 'border-4','mr-4', 
-                     'shadow', player.loggedIn ? 'border-green-500' : 'border-red-500']"
-          >
-            <img
-              :src="player.profileImg"
-              class="w-full h-full rounded-full object-cover"
-            >
-          </div>
+        <div
+          class="flex items-start" 
+          @click="goMatch(game.id)"
+        >
           <div>
             <p class="font-bold">
-              {{ player.gameName }}
+              {{ game.name }}
+            </p>
+            <p class="font-bold">
+              Players: {{ game.currPlayers }}/2
             </p>
             <p
-              v-if="player.turn"
-              class="text-blue-500 font-bold"
+              v-if="game.status === 'WAITING'"
+              class="font-bold bg-yellow-300 p-2 rounded"
             >
-              Your Turn!
+              {{ game.status }}
             </p>
             <p
               v-else
-              class="text-orange-600 font-bold"
+              class="font-bold"
             >
-              {{ player.vsName }} turn!
+              {{ game.status }}
             </p>
           </div>
         </div>
@@ -38,39 +35,34 @@
     </ul>
   </div>
 </template>
-  
-  <script setup>
-  const user = {
-    list: [
-      {
-        gameName: "Ejemplo",
-        vsName:"User 1",
-        profileImg: "/img/kingolaser/BlueKing.png",
-        loggedIn: true,
-        turn: false,
-      },
-      {
-          gameName: "Ejemplo2",
-          vsName:"User 2",
-          profileImg: "/img/kingolaser/RedKing.png",
-          loggedIn: false,
-          turn:true
-      },
-      {
-          gameName: "Ejemplo3",
-          vsName:"User 3",
-          profileImg: "/img/kingolaser/BlueBouncerNS.png",
-          loggedIn: false,
-          turn:false
-      },
-      {
-          gameName: "Ejemplo4",
-          vsName:"User 4",
-          profileImg: "/img/kingolaser/RedBouncerNS.png",
-          loggedIn: true,
-          turn:true
-      }
-    ],
-  };
-  </script>
-  
+
+<script setup>
+const users = ref([]);
+
+const jwt = ref(localStorage.getItem("jwt"));
+
+await fetch("http://localhost:8080/match", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + jwt.value,
+  },
+})
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    users.value = data.map((userData) => ({
+      id: userData.id,
+      name: userData.name,
+      isPublic: userData.isPublic,
+      currPlayers: userData.currentPlayers,
+      matchCreation: userData.matchCreation,
+      status: userData.status,
+    }));
+  });
+
+function goMatch(id) {
+  navigateTo(`/games/` + id);
+}
+</script>

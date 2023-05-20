@@ -4,6 +4,8 @@ import { useRoute } from "vue-router";
 import isLogged from "~/utils/isLogged";
 
 isLogged;
+const msg = ref("");
+const jwt = ref(localStorage.getItem("jwt"));
 const route = useRoute();
 const game_type = route.params.game as string;
 const isPublic = ref<boolean>(false);
@@ -22,45 +24,30 @@ onBeforeMount(async () => {
   }
 });
 
-async function createMatch() {
-  let content: {
-    password?: string;
-    isPublic: boolean;
-    metadata: string;
-    game: string;
-    matchName: string;
-  };
-
-  content = {
+async function createMatch(event:Event) {
+  event.preventDefault();
+  const content = {
+    password: password.value,
     isPublic: !isPublic.value,
     metadata: boardDisposition.value,
     game: game_type,
     matchName: matchName.value,
   };
 
-  if (isPublic.value) {
-    content = {
-      password: password.value,
-      isPublic: !isPublic.value,
-      metadata: boardDisposition.value,
-      game: game_type,
-      matchName: matchName.value,
-    };
-  }
-  const response = await fetch("http://localhost:8080/match", {
+  await fetch("http://localhost:8080/match", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${window.localStorage.getItem("jwt")}`,
+      Authorization: "Bearer " + jwt.value,
     },
     body: JSON.stringify(content),
+  }).then((response) => {
+    if (response.ok) {
+      navigateTo(`/games/`+game_type);
+    } else {
+      msg.value = "Error creating match.";
+    }
   });
-  if (response.ok) {
-    console.log("Match created!");
-    return (window.location.href = `/games/${game_type}`);
-  } else {
-    console.error("Error creating match.");
-  }
 }
 function showBoard() {
   console.log(boardDisposition.value);
@@ -97,6 +84,7 @@ function showBoard() {
         <form
           id="match"
           class="bg-white rounded-lg m-10 p-10 h-[45%]"
+          @submit="createMatch"
         >
           <div class="mb-6">
             <label
@@ -174,6 +162,11 @@ function showBoard() {
                 >
               </div>
             </div>
+            <p
+              class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
+            >
+              {{ msg }}
+            </p>
             <div class="mb-6">
               <button
                 id="submit"
