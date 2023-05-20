@@ -95,20 +95,15 @@ function aux() {
 }
 
 const boardDisposition = {
-  route: [
-    [1, 0],
-    [2, 0],
-    [3, 0],
+  lastAction: `[[1, 0],[2, 0],[3, 0],
     [4, 1],
     [4, 2],
     [4, 3],
     [4, 4],
     [4, 5],
     [4, 6],
-  ],
-  response: "OK",
-  message: "OUT",
-  board: [
+  ]`,
+  pieces: [
     // ACE DISPOSITION
     {
       owner: "PLAYER_ONE",
@@ -463,7 +458,7 @@ const drawBoard = (
   boardDisposition: BoardDisposition,
   images: HTMLImageElement[]
 ) => {
-  const pieceList: Piece[] = boardDisposition.board;
+  const pieceList: Piece[] = boardDisposition.pieces;
   pieceList.forEach((piece) => {
     board.value[piece.posY][piece.posX].empty = false;
     board.value[piece.posY][piece.posX] = new Piece(
@@ -600,25 +595,25 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
   }
 }
 
-function drawLaser(
-  ctx: CanvasRenderingContext2D,
-  boardDisposition: BoardDisposition
-) {
-  const thickness = 20;
-  ctx.fillStyle = "rgb(100, 255, 100)";
+// function drawLaser(
+//   ctx: CanvasRenderingContext2D,
+//   boardDisposition: BoardDisposition
+// ) {
+//   const thickness = 20;
+//   ctx.fillStyle = "rgb(100, 255, 100)";
 
-  boardDisposition.route.forEach((target) => {
-    ctx.beginPath();
-    ctx.arc(
-      target[1] * cellWidth.value + cellWidth.value / 2,
-      target[0] * cellHeight.value + cellWidth.value / 2,
-      thickness,
-      0,
-      2 * Math.PI
-    );
-    ctx.fill();
-  });
-}
+//   boardDisposition.route.forEach((target) => {
+//     ctx.beginPath();
+//     ctx.arc(
+//       target[1] * cellWidth.value + cellWidth.value / 2,
+//       target[0] * cellHeight.value + cellWidth.value / 2,
+//       thickness,
+//       0,
+//       2 * Math.PI
+//     );
+//     ctx.fill();
+//   });
+// }
 
 onMounted(() => {
   const ctx = canvas.value?.getContext("2d");

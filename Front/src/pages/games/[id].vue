@@ -38,6 +38,7 @@
 import Grid from "~/components/GridComp.vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
+import {BoardDisposition} from "~/types/BoardDisposition"
 const route = useRoute()
 
 const newSelectedPieceY = ref(0);
@@ -49,6 +50,11 @@ const openSendMenu = ref(false);
 const id = ref(route.params.id);
 const jwt = ref<String>("")
 
+const boardDisposition = reactive<BoardDisposition>({
+  lastAction: '',
+  pieces: []
+})
+
 onBeforeMount(async () =>{
   const localStore = localStorage.getItem("jwt")
   jwt.value = localStore as String;
@@ -59,9 +65,13 @@ onBeforeMount(async () =>{
       Authorization: "Bearer " + jwt.value,
     },
   }).then((response) => {
-   console.log(response.json())
+   return response.json()
+  }).then((data) => {
+    boardDisposition.lastAction = data.lastAction,
+    boardDisposition.pieces = data.pieces
   });
 })
+
 
 const sendMovement = (
   selectedPieceY: number,
