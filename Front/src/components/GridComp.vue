@@ -46,12 +46,42 @@ import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
-const canvasWidth = 960;
-const canvasHeight = 1200;
+
+const canvasWidth = ref(560);
+const canvasHeight = ref(700);
+
+const updateCanvasSize = () => {
+      if(window.innerWidth > 1200) {
+        canvasWidth.value = 560
+        canvasHeight.value = 700
+        cellWidth.value = 70
+        cellHeight.value = 70
+      }
+      if(window.innerWidth > 1000 && window.innerWidth <= 1200) {
+        canvasWidth.value = 480
+        canvasHeight.value = 600
+        cellWidth.value = 60
+        cellHeight.value = 60
+      }
+      if(window.innerWidth > 800 && window.innerWidth <= 1000) {
+        canvasWidth.value = 320
+        canvasHeight.value = 400
+        cellWidth.value = 40
+        cellHeight.value = 40
+      }
+      if(window.innerWidth < 800) {
+        canvasWidth.value = 280
+        canvasHeight.value = 350
+        cellWidth.value = 35
+        cellHeight.value = 35
+      }
+    }
+
+    
 const tableRows = 10;
 const tableColumns = 8;
-const cellWidth = canvasWidth / tableColumns;
-const cellHeight = canvasHeight / tableRows;
+const cellWidth = ref<number>(canvasWidth.value / tableColumns);
+const cellHeight = ref<number>(canvasHeight.value / tableRows);
 const mouseX = ref<number>(0);
 const mouseY = ref<number>(0);
 const selectedPieceY = ref<number>(0);
@@ -59,6 +89,10 @@ const selectedPieceX = ref<number>(0);
 const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
+
+function aux() {
+  console.log(canvas.value)
+}
 
 const boardDisposition = {
   route: [
@@ -305,7 +339,7 @@ for (let x = 0; x < tableRows; x++) {
 
 for (let x = 0; x < tableRows; x++) {
   for (let y = 0; y < tableColumns; y++) {
-    board.value[x][y] = new Cell(cellWidth, cellHeight, x, y, false);
+    board.value[x][y] = new Cell(cellWidth.value, cellHeight.value, x, y, false);
   }
 }
 
@@ -317,22 +351,21 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
   }
 
   function showCell(cell: Cell) {
+    ctx.fillStyle = "rgba(0,0,0, 0.5)";
     ctx.beginPath();
     ctx.rect(
-      cell.posX * cellHeight,
-      cell.posY * cellWidth,
-      cell.height,
-      cell.width
+      cell.posX * cellHeight.value,
+      cell.posY * cellWidth.value,
+      cellHeight.value,
+      cellWidth.value
     );
-    ctx.stroke();
+    // ctx.stroke();
     // ctx.font = "30px Arial";
     // ctx.fillText(
     //   `${cell.posY}:${cell.posX}`,
     //   cell.posX * cellHeight + 50,
     //   cell.posY * cellWidth + 100
     // );
-    // ctx.fillStyle = "rgba(150,150,255, 0.5)";
-    // ctx.fill();
   }
 };
 
@@ -350,8 +383,8 @@ const emit = defineEmits<{
 const handleClick = (event: MouseEvent) => {
   const menu = document.getElementById("custom-menu") as HTMLElement;
 
-  mouseX.value = Math.floor(event.offsetX / (canvasWidth / tableColumns));
-  mouseY.value = Math.floor(event.offsetY / (canvasHeight / tableRows));
+  mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
+  mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
 
   const ctx = canvas.value?.getContext("2d");
 
@@ -364,7 +397,7 @@ const handleClick = (event: MouseEvent) => {
       selectedPieceY.value = mouseY.value;
       selectedPieceX.value = mouseX.value;
 
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
       drawGrid(ctx);
       chargeImages(imagePaths).then((images) => {
         if (imagesLoaded(images)) {
@@ -390,18 +423,18 @@ const handleClick = (event: MouseEvent) => {
             if (board.value[j][i] instanceof Piece) {
               ctx.fillStyle = "rgb(250,10,10, 0.5)";
               ctx.fillRect(
-                i * cellHeight,
-                j * cellWidth,
-                cellHeight,
-                cellWidth
+                i * cellHeight.value,
+                j * cellWidth.value,
+                cellHeight.value,
+                cellWidth.value
               );
             } else if (board.value[j][i] instanceof Cell) {
               ctx.fillStyle = "rgb(10,250,10, 0.5)";
               ctx.fillRect(
-                i * cellHeight,
-                j * cellWidth,
-                cellHeight,
-                cellWidth
+                i * cellHeight.value,
+                j * cellWidth.value,
+                cellHeight.value,
+                cellWidth.value
               );
               board.value[j][i].selectable = true;
             }
@@ -422,6 +455,7 @@ const handleClick = (event: MouseEvent) => {
       );
     }
   }
+  aux()
 };
 
 const drawBoard = (
@@ -442,10 +476,10 @@ const drawBoard = (
     const image = getPieceImage(piece, images);
     ctx.drawImage(
       image,
-      piece.posX * cellHeight,
-      piece.posY * cellWidth,
-      cellHeight,
-      cellWidth
+      piece.posX * cellHeight.value,
+      piece.posY * cellWidth.value,
+      cellHeight.value,
+      cellWidth.value
     );
   });
 };
@@ -576,8 +610,8 @@ function drawLaser(
   boardDisposition.route.forEach((target) => {
     ctx.beginPath();
     ctx.arc(
-      target[1] * cellWidth + cellWidth / 2,
-      target[0] * cellHeight + cellWidth / 2,
+      target[1] * cellWidth.value + cellWidth.value / 2,
+      target[0] * cellHeight.value + cellWidth.value / 2,
       thickness,
       0,
       2 * Math.PI
@@ -590,6 +624,7 @@ onMounted(() => {
   const ctx = canvas.value?.getContext("2d");
 
   if (ctx) {
+    
     drawGrid(ctx);
     chargeImages(imagePaths).then((images) => {
       if (imagesLoaded(images)) {
@@ -637,6 +672,8 @@ onMounted(() => {
     rotationValue.value = "";
     menu.classList.remove("show");
   });
+  window.addEventListener('resize', updateCanvasSize)
+  updateCanvasSize()
 });
 
 function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
@@ -669,12 +706,10 @@ function imagesLoaded(images: HTMLImageElement[]): boolean {
 </script>
 
 <style>
+
 canvas {
-  /* margin-top: -100px; */
-  /* scale: 0.8;  */
   background-image: url(../public/img/kingolaser/Board.jpg);
-  width: 100%;
-  height: 100%;
+  background-size: contain;
 }
 .custom-menu {
   display: none;

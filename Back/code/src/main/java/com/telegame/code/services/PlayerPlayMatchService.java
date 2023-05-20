@@ -8,7 +8,7 @@ import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
-import com.telegame.code.models.games.kingolaser.LaserBoard;
+import com.telegame.code.models.games.laserboard.LaserBoard;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerRepo;
