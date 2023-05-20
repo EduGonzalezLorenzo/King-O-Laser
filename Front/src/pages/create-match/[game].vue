@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import isLogged from "~/utils/isLogged";
 
+isLogged;
+const msg = ref("");
 const route = useRoute();
 const game_type = route.params.game as string;
 const isPublic = ref<boolean>(false);
@@ -9,6 +12,7 @@ const boardDisposition = ref<string>("");
 const matchName = ref<string>("");
 const password = ref<string>("");
 const imgPath = ref<string>("");
+const jwt = ref<String>("")
 
 function isChecked(checked: boolean) {
   isPublic.value = checked;
@@ -16,52 +20,56 @@ function isChecked(checked: boolean) {
 
 onBeforeMount(async () => {
   if (!["TicTacToe", "LASER_BOARD"].includes(game_type)) {
-    await navigateTo(`/games/${game_type}`);
+    await navigateTo(`/select-game`);
   }
 });
 
-async function createMatch() {
+async function createMatch(event:Event) {
+  event.preventDefault();
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
   const content = {
+    password: password.value,
     isPublic: !isPublic.value,
     metadata: boardDisposition.value,
     game: game_type,
-    password:password.value,
     matchName: matchName.value,
   };
-  const response = await fetch("http://localhost:8080/match", {
+
+  await fetch("http://localhost:8080/match", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
     },
     body: JSON.stringify(content),
+  }).then((response) => {
+    if (response.ok) {
+      navigateTo(`/profile/`+"hola");
+    } else {
+      msg.value = "Error creating match.";
+    }
   });
-  if (response.ok) {
-    console.log("Match created!");
-    return await navigateTo({ path: "/select-game" });
-  } else {
-    console.error("Error creating match.");
-  }
 }
-function showBoard(){
-  console.log(boardDisposition.value)
-  switch(boardDisposition.value){
-    case 'ace':
-      imgPath.value = "/img/kingolaser/AceBoard.jpg"
+function showBoard() {
+  console.log(boardDisposition.value);
+  switch (boardDisposition.value) {
+    case "ace":
+      imgPath.value = "/img/kingolaser/AceBoard.jpg";
       break;
-    
-    case 'std':
-      imgPath.value = "/img/kingolaser/StandardBoard.jpg"
-    break
-    case 'cur':
-      imgPath.value = "/img/kingolaser/CuriosityBoard.jpg"
-      break
-      case 'gr':
-      imgPath.value = "/img/kingolaser/GrailBoard.jpg"
-      break
-      case 'sh':
-      imgPath.value = "/img/kingolaser/SophieBoard.jpg"
-      break
-}
+    case "std":
+      imgPath.value = "/img/kingolaser/StandardBoard.jpg";
+      break;
+    case "cur":
+      imgPath.value = "/img/kingolaser/CuriosityBoard.jpg";
+      break;
+    case "gr":
+      imgPath.value = "/img/kingolaser/GrailBoard.jpg";
+      break;
+    case "sh":
+      imgPath.value = "/img/kingolaser/SophieBoard.jpg";
+      break;
+  }
 }
 </script>
 <template>
@@ -78,6 +86,7 @@ function showBoard(){
         <form
           id="match"
           class="bg-white rounded-lg m-10 p-10 h-[45%]"
+          @submit="createMatch"
         >
           <div class="mb-6">
             <label
@@ -96,7 +105,7 @@ function showBoard(){
 
           <div class="mb-6">
             <select
-              v-if="game_type === 'King-0-Las3r'"
+              v-if="game_type === 'LASER_BOARD'"
               id="boardDisposition"
               v-model="boardDisposition"
               name="boardDisposition"
@@ -155,6 +164,11 @@ function showBoard(){
                 >
               </div>
             </div>
+            <p
+              class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
+            >
+              {{ msg }}
+            </p>
             <div class="mb-6">
               <button
                 id="submit"

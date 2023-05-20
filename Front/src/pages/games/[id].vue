@@ -1,12 +1,14 @@
 <template>
-  <div class="grid grid-cols-3 gap-24 game_container">
-    <div class="col-span-1 mt-0 mb-auto">
-      <UserProfileGameCard />
-      <StartedMatchList />
+  <div class="grid grid-cols-2">
+    <div class="w-2/3">
+      <div class="grid grid-cols-1 gap-12 game_container">
+        <div class="mt-0 mb-auto">
+          <UserProfileGameCard />
+          <StartedMatchList />
+        </div>
+      </div>
     </div>
-    <div
-      class="col-span-2 grid h-screen place-items-center canvas_container justify-self-center"
-    >
+    <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
       <Grid @send-movement="sendMovement" />
     </div>
     <div
@@ -36,6 +38,7 @@
 import Grid from "~/components/GridComp.vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
+const route = useRoute()
 
 const newSelectedPieceY = ref(0);
 const newSelectedPieceX = ref(0);
@@ -43,6 +46,22 @@ const newSelectedMovementY = ref(0);
 const newSelectedMovementX = ref(0);
 const newRotationValue = ref("");
 const openSendMenu = ref(false);
+const id = ref(route.params.id);
+const jwt = ref<String>("")
+
+onBeforeMount(async () =>{
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
+  await fetch("http://localhost:8080/match/"+ id.value, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+  }).then((response) => {
+   console.log(response.json())
+  });
+})
 
 const sendMovement = (
   selectedPieceY: number,

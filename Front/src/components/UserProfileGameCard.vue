@@ -1,9 +1,20 @@
 <template>
-  <div class="bg-white flex justify-between py-4 px-8 pr-20 flex-col border-b-8 border-black">
+  <div
+    class="bg-white flex justify-between py-4 px-8 pr-20 flex-col border-b-8 border-black"
+  >
     <div class="flex items-center">
       <div
-        :class="['flex', 'items-center', 'justify-center', 'w-20', 'h-20', 'rounded-full', 'border-4', 
-                 'shadow', user.loggedIn ? 'border-green-500' : 'border-red-500']"
+        :class="[
+          'flex',
+          'items-center',
+          'justify-center',
+          'w-20',
+          'h-20',
+          'rounded-full',
+          'border-4',
+          'shadow',
+          user.loggedIn ? 'border-green-500' : 'border-red-500',
+        ]"
       >
         <img
           :src="user.profileImg"
@@ -25,7 +36,7 @@
             >
           </NuxtLink>
           <NuxtLink
-            to="/create-match"
+            to="/select-game"
             class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500"
           >
             <img
@@ -47,15 +58,40 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+const jwt = ref<String>("")
+
+const user = ref({
+  name:String,
+  loggedIn:Boolean,
+  profileImg:String
+})
+
+onBeforeMount(async () =>{
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
   
-  <script setup lang="ts">
-    const user = {
-      name: "Ejemplo",
-      profileImg: "/img/kingolaser/BlueKing.png",
-      loggedIn: true
-    };
-    const logout = () => {
-      console.log("LoggedOut")
-    };
-  </script>
-  
+  await fetch("http://localhost:8080/getPlayer", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization:  "Bearer " + jwt.value,
+  }
+})
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    user.value.name = data.playerName;
+    user.value.loggedIn = data.loggedIn;
+    user.value.profileImg = data.profileImg;
+  });
+})
+
+const logout = () => {
+  localStorage.setItem("jwt", "");
+  localStorage.setItem("jwtExp", "");
+  return navigateTo("/");
+};
+</script>
