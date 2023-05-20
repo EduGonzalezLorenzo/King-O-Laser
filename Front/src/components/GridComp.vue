@@ -51,10 +51,6 @@ const canvasWidth = ref(560);
 const canvasHeight = ref(700);
 
 const updateCanvasSize = () => {
-      console.log("height: "+window.innerHeight)
-      console.log("width"+window.innerWidth)
-      console.log("cellWidth: " + cellWidth.value)
-
       if(window.innerWidth > 1200) {
         canvasWidth.value = 560
         canvasHeight.value = 700
@@ -79,8 +75,9 @@ const updateCanvasSize = () => {
         cellWidth.value = 35
         cellHeight.value = 35
       }
-    };
+    }
 
+    
 const tableRows = 10;
 const tableColumns = 8;
 const cellWidth = ref<number>(canvasWidth.value / tableColumns);
@@ -92,10 +89,6 @@ const selectedPieceX = ref<number>(0);
 const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
-
-function aux() {
-  console.log(canvas.value)
-}
 
 const boardDisposition = {
   route: [
@@ -458,7 +451,6 @@ const handleClick = (event: MouseEvent) => {
       );
     }
   }
-  aux()
 };
 
 const drawBoard = (
@@ -624,10 +616,10 @@ function drawLaser(
 }
 
 onMounted(() => {
-  updateCanvasSize();
   const ctx = canvas.value?.getContext("2d");
 
   if (ctx) {
+    
     drawGrid(ctx);
     chargeImages(imagePaths).then((images) => {
       if (imagesLoaded(images)) {
@@ -676,6 +668,7 @@ onMounted(() => {
     menu.classList.remove("show");
   });
   window.addEventListener('resize', updateCanvasSize)
+  updateCanvasSize()
 });
 
 function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
