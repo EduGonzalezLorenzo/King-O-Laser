@@ -41,8 +41,32 @@
 import Grid from "~/components/GridComp.vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
-import {BoardDisposition} from "~/types/BoardDisposition"
-const route = useRoute()
+import { BoardDisposition } from "~/types/BoardDisposition"
+// import { onBeforeMount } from "nuxt/dist/app/compat/capi";
+
+const boardDisposition = reactive<BoardDisposition>({
+  lastAction: '',
+  pieces: []
+})
+
+// onBeforeMount(async () =>{
+//   const localStore = localStorage.getItem("jwt")
+//   jwt.value = localStore as String;
+//   await fetch("http://localhost:8080/match/"+ id.value, {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: "Bearer " + jwt.value,
+//     },
+//   }).then((response) => {
+//    return response.json()
+//   }).then((data) => {
+//     boardDisposition.lastAction = data.lastAction,
+//     boardDisposition.pieces = data.pieces
+//   });
+// })
+
+// const route = useRoute()
 
 const newSelectedPieceY = ref(0);
 const newSelectedPieceX = ref(0);
@@ -50,30 +74,12 @@ const newSelectedMovementY = ref(0);
 const newSelectedMovementX = ref(0);
 const newRotationValue = ref("");
 const openSendMenu = ref(false);
-const id = ref(route.params.id);
-const jwt = ref<String>("")
+// const id = ref(route.params.id);
+// const jwt = ref<String>("")
 
-const boardDisposition = reactive<BoardDisposition>({
-  lastAction: '',
-  pieces: []
-})
 
-onBeforeMount(async () =>{
-  const localStore = localStorage.getItem("jwt")
-  jwt.value = localStore as String;
-  await fetch("http://localhost:8080/match/"+ id.value, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  }).then((response) => {
-   return response.json()
-  }).then((data) => {
-    boardDisposition.lastAction = data.lastAction,
-    boardDisposition.pieces = data.pieces
-  });
-})
+
+
 
 
 const sendMovement = (
@@ -109,10 +115,6 @@ const closeSendMenu = () => {
   position: relative;
 }
 
-/* h1 {
-  font-size: 35px;
-} */
-
 .send_menu {
   background-color: rgba(211, 211, 211, 0.516);
   padding: 1em;
@@ -125,6 +127,5 @@ button {
   border: 1px solid black;
   padding: 1em;
   margin: 0.5em;
-  /* font-size: 25px; */
 }
 </style>

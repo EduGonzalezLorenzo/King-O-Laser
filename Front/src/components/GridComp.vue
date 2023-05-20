@@ -46,11 +46,32 @@ import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
 import { PropType } from "nuxt/dist/app/compat/capi";
+// import { onBeforeMount } from "nuxt/dist/app/compat/capi";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 
 const canvasWidth = ref(560);
 const canvasHeight = ref(700);
+
+const route = useRoute()
+const id = ref(route.params.id);
+const jwt = ref<String>("")
+onBeforeMount(async () =>{
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
+  await fetch("http://localhost:8080/match/"+ id.value, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+  }).then((response) => {
+   return response.json()
+  }).then((data) => {
+    boardDisposition.lastAction = data.lastAction,
+    boardDisposition.pieces = data.pieces
+  });
+})
 
 const updateCanvasSize = () => {
       if(window.innerWidth > 1200) {
@@ -91,10 +112,6 @@ const selectedPieceX = ref<number>(0);
 const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
-
-function aux() {
-  console.log(boardDisposition.pieces[0])
-}
 
 const props = defineProps({
   boardDisposition: {type: Object as PropType<BoardDisposition>, required: true}
@@ -166,13 +183,14 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
       cellHeight.value,
       cellWidth.value
     );
-    // ctx.stroke();
-    // ctx.font = "30px Arial";
-    // ctx.fillText(
-    //   `${cell.posY}:${cell.posX}`,
-    //   cell.posX * cellHeight + 50,
-    //   cell.posY * cellWidth + 100
-    // );
+    ctx.stroke();
+    ctx.fillStyle = "rgba(0,0,0)";
+    ctx.font = "30px Arial";
+    ctx.fillText(
+      `${cell.posY}:${cell.posX}`,
+      cell.posX * cellHeight.value + (cellHeight.value/5),
+      cell.posY * cellWidth.value + (cellHeight.value/1.5)
+    );
   }
 };
 
@@ -262,7 +280,6 @@ const handleClick = (event: MouseEvent) => {
       );
     }
   }
-  aux()
 };
 
 const drawBoard = (

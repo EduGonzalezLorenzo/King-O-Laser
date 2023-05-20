@@ -35,7 +35,7 @@ public class LaserBoardBuilder {
         Piece blueDefenderOne = PieceBuilder.buildPiece("class com.telegame.code.models.games.kingolaser.pieces.Defender", Piece.Owner.PLAYER_ONE, 3, 7, Piece.Direction.EAST);
         Piece blueDefenderTwo = PieceBuilder.buildPiece("class com.telegame.code.models.games.kingolaser.pieces.Defender", Piece.Owner.PLAYER_ONE, 5, 7, Piece.Direction.EAST);
         Piece blueBouncerOne = PieceBuilder.buildPiece("class com.telegame.code.models.games.kingolaser.pieces.Bouncer", Piece.Owner.PLAYER_ONE, 4, 4, Piece.Direction.EAST);
-        Piece blueBouncerTwo = PieceBuilder.buildPiece("class com.telegame.code.models.games.kingolaser.pieces.Bouncer", Piece.Owner.PLAYER_ONE, 5, 7, Piece.Direction.NORTH);
+        Piece blueBouncerTwo = PieceBuilder.buildPiece("class com.telegame.code.models.games.kingolaser.pieces.Bouncer", Piece.Owner.PLAYER_ONE, 5, 4, Piece.Direction.NORTH);
         Piece blueDeflectorOne = PieceBuilder.buildPiece("class com.telegame.code.models.games.kingolaser.pieces.Deflector", Piece.Owner.PLAYER_ONE, 9, 4, Piece.Direction.SOUTH);
         Piece blueDeflectorTwo = PieceBuilder.buildPiece("class com.telegame.code.models.games.kingolaser.pieces.Deflector", Piece.Owner.PLAYER_ONE, 9, 3, Piece.Direction.EAST);
         Piece blueDeflectorThree = PieceBuilder.buildPiece("class com.telegame.code.models.games.kingolaser.pieces.Deflector", Piece.Owner.PLAYER_ONE, 2, 7, Piece.Direction.EAST);
