@@ -1,22 +1,17 @@
 <template>
-  <div
-    id="container"
-    class="canvas_container"
-  >
-    <canvas
-      ref="canvas"
-      :width="canvasWidth"
-      :height="canvasHeight"
-      :mouseX="mouseX"
-      :mouseY="mouseY"
-      :selectedPieceY="selectedPieceY"
-      :selectedPieceX="selectedPieceX"
-      :selectedMovementY="selectedMovementY"
-      :selectedMovementX="selectedMovementX"
-      :rotationValue="rotationValue"
-      @click="handleClick"
-    />
-  </div>
+  <canvas
+    ref="canvas"
+    :width="canvasWidth"
+    :height="canvasHeight"
+    :mouseX="mouseX"
+    :mouseY="mouseY"
+    :selectedPieceY="selectedPieceY"
+    :selectedPieceX="selectedPieceX"
+    :selectedMovementY="selectedMovementY"
+    :selectedMovementX="selectedMovementX"
+    :rotationValue="rotationValue"
+    @click="handleClick"
+  />
   <div
     id="custom-menu"
     class="custom-menu"
@@ -52,20 +47,44 @@ import { BoardDisposition } from "~/types/BoardDisposition";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 
-const canvasWidth = ref(400);
-const canvasHeight = ref(500);
+const canvasWidth = ref(560);
+const canvasHeight = ref(700);
 
 const updateCanvasSize = () => {
-      
-      // canvasHeight.value = window.innerHeight * 0.8; // Ajusta la altura al 80% de la altura de la pantalla
-      canvasWidth.value = window.innerWidth * 0.5; // Ajusta el ancho al 80% del ancho de la pantalla
-      canvasHeight.value = (canvasWidth.value*100)/80
+      console.log("height: "+window.innerHeight)
+      console.log("width"+window.innerWidth)
+      console.log("cellWidth: " + cellWidth.value)
+
+      if(window.innerWidth > 1200) {
+        canvasWidth.value = 560
+        canvasHeight.value = 700
+        cellWidth.value = 70
+        cellHeight.value = 70
+      }
+      if(window.innerWidth > 1000 && window.innerWidth <= 1200) {
+        canvasWidth.value = 480
+        canvasHeight.value = 600
+        cellWidth.value = 60
+        cellHeight.value = 60
+      }
+      if(window.innerWidth > 800 && window.innerWidth <= 1000) {
+        canvasWidth.value = 320
+        canvasHeight.value = 400
+        cellWidth.value = 40
+        cellHeight.value = 40
+      }
+      if(window.innerWidth < 800) {
+        canvasWidth.value = 280
+        canvasHeight.value = 350
+        cellWidth.value = 35
+        cellHeight.value = 35
+      }
     };
 
 const tableRows = 10;
 const tableColumns = 8;
-const cellWidth = canvasWidth.value / tableColumns;
-const cellHeight = canvasHeight.value / tableRows;
+const cellWidth = ref<number>(canvasWidth.value / tableColumns);
+const cellHeight = ref<number>(canvasHeight.value / tableRows);
 const mouseX = ref<number>(0);
 const mouseY = ref<number>(0);
 const selectedPieceY = ref<number>(0);
@@ -323,7 +342,7 @@ for (let x = 0; x < tableRows; x++) {
 
 for (let x = 0; x < tableRows; x++) {
   for (let y = 0; y < tableColumns; y++) {
-    board.value[x][y] = new Cell(cellWidth, cellHeight, x, y, false);
+    board.value[x][y] = new Cell(cellWidth.value, cellHeight.value, x, y, false);
   }
 }
 
@@ -338,18 +357,18 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
     ctx.fillStyle = "rgba(0,0,0, 0.5)";
     ctx.beginPath();
     ctx.rect(
-      cell.posX * cellHeight,
-      cell.posY * cellWidth,
-      cell.height,
-      cell.width
+      cell.posX * cellHeight.value,
+      cell.posY * cellWidth.value,
+      cellHeight.value,
+      cellWidth.value
     );
-    ctx.stroke();
-    ctx.font = "30px Arial";
-    ctx.fillText(
-      `${cell.posY}:${cell.posX}`,
-      cell.posX * cellHeight + 50,
-      cell.posY * cellWidth + 100
-    );
+    // ctx.stroke();
+    // ctx.font = "30px Arial";
+    // ctx.fillText(
+    //   `${cell.posY}:${cell.posX}`,
+    //   cell.posX * cellHeight + 50,
+    //   cell.posY * cellWidth + 100
+    // );
   }
 };
 
@@ -407,18 +426,18 @@ const handleClick = (event: MouseEvent) => {
             if (board.value[j][i] instanceof Piece) {
               ctx.fillStyle = "rgb(250,10,10, 0.5)";
               ctx.fillRect(
-                i * cellHeight,
-                j * cellWidth,
-                cellHeight,
-                cellWidth
+                i * cellHeight.value,
+                j * cellWidth.value,
+                cellHeight.value,
+                cellWidth.value
               );
             } else if (board.value[j][i] instanceof Cell) {
               ctx.fillStyle = "rgb(10,250,10, 0.5)";
               ctx.fillRect(
-                i * cellHeight,
-                j * cellWidth,
-                cellHeight,
-                cellWidth
+                i * cellHeight.value,
+                j * cellWidth.value,
+                cellHeight.value,
+                cellWidth.value
               );
               board.value[j][i].selectable = true;
             }
@@ -460,10 +479,10 @@ const drawBoard = (
     const image = getPieceImage(piece, images);
     ctx.drawImage(
       image,
-      piece.posX * cellHeight,
-      piece.posY * cellWidth,
-      cellHeight,
-      cellWidth
+      piece.posX * cellHeight.value,
+      piece.posY * cellWidth.value,
+      cellHeight.value,
+      cellWidth.value
     );
   });
 };
@@ -594,8 +613,8 @@ function drawLaser(
   boardDisposition.route.forEach((target) => {
     ctx.beginPath();
     ctx.arc(
-      target[1] * cellWidth + cellWidth / 2,
-      target[0] * cellHeight + cellWidth / 2,
+      target[1] * cellWidth.value + cellWidth.value / 2,
+      target[0] * cellHeight.value + cellWidth.value / 2,
       thickness,
       0,
       2 * Math.PI
@@ -690,20 +709,9 @@ function imagesLoaded(images: HTMLImageElement[]): boolean {
 
 <style>
 
-.canvas_container {
-  display: flex;
-  /* height: 80vh;
-  width: fit-content; */
-}
-
 canvas {
-  /* margin-top: -100px; */
-  /* scale: 0.8;  */
   background-image: url(../public/img/kingolaser/Board.jpg);
-  /* width: 100%;
-  height: 100%; */
-  max-height: 80vh;
-  width: fit-content;
+  background-size: contain;
 }
 .custom-menu {
   display: none;
