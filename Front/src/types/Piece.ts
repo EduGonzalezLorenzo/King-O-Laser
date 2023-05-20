@@ -8,23 +8,23 @@
 
 export class Piece {
   owner: string;
-  posY: number;
-  posX: number;
+  y: number;
+  x: number;
   rotation: string;
-  pieceClass: string;
+  type: string;
 
   constructor(
     owner: string,
-    posY: number,
-    posX: number,
+    y: number,
+    x: number,
     rotation: string,
-    pieceClass: string
+    type: string
   ) {
     this.owner = owner;
-    this.posY = posY;
-    this.posX = posX;
+    this.y = y;
+    this.x = x;
     this.rotation = rotation;
-    this.pieceClass = pieceClass;
+    this.type = type;
   }
 
 //   contains(mouseX: number, mouseY: number, cellWidth: number) {

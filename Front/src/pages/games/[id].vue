@@ -9,7 +9,10 @@
       </div>
     </div>
     <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
-      <Grid @send-movement="sendMovement" />
+      <Grid
+        :board-disposition="boardDisposition"
+        @send-movement="sendMovement"
+      />
     </div>
     <div
       v-if="openSendMenu"

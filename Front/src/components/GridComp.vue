@@ -10,6 +10,7 @@
     :selectedMovementY="selectedMovementY"
     :selectedMovementX="selectedMovementX"
     :rotationValue="rotationValue"
+    :board-disposition="boardDisposition"
     @click="handleClick"
   />
   <div
@@ -44,6 +45,7 @@ import { ref, onMounted, defineEmits } from "vue";
 import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
+import { PropType } from "nuxt/dist/app/compat/capi";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 
@@ -91,207 +93,17 @@ const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
 
 function aux() {
-  console.log(canvas.value)
+  console.log(boardDisposition.pieces[0])
 }
 
-const boardDisposition = {
-  lastAction: `[[1, 0],[2, 0],[3, 0],
-    [4, 1],
-    [4, 2],
-    [4, 3],
-    [4, 4],
-    [4, 5],
-    [4, 6],
-  ]`,
-  pieces: [
-    // ACE DISPOSITION
-    {
-      owner: "PLAYER_ONE",
-      posY: 3,
-      posX: 7,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Defender",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 5,
-      posX: 7,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Defender",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 4,
-      posX: 4,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Bouncer",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 5,
-      posX: 4,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Bouncer",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 9,
-      posX: 4,
-      rotation: "SOUTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 9,
-      posX: 3,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 2,
-      posX: 7,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 2,
-      posX: 4,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 2,
-      posX: 3,
-      rotation: "SOUTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 3,
-      posX: 2,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 7,
-      posX: 6,
-      rotation: "SOUTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 4,
-      posX: 7,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.King",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 9,
-      posX: 7,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Laser",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 6,
-      posX: 0,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Defender",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 4,
-      posX: 0,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Defender",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 4,
-      posX: 3,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Bouncer",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 5,
-      posX: 3,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Bouncer",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 0,
-      posX: 3,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 0,
-      posX: 4,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 7,
-      posX: 3,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 7,
-      posX: 4,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 6,
-      posX: 5,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 2,
-      posX: 1,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 7,
-      posX: 0,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 5,
-      posX: 0,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.King",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 0,
-      posX: 0,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Laser",
-    },
+const props = defineProps({
+  boardDisposition: {type: Object as PropType<BoardDisposition>, required: true}
+})
 
-    // END ACE DISPOSITION
-
-  ],
-};
+const boardDisposition = reactive<BoardDisposition>({
+  lastAction : props.boardDisposition.lastAction,
+  pieces: props.boardDisposition.pieces
+})
 
 const imagePaths = [
   "/img/kingolaser/UnknownPiece.jpg",
@@ -460,19 +272,19 @@ const drawBoard = (
 ) => {
   const pieceList: Piece[] = boardDisposition.pieces;
   pieceList.forEach((piece) => {
-    board.value[piece.posY][piece.posX].empty = false;
-    board.value[piece.posY][piece.posX] = new Piece(
+    board.value[piece.y][piece.x].empty = false;
+    board.value[piece.y][piece.x] = new Piece(
       piece.owner,
-      piece.posY,
-      piece.posX,
+      piece.y,
+      piece.x,
       piece.rotation,
-      piece.pieceClass
+      piece.type
     );
     const image = getPieceImage(piece, images);
     ctx.drawImage(
       image,
-      piece.posX * cellHeight.value,
-      piece.posY * cellWidth.value,
+      piece.x * cellHeight.value,
+      piece.y * cellWidth.value,
       cellHeight.value,
       cellWidth.value
     );
@@ -481,11 +293,11 @@ const drawBoard = (
 
 function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
   if (piece.owner == "PLAYER_ONE") {
-    switch (piece.pieceClass) {
-      case "com.telegame.code.models.kingolaser.pieces.King":
+    switch (piece.type) {
+      case "com.telegame.code.models.games.laserboard.pieces.King":
         return images[1];
         break;
-      case "com.telegame.code.models.kingolaser.pieces.Defender":
+      case "com.telegame.code.models.games.laserboard.pieces.Defender":
         switch (piece.rotation) {
           case "NORTH":
             return images[2];
@@ -497,7 +309,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[5];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Bouncer":
+      case "com.telegame.code.models.games.laserboard.pieces.Bouncer":
         switch (piece.rotation) {
           case "NORTH":
             return images[6];
@@ -509,7 +321,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[7];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Deflector":
+      case "com.telegame.code.models.games.laserboard.pieces.Deflector":
         switch (piece.rotation) {
           case "NORTH":
             return images[8];
@@ -521,7 +333,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[11];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Laser":
+      case "com.telegame.code.models.games.laserboard.pieces.Laser":
         switch (piece.rotation) {
           case "NORTH":
             return images[12];
@@ -537,11 +349,11 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
         return images[0];
     }
   } else {
-    switch (piece.pieceClass) {
-      case "com.telegame.code.models.kingolaser.pieces.King":
+    switch (piece.type) {
+      case "com.telegame.code.models.games.laserboard.pieces.King":
         return images[16];
         break;
-      case "com.telegame.code.models.kingolaser.pieces.Defender":
+      case "com.telegame.code.models.games.laserboard.pieces.Defender":
         switch (piece.rotation) {
           case "NORTH":
             return images[17];
@@ -553,7 +365,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[20];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Bouncer":
+      case "com.telegame.code.models.games.laserboard.pieces.Bouncer":
         switch (piece.rotation) {
           case "NORTH":
             return images[21];
@@ -565,7 +377,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[22];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Deflector":
+      case "com.telegame.code.models.games.laserboard.pieces.Deflector":
         switch (piece.rotation) {
           case "NORTH":
             return images[23];
@@ -577,7 +389,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[26];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Laser":
+      case "com.telegame.code.models.games.laserboard.pieces.Laser":
         switch (piece.rotation) {
           case "NORTH":
             return images[27];
