@@ -5,10 +5,12 @@ import com.telegame.code.models.Board;
 import com.telegame.code.models.games.laserboard.pieces.Bouncer;
 import com.telegame.code.models.games.laserboard.pieces.Piece;
 import com.telegame.code.models.games.laserboard.pieces.PieceSide;
+import com.telegame.code.repos.games.laserboard.PieceRepo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,9 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LaserBeam {
+
+    @Autowired
+    PieceRepo pieceRepo;
 
     Piece.Direction direction;
     List<int[]> route;
@@ -79,6 +84,7 @@ public class LaserBeam {
                     returnMap.put("route", route);
                     return returnMap;
                 } else if (nextDirection == Piece.Direction.HIT) {
+                    pieceRepo.delete(piece);
                     LaserBeam.drawBoard(board);
                     returnMap.put("message", "HIT");
                     route.add(forward(direction, currentPosition));
