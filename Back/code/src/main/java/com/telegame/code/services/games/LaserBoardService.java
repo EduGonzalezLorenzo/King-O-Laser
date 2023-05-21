@@ -55,7 +55,9 @@ public class LaserBoardService {
         pieceRepo.save(piece);
         boardRepo.save(laserBoard);
 
-        shootLaser(laserBoard, matchStatus, piecesList);
+        List<Piece> boardDisposition = pieceRepo.findByLaserBoardId(laserBoard.getId());
+
+        shootLaser(laserBoard, matchStatus, boardDisposition);
 
         return "Ok";
     }
