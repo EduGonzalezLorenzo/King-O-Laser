@@ -22,7 +22,7 @@
         class="cursor-pointer hover:bg-blue-700"
       >
         <img
-          src="/img/commonIcon/arrowRight.png"
+          src="/img/commonIcon/arrowRight.webp"
           class="w-12 min-w-[48px]"
         >
       </li>
@@ -31,7 +31,7 @@
         class="custom-menu-item cursor-pointer"
       >
         <img
-          src="/img/commonIcon/arrowLeft.png"
+          src="/img/commonIcon/arrowLeft.webp"
           class="w-12 rotate-240 min-w-[48px]"
         >
       </li>
@@ -65,37 +65,37 @@ const boardDisposition = reactive<BoardDisposition>({
 })
 
 const imagePaths = [
-  "/img/kingolaser/UnknownPiece.jpg",
-  "/img/kingolaser/BlueKing.png",
-  "/img/kingolaser/BlueBlockN.png",
-  "/img/kingolaser/BlueBlockS.png",
-  "/img/kingolaser/BlueBlockE.png",
-  "/img/kingolaser/BlueBlockW.png",
-  "/img/kingolaser/BlueBouncerNS.png",
-  "/img/kingolaser/BlueBouncerEW.png",
-  "/img/kingolaser/BlueDeflectorN.png",
-  "/img/kingolaser/BlueDeflectorS.png",
-  "/img/kingolaser/BlueDeflectorE.png",
-  "/img/kingolaser/BlueDeflectorW.png",
-  "/img/kingolaser/BlueLaserN.png",
-  "/img/kingolaser/BlueLaserS.png",
-  "/img/kingolaser/BlueLaserE.png",
-  "/img/kingolaser/BlueLaserW.png",
-  "/img/kingolaser/RedKing.png",
-  "/img/kingolaser/RedBlockN.png",
-  "/img/kingolaser/RedBlockS.png",
-  "/img/kingolaser/RedBlockE.png",
-  "/img/kingolaser/RedBlockW.png",
-  "/img/kingolaser/RedBouncerNS.png",
-  "/img/kingolaser/RedBouncerEW.png",
-  "/img/kingolaser/RedDeflectorN.png",
-  "/img/kingolaser/RedDeflectorS.png",
-  "/img/kingolaser/RedDeflectorE.png",
-  "/img/kingolaser/RedDeflectorW.png",
-  "/img/kingolaser/RedLaserN.png",
-  "/img/kingolaser/RedLaserS.png",
-  "/img/kingolaser/RedLaserE.png",
-  "/img/kingolaser/RedLaserW.png",
+  "/img/kingolaser/UnknownPiece.webp",
+  "/img/kingolaser/BlueKing.webp",
+  "/img/kingolaser/BlueBlockN.webp",
+  "/img/kingolaser/BlueBlockS.webp",
+  "/img/kingolaser/BlueBlockE.webp",
+  "/img/kingolaser/BlueBlockW.webp",
+  "/img/kingolaser/BlueBouncerNS.webp",
+  "/img/kingolaser/BlueBouncerEW.webp",
+  "/img/kingolaser/BlueDeflectorN.webp",
+  "/img/kingolaser/BlueDeflectorS.webp",
+  "/img/kingolaser/BlueDeflectorE.webp",
+  "/img/kingolaser/BlueDeflectorW.webp",
+  "/img/kingolaser/BlueLaserN.webp",
+  "/img/kingolaser/BlueLaserS.webp",
+  "/img/kingolaser/BlueLaserE.webp",
+  "/img/kingolaser/BlueLaserW.webp",
+  "/img/kingolaser/RedKing.webp",
+  "/img/kingolaser/RedBlockN.webp",
+  "/img/kingolaser/RedBlockS.webp",
+  "/img/kingolaser/RedBlockE.webp",
+  "/img/kingolaser/RedBlockW.webp",
+  "/img/kingolaser/RedBouncerNS.webp",
+  "/img/kingolaser/RedBouncerEW.webp",
+  "/img/kingolaser/RedDeflectorN.webp",
+  "/img/kingolaser/RedDeflectorS.webp",
+  "/img/kingolaser/RedDeflectorE.webp",
+  "/img/kingolaser/RedDeflectorW.webp",
+  "/img/kingolaser/RedLaserN.webp",
+  "/img/kingolaser/RedLaserS.webp",
+  "/img/kingolaser/RedLaserE.webp",
+  "/img/kingolaser/RedLaserW.webp",
 ];
 
 const route = useRoute()
@@ -527,7 +527,7 @@ function imagesLoaded(images: HTMLImageElement[]): boolean {
 <style>
 
 canvas {
-  background-image: url(../public/img/kingolaser/Board.jpg);
+  background-image: url(../public/img/kingolaser/Board.webp);
   background-size: contain;
 }
 .custom-menu {

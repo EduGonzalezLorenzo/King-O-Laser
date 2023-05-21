@@ -31,7 +31,7 @@
             class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500"
           >
             <img
-              src="/img/commonIcon/home.png"
+              src="/img/commonIcon/home.webp"
               class="w-6 h-6 mx-2"
             >
           </NuxtLink>
@@ -40,7 +40,7 @@
             class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500"
           >
             <img
-              src="/img/commonIcon/create.png"
+              src="/img/commonIcon/create.webp"
               class="w-6 h-6 mx-2"
             >
           </NuxtLink>
@@ -49,7 +49,7 @@
             @click="logout"
           >
             <img
-              src="/img/commonIcon/logOut.png"
+              src="/img/commonIcon/logOut.webp"
               class="w-6 h-6 mx-2"
             >
           </NuxtLink>

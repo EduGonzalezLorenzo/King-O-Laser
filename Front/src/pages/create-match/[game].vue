@@ -55,19 +55,19 @@ function showBoard() {
   console.log(boardDisposition.value);
   switch (boardDisposition.value) {
     case "ace":
-      imgPath.value = "/img/kingolaser/AceBoard.jpg";
+      imgPath.value = "/img/kingolaser/AceBoard.webp";
       break;
     case "std":
-      imgPath.value = "/img/kingolaser/StandardBoard.jpg";
+      imgPath.value = "/img/kingolaser/StandardBoard.webp";
       break;
     case "cur":
-      imgPath.value = "/img/kingolaser/CuriosityBoard.jpg";
+      imgPath.value = "/img/kingolaser/CuriosityBoard.webp";
       break;
     case "gr":
-      imgPath.value = "/img/kingolaser/GrailBoard.jpg";
+      imgPath.value = "/img/kingolaser/GrailBoard.webp";
       break;
     case "sh":
-      imgPath.value = "/img/kingolaser/SophieBoard.jpg";
+      imgPath.value = "/img/kingolaser/SophieBoard.webp";
       break;
   }
 }
