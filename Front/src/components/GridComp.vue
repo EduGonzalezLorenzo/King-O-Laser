@@ -46,38 +46,8 @@ import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
-
 const canvasWidth = ref(560);
 const canvasHeight = ref(700);
-
-const updateCanvasSize = () => {
-      if(window.innerWidth > 1200) {
-        canvasWidth.value = 560
-        canvasHeight.value = 700
-        cellWidth.value = 70
-        cellHeight.value = 70
-      }
-      if(window.innerWidth > 1000 && window.innerWidth <= 1200) {
-        canvasWidth.value = 480
-        canvasHeight.value = 600
-        cellWidth.value = 60
-        cellHeight.value = 60
-      }
-      if(window.innerWidth > 800 && window.innerWidth <= 1000) {
-        canvasWidth.value = 320
-        canvasHeight.value = 400
-        cellWidth.value = 40
-        cellHeight.value = 40
-      }
-      if(window.innerWidth < 800) {
-        canvasWidth.value = 280
-        canvasHeight.value = 350
-        cellWidth.value = 35
-        cellHeight.value = 35
-      }
-    }
-
-    
 const tableRows = 10;
 const tableColumns = 8;
 const cellWidth = ref<number>(canvasWidth.value / tableColumns);
@@ -89,214 +59,10 @@ const selectedPieceX = ref<number>(0);
 const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
-
-function aux() {
-  console.log(canvas.value)
-}
-
-const boardDisposition = {
-  route: [
-    [1, 0],
-    [2, 0],
-    [3, 0],
-    [4, 1],
-    [4, 2],
-    [4, 3],
-    [4, 4],
-    [4, 5],
-    [4, 6],
-  ],
-  response: "OK",
-  message: "OUT",
-  board: [
-    // ACE DISPOSITION
-    {
-      owner: "PLAYER_ONE",
-      posY: 3,
-      posX: 7,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Defender",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 5,
-      posX: 7,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Defender",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 4,
-      posX: 4,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Bouncer",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 5,
-      posX: 4,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Bouncer",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 9,
-      posX: 4,
-      rotation: "SOUTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 9,
-      posX: 3,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 2,
-      posX: 7,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 2,
-      posX: 4,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 2,
-      posX: 3,
-      rotation: "SOUTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 3,
-      posX: 2,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 7,
-      posX: 6,
-      rotation: "SOUTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 4,
-      posX: 7,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.King",
-    },
-    {
-      owner: "PLAYER_ONE",
-      posY: 9,
-      posX: 7,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Laser",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 6,
-      posX: 0,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Defender",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 4,
-      posX: 0,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Defender",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 4,
-      posX: 3,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Bouncer",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 5,
-      posX: 3,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Bouncer",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 0,
-      posX: 3,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 0,
-      posX: 4,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 7,
-      posX: 3,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 7,
-      posX: 4,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 6,
-      posX: 5,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 2,
-      posX: 1,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 7,
-      posX: 0,
-      rotation: "WEST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Deflector",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 5,
-      posX: 0,
-      rotation: "NORTH",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.King",
-    },
-    {
-      owner: "PLAYER_TWO",
-      posY: 0,
-      posX: 0,
-      rotation: "EAST",
-      pieceClass: "com.telegame.code.models.kingolaser.pieces.Laser",
-    },
-
-    // END ACE DISPOSITION
-
-  ],
-};
+const boardDisposition = reactive<BoardDisposition>({
+  lastAction : '',
+  pieces: []
+})
 
 const imagePaths = [
   "/img/kingolaser/UnknownPiece.jpg",
@@ -332,6 +98,54 @@ const imagePaths = [
   "/img/kingolaser/RedLaserW.png",
 ];
 
+const route = useRoute()
+const id = ref(route.params.id);
+const jwt = ref<String>("")
+onBeforeMount(async () =>{
+  const localStore = localStorage.getItem("jwt")
+  jwt.value = localStore as String;
+  await fetch("http://localhost:8080/match/"+ id.value, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+  }).then((response) => {
+   return response.json()
+  }).then((data) => {
+    boardDisposition.lastAction = data.lastAction,
+    boardDisposition.pieces = data.pieces
+  });
+})
+
+const updateCanvasSize = () => {
+      if(window.innerWidth > 1200) {
+        canvasWidth.value = 560
+        canvasHeight.value = 700
+        cellWidth.value = 70
+        cellHeight.value = 70
+      }
+      if(window.innerWidth > 1000 && window.innerWidth <= 1200) {
+        canvasWidth.value = 480
+        canvasHeight.value = 600
+        cellWidth.value = 60
+        cellHeight.value = 60
+      }
+      if(window.innerWidth > 800 && window.innerWidth <= 1000) {
+        canvasWidth.value = 320
+        canvasHeight.value = 400
+        cellWidth.value = 40
+        cellHeight.value = 40
+      }
+      if(window.innerWidth < 800) {
+        canvasWidth.value = 280
+        canvasHeight.value = 350
+        cellWidth.value = 35
+        cellHeight.value = 35
+      }
+      // location.reload()
+    }
+
 const board = ref(new Array(tableRows));
 for (let x = 0; x < tableRows; x++) {
   board.value[x] = new Array(tableColumns);
@@ -360,11 +174,12 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
       cellWidth.value
     );
     // ctx.stroke();
-    // ctx.font = "30px Arial";
+    // ctx.fillStyle = "rgba(0,0,0)";
+    // ctx.font = "15px Arial";
     // ctx.fillText(
     //   `${cell.posY}:${cell.posX}`,
-    //   cell.posX * cellHeight + 50,
-    //   cell.posY * cellWidth + 100
+    //   cell.posX * cellHeight.value + (cellHeight.value/5),
+    //   cell.posY * cellWidth.value + (cellHeight.value/1.5)
     // );
   }
 };
@@ -455,7 +270,6 @@ const handleClick = (event: MouseEvent) => {
       );
     }
   }
-  aux()
 };
 
 const drawBoard = (
@@ -463,21 +277,21 @@ const drawBoard = (
   boardDisposition: BoardDisposition,
   images: HTMLImageElement[]
 ) => {
-  const pieceList: Piece[] = boardDisposition.board;
+  const pieceList: Piece[] = boardDisposition.pieces;
   pieceList.forEach((piece) => {
-    board.value[piece.posY][piece.posX].empty = false;
-    board.value[piece.posY][piece.posX] = new Piece(
+    board.value[piece.y][piece.x].empty = false;
+    board.value[piece.y][piece.x] = new Piece(
       piece.owner,
-      piece.posY,
-      piece.posX,
+      piece.y,
+      piece.x,
       piece.rotation,
-      piece.pieceClass
+      piece.type
     );
     const image = getPieceImage(piece, images);
     ctx.drawImage(
       image,
-      piece.posX * cellHeight.value,
-      piece.posY * cellWidth.value,
+      piece.x * cellHeight.value,
+      piece.y * cellWidth.value,
       cellHeight.value,
       cellWidth.value
     );
@@ -486,11 +300,11 @@ const drawBoard = (
 
 function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
   if (piece.owner == "PLAYER_ONE") {
-    switch (piece.pieceClass) {
-      case "com.telegame.code.models.kingolaser.pieces.King":
+    switch (piece.type) {
+      case "com.telegame.code.models.games.laserboard.pieces.King":
         return images[1];
         break;
-      case "com.telegame.code.models.kingolaser.pieces.Defender":
+      case "com.telegame.code.models.games.laserboard.pieces.Defender":
         switch (piece.rotation) {
           case "NORTH":
             return images[2];
@@ -502,7 +316,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[5];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Bouncer":
+      case "com.telegame.code.models.games.laserboard.pieces.Bouncer":
         switch (piece.rotation) {
           case "NORTH":
             return images[6];
@@ -514,7 +328,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[7];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Deflector":
+      case "com.telegame.code.models.games.laserboard.pieces.Deflector":
         switch (piece.rotation) {
           case "NORTH":
             return images[8];
@@ -526,7 +340,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[11];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Laser":
+      case "com.telegame.code.models.games.laserboard.pieces.Laser":
         switch (piece.rotation) {
           case "NORTH":
             return images[12];
@@ -542,11 +356,11 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
         return images[0];
     }
   } else {
-    switch (piece.pieceClass) {
-      case "com.telegame.code.models.kingolaser.pieces.King":
+    switch (piece.type) {
+      case "com.telegame.code.models.games.laserboard.pieces.King":
         return images[16];
         break;
-      case "com.telegame.code.models.kingolaser.pieces.Defender":
+      case "com.telegame.code.models.games.laserboard.pieces.Defender":
         switch (piece.rotation) {
           case "NORTH":
             return images[17];
@@ -558,7 +372,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[20];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Bouncer":
+      case "com.telegame.code.models.games.laserboard.pieces.Bouncer":
         switch (piece.rotation) {
           case "NORTH":
             return images[21];
@@ -570,7 +384,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[22];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Deflector":
+      case "com.telegame.code.models.games.laserboard.pieces.Deflector":
         switch (piece.rotation) {
           case "NORTH":
             return images[23];
@@ -582,7 +396,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[26];
         }
         return images[0];
-      case "com.telegame.code.models.kingolaser.pieces.Laser":
+      case "com.telegame.code.models.games.laserboard.pieces.Laser":
         switch (piece.rotation) {
           case "NORTH":
             return images[27];
@@ -604,10 +418,15 @@ function drawLaser(
   ctx: CanvasRenderingContext2D,
   boardDisposition: BoardDisposition
 ) {
-  const thickness = 20;
+  const trimmed = boardDisposition.lastAction
+  const steps = trimmed.split('*')
+  const route: number[][] = steps.map((step) => {
+    const coordinates = step.split(',')
+    return coordinates.map(Number)
+  })
+  const thickness = 15;
   ctx.fillStyle = "rgb(100, 255, 100)";
-
-  boardDisposition.route.forEach((target) => {
+  route.forEach((target: number[]) => {
     ctx.beginPath();
     ctx.arc(
       target[1] * cellWidth.value + cellWidth.value / 2,
@@ -631,7 +450,7 @@ onMounted(() => {
         drawBoard(ctx, boardDisposition, images);
       }
 
-      // drawLaser(ctx, boardDisposition);
+      drawLaser(ctx, boardDisposition);
 
     });
   }

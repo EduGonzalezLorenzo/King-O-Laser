@@ -9,7 +9,9 @@
       </div>
     </div>
     <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
-      <Grid @send-movement="sendMovement" />
+      <Grid
+        @send-movement="sendMovement"
+      />
     </div>
     <div
       v-if="openSendMenu"
@@ -21,7 +23,10 @@
       <p> PX{{ newSelectedPieceX }}</p>
       <p> PY{{ newSelectedPieceY }}</p>
 
-      <button class="confirm_button hover:bg-green-300">
+      <button
+        class="confirm_button hover:bg-green-300"
+        @click="fetchMovement"
+      >
         Confirm Movement
       </button>
       <button
@@ -38,6 +43,7 @@
 import Grid from "~/components/GridComp.vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
+
 const route = useRoute()
 
 const newSelectedPieceY = ref(0);
@@ -49,19 +55,32 @@ const openSendMenu = ref(false);
 const id = ref(route.params.id);
 const jwt = ref<String>("")
 
-onBeforeMount(async () =>{
+
+async function fetchMovement() {
+  const currentPosY = newSelectedPieceY.value
+  const currentPosX = newSelectedPieceX.value
+  const newPosY = newSelectedMovementY.value
+  const newPosX = newSelectedMovementX.value
+  const rotateTo = newRotationValue.value
   const localStore = localStorage.getItem("jwt")
   jwt.value = localStore as String;
-  await fetch("http://localhost:8080/match/"+ id.value, {
-    method: "GET",
+  await fetch("http://localhost:8080/match/" + id.value + "/action", {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + jwt.value,
     },
-  }).then((response) => {
-   console.log(response.json())
+    body: JSON.stringify({
+      currentPosY,
+      currentPosX,
+      newPosY,
+      newPosX,
+      rotateTo
+    }),
   });
-})
+  location.reload()
+}
+
 
 const sendMovement = (
   selectedPieceY: number,
@@ -84,7 +103,6 @@ const closeSendMenu = () => {
 </script>
 <style scoped>
 .game_container {
-  /* position: relative; */
   display: flex;
   align-items: flex-start;
   align-items: center;
@@ -95,10 +113,6 @@ const closeSendMenu = () => {
 .canvas_container {
   position: relative;
 }
-
-/* h1 {
-  font-size: 35px;
-} */
 
 .send_menu {
   background-color: rgba(211, 211, 211, 0.516);
@@ -112,6 +126,5 @@ button {
   border: 1px solid black;
   padding: 1em;
   margin: 0.5em;
-  /* font-size: 25px; */
 }
 </style>

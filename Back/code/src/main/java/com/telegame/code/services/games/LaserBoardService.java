@@ -55,7 +55,9 @@ public class LaserBoardService {
         pieceRepo.save(piece);
         boardRepo.save(laserBoard);
 
-        shootLaser(laserBoard, matchStatus, piecesList);
+        List<Piece> boardDisposition = pieceRepo.findByLaserBoardId(laserBoard.getId());
+
+        shootLaser(laserBoard, matchStatus, boardDisposition);
 
         return "Ok";
     }
@@ -86,11 +88,11 @@ public class LaserBoardService {
     }
 
     private String formatRoute(List<int[]> route) {
-        StringBuilder formattedRoute = new StringBuilder("[");
+        StringBuilder formattedRoute = new StringBuilder();
         for (int[] coordinate : route) {
-            formattedRoute.append("[").append(coordinate[0]).append(", ").append(coordinate[1]).append("],");
+            formattedRoute.append(coordinate[0]).append(",").append(coordinate[1]).append("*");
         }
-        return formattedRoute.append("]").toString();
+        return formattedRoute.toString();
     }
 
 

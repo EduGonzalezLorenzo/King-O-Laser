@@ -14,7 +14,7 @@ public class PieceBuilder {
         Piece piece = new King();
         System.out.println("type: " + type);
         switch (type) {
-            case "class com.telegame.code.models.games.kingolaser.pieces.King" -> {
+            case "class com.telegame.code.models.games.laserboard.pieces.King" -> {
                 Piece king = new King();
                 king.setOwner(owner);
                 king.setPosY(posY);
@@ -28,7 +28,7 @@ public class PieceBuilder {
                 king.setSides(sides);
                 return king;
             }
-            case "class com.telegame.code.models.games.kingolaser.pieces.Laser" -> {
+            case "class com.telegame.code.models.games.laserboard.pieces.Laser" -> {
                 Piece laser = new Laser();
                 laser.setOwner(owner);
                 laser.setPosY(posY);
@@ -40,7 +40,7 @@ public class PieceBuilder {
                 laser.setSide(Piece.Direction.WEST, new Block());
                 return laser;
             }
-            case "class com.telegame.code.models.games.kingolaser.pieces.Deflector" -> {
+            case "class com.telegame.code.models.games.laserboard.pieces.Deflector" -> {
                 Piece deflector = new Deflector();
                 deflector.setOwner(owner);
                 deflector.setPosY(posY);
@@ -49,7 +49,7 @@ public class PieceBuilder {
                 deflector.setSides(buildDeflectorSides(deflector.getRotation()));
                 return deflector;
             }
-            case "class com.telegame.code.models.games.kingolaser.pieces.Defender" -> {
+            case "class com.telegame.code.models.games.laserboard.pieces.Defender" -> {
                 Piece defender = new Defender();
                 defender.setOwner(owner);
                 defender.setPosY(posY);
@@ -58,7 +58,7 @@ public class PieceBuilder {
                 defender.setSides(buildDefenderSides(defender.getRotation()));
                 return defender;
             }
-            case "class com.telegame.code.models.games.kingolaser.pieces.Bouncer" -> {
+            case "class com.telegame.code.models.games.laserboard.pieces.Bouncer" -> {
                 Piece bouncer = new Bouncer();
                 bouncer.setOwner(owner);
                 bouncer.setPosY(posY);
