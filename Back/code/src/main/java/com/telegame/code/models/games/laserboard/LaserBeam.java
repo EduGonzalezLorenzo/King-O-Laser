@@ -25,8 +25,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class LaserBeam {
 
-//    @Autowired
-//    LaserBoardService laserBoardService;
+
+    private LaserBoardService laserBoardService;
 
     Piece.Direction direction;
     List<int[]> route;
@@ -87,7 +87,7 @@ public class LaserBeam {
                     return returnMap;
                 } else if (nextDirection == Piece.Direction.HIT) {
                     int[] next = forward(direction, currentPosition);
-//                    laserBoardService.deletePiece(next[0], next[1], laserBoard.getId());
+                    laserBoardService.deletePiece(next[0], next[1], laserBoard.getId());
                     LaserBeam.drawBoard(board);
                     returnMap.put("message", "HIT");
                     route.add(next);
