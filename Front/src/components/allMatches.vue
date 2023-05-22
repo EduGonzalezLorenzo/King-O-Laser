@@ -49,7 +49,7 @@
   const password = ref("")
   const jwt = ref("")
   
-  onBeforeMount(async () =>{
+  onMounted(async () =>{
     const localStore = localStorage.getItem("jwt")
     jwt.value = localStore;
   

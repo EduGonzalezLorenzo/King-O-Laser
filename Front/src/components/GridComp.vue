@@ -59,10 +59,11 @@ const selectedPieceX = ref<number>(0);
 const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
+const imagesArr = ref<HTMLImageElement[]>([])
 const boardDisposition = reactive<BoardDisposition>({
-  lastAction : '',
-  pieces: []
-})
+  lastAction: "",
+  pieces: [],
+});
 
 const imagePaths = [
   "/img/kingolaser/UnknownPiece.webp",
@@ -98,62 +99,53 @@ const imagePaths = [
   "/img/kingolaser/RedLaserW.webp",
 ];
 
-const route = useRoute()
+const route = useRoute();
 const id = ref(route.params.id);
-const jwt = ref<String>("")
-onBeforeMount(async () =>{
-  const localStore = localStorage.getItem("jwt")
-  jwt.value = localStore as String;
-  await fetch("http://localhost:8080/match/"+ id.value, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  }).then((response) => {
-   return response.json()
-  }).then((data) => {
-    boardDisposition.lastAction = data.lastAction,
-    boardDisposition.pieces = data.pieces
-  });
-})
+const jwt = ref<String>("");
 
 const updateCanvasSize = () => {
-      if(window.innerWidth > 1200) {
-        canvasWidth.value = 560
-        canvasHeight.value = 700
-        cellWidth.value = 70
-        cellHeight.value = 70
-      }
-      if(window.innerWidth > 1000 && window.innerWidth <= 1200) {
-        canvasWidth.value = 480
-        canvasHeight.value = 600
-        cellWidth.value = 60
-        cellHeight.value = 60
-      }
-      if(window.innerWidth > 800 && window.innerWidth <= 1000) {
-        canvasWidth.value = 320
-        canvasHeight.value = 400
-        cellWidth.value = 40
-        cellHeight.value = 40
-      }
-      if(window.innerWidth < 800) {
-        canvasWidth.value = 280
-        canvasHeight.value = 350
-        cellWidth.value = 35
-        cellHeight.value = 35
-      }
-      // location.reload()
-    }
+  if (window.innerWidth > 1200) {
+    canvasWidth.value = 560;
+    canvasHeight.value = 700;
+    cellWidth.value = 70;
+    cellHeight.value = 70;
+  }
+  if (window.innerWidth > 1000 && window.innerWidth <= 1200) {
+    canvasWidth.value = 480;
+    canvasHeight.value = 600;
+    cellWidth.value = 60;
+    cellHeight.value = 60;
+  }
+  if (window.innerWidth > 800 && window.innerWidth <= 1000) {
+    canvasWidth.value = 320;
+    canvasHeight.value = 400;
+    cellWidth.value = 40;
+    cellHeight.value = 40;
+  }
+  if (window.innerWidth < 800) {
+    canvasWidth.value = 280;
+    canvasHeight.value = 350;
+    cellWidth.value = 35;
+    cellHeight.value = 35;
+  }
+  // location.reload()
+};
 
 const board = ref(new Array(tableRows));
+
 for (let x = 0; x < tableRows; x++) {
   board.value[x] = new Array(tableColumns);
 }
 
 for (let x = 0; x < tableRows; x++) {
   for (let y = 0; y < tableColumns; y++) {
-    board.value[x][y] = new Cell(cellWidth.value, cellHeight.value, x, y, false);
+    board.value[x][y] = new Cell(
+      cellWidth.value,
+      cellHeight.value,
+      x,
+      y,
+      false
+    );
   }
 }
 
@@ -214,7 +206,7 @@ const handleClick = (event: MouseEvent) => {
 
       ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
       drawGrid(ctx);
-      chargeImages(imagePaths).then((images) => {
+      chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
         }
@@ -418,9 +410,10 @@ function drawLaser(
   ctx: CanvasRenderingContext2D,
   boardDisposition: BoardDisposition
 ) {
-  const trimmed = boardDisposition.lastAction
-  const steps = trimmed.split('*')
+  const trimmed = boardDisposition.lastAction;
+  const steps = trimmed.split("*");
   const route: number[][] = steps.map((step) => {
+
     const coordinates = step.split(',')
     return coordinates.map(Number)
   })
@@ -439,19 +432,37 @@ function drawLaser(
   });
 }
 
-onMounted(() => {
-  const ctx = canvas.value?.getContext("2d");
+onMounted(async () => {
+  const localStore = localStorage.getItem("jwt");
+  jwt.value = localStore as String;
+  await fetch("http://localhost:8080/match/" + id.value, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      (boardDisposition.lastAction = data.lastAction),
+        (boardDisposition.pieces = data.pieces);
+    });
 
+  const ctx = canvas.value?.getContext("2d");
+  imagesArr.value = imagePaths.map((src) => {
+    const image = new Image();
+    image.src = src;
+    return image;
+  });
   if (ctx) {
-    
     drawGrid(ctx);
-    chargeImages(imagePaths).then((images) => {
+    await chargeImages(imagesArr.value).then((images) => {
       if (imagesLoaded(images)) {
         drawBoard(ctx, boardDisposition, images);
       }
-
       drawLaser(ctx, boardDisposition);
-
     });
   }
   const menu = document.getElementById("custom-menu") as HTMLElement;
@@ -491,16 +502,16 @@ onMounted(() => {
     rotationValue.value = "";
     menu.classList.remove("show");
   });
-  window.addEventListener('resize', updateCanvasSize)
-  updateCanvasSize()
+  window.addEventListener("resize", updateCanvasSize);
+  updateCanvasSize();
 });
 
-function chargeImages(imagePaths: string[]): Promise<HTMLImageElement[]> {
+function chargeImages(imagePaths: HTMLImageElement[]): Promise<HTMLImageElement[]> {
   return Promise.all(
     imagePaths.map((path) => {
       return new Promise<HTMLImageElement>((resolve, reject) => {
         const img = new Image();
-        img.src = path;
+        img.src = path.src;
 
         img.onload = () => {
           resolve(img);
@@ -525,7 +536,6 @@ function imagesLoaded(images: HTMLImageElement[]): boolean {
 </script>
 
 <style>
-
 canvas {
   background-image: url(../public/img/kingolaser/Board.webp);
   background-size: contain;
