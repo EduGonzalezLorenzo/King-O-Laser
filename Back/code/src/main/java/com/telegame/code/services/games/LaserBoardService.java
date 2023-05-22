@@ -73,7 +73,7 @@ public class LaserBoardService {
         List<Piece> currentDisposition = pieceRepo.findByLaserBoardId(laserBoard.getId());
 
         LaserBeam laserBeam = new LaserBeam();
-        Map<String, Object> laserResult = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
+        Map<String, Object> laserResult = laserBeam.shootLaser(laserBoard, piece.getRotation(), currentDisposition);
 
         List<int[]> route = (List<int[]>) laserResult.get("route");
 
@@ -190,5 +190,11 @@ public class LaserBoardService {
                     .build());
         }
         return pieceDTOList;
+    }
+
+    public void deletePiece(int posY, int posX, Long laserBoardId) {
+        List<Piece> pieceList = pieceRepo.findByPosYAndPosXAndLaserBoardId(posY, posX, laserBoardId);
+        Piece pieceToDelete = pieceList.get(0);
+        pieceRepo.delete(pieceToDelete);
     }
 }

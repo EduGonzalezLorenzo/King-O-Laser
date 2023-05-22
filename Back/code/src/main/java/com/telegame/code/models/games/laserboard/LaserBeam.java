@@ -2,10 +2,12 @@ package com.telegame.code.models.games.laserboard;
 
 import com.telegame.code.builder.games.laserboard.PieceBuilder;
 import com.telegame.code.models.Board;
+import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.games.laserboard.pieces.Bouncer;
 import com.telegame.code.models.games.laserboard.pieces.Piece;
 import com.telegame.code.models.games.laserboard.pieces.PieceSide;
 import com.telegame.code.repos.games.laserboard.PieceRepo;
+import com.telegame.code.services.games.LaserBoardService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,20 +25,22 @@ import java.util.Map;
 @NoArgsConstructor
 public class LaserBeam {
 
-    @Autowired
-    PieceRepo pieceRepo;
+//    @Autowired
+//    LaserBoardService laserBoardService;
 
     Piece.Direction direction;
     List<int[]> route;
 
-    public Map<String, Object> shootLaser(Board.MatchStatus matchStatus, Piece.Direction direction, List<Piece> boardDisposition) {
+    public Map<String, Object> shootLaser(LaserBoard laserBoard, Piece.Direction direction, List<Piece> boardDisposition) {
 
         Map<String, Object> returnMap = new HashMap<>();
 
-        int[] currentPosition;
+        int[] currentPosition = new int[2];
         List<int[]> route = new ArrayList<>();
 
-        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
+        GameMatch gameMatch = laserBoard.getGameMatch();
+
+        if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_ONE_TURN) {
             currentPosition = new int[]{9, 7};
         } else {
             currentPosition = new int[]{0, 0};
@@ -84,10 +88,11 @@ public class LaserBeam {
                     returnMap.put("route", route);
                     return returnMap;
                 } else if (nextDirection == Piece.Direction.HIT) {
-                    pieceRepo.delete(piece);
+                    int[] next = forward(direction, currentPosition);
+//                    laserBoardService.deletePiece(next[0], next[1], laserBoard.getId());
                     LaserBeam.drawBoard(board);
                     returnMap.put("message", "HIT");
-                    route.add(forward(direction, currentPosition));
+                    route.add(next);
                     returnMap.put("route", route);
                     return returnMap;
                 } else {
