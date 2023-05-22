@@ -10,13 +10,13 @@ import org.hibernate.validator.constraints.Range;
 @Setter
 @AllArgsConstructor
 public class LaserBoardMoveForm {
-    @Range(min = 0, max = 7)
+    @Range(min = 0, max = 9)
     int currentPosY;
-    @Range(min = 0, max = 9)
-    int currentPosX;
     @Range(min = 0, max = 7)
-    int newPosY;
+    int currentPosX;
     @Range(min = 0, max = 9)
+    int newPosY;
+    @Range(min = 0, max = 7)
     int newPosX;
     @Pattern(regexp = "^([LR])?$")
     String rotateTo;

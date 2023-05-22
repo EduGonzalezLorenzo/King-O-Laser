@@ -424,7 +424,7 @@ function drawLaser(
     const coordinates = step.split(',')
     return coordinates.map(Number)
   })
-  const thickness = 15;
+  const thickness = Math.floor(cellHeight.value/4);
   ctx.fillStyle = "rgb(100, 255, 100)";
   route.forEach((target: number[]) => {
     ctx.beginPath();
