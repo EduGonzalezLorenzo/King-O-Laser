@@ -38,8 +38,6 @@ public class LaserBeam {
         int[] currentPosition = new int[2];
         List<int[]> route = new ArrayList<>();
 
-        GameMatch gameMatch = laserBoard.getGameMatch();
-
         if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_ONE_TURN) {
             currentPosition = new int[]{9, 7};
         } else {
