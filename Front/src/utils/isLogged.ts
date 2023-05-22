@@ -1,8 +1,8 @@
 export default
-onBeforeMount(async () =>{
+onBeforeMount(() =>{
   watch(
     () => localStorage.getItem('jwt'),
-    async (newValue) => {
+    (newValue) => {
       const token = newValue || ''
       const tokenExp = localStorage.getItem('jwtExp') || ''
   
@@ -11,7 +11,7 @@ onBeforeMount(async () =>{
         localStorage.setItem('jwt', '')
         window.alert('No Logged User or Your Session Expired. Log In Again')
 
-        await nextTick()
+        nextTick()
         navigateTo('/login')
       }
     },

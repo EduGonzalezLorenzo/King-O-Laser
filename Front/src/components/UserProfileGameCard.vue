@@ -27,7 +27,7 @@
         </p>
         <div class="flex ml-auto items-end flex-row">
           <NuxtLink
-            to="/"
+            :to="`/profile/${user.name}`"
             class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500"
           >
             <img
@@ -35,6 +35,8 @@
               class="w-6 h-6 mx-2"
             >
           </NuxtLink>
+
+
           <NuxtLink
             to="/select-game"
             class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500"
@@ -77,7 +79,7 @@ const user = ref({
   profileImg:String
 })
 
-onBeforeMount(async () =>{
+onMounted(async () =>{
   const localStore = localStorage.getItem("jwt")
   jwt.value = localStore as String;
   

@@ -27,9 +27,7 @@
 
 <script setup lang="ts">
 import useImages from "@/utils/images";
-import isLogged from "~/utils/isLogged";
 
-isLogged;
 
 const { images } = useImages();
 

@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-import isLogged from "~/utils/isLogged";
 
-isLogged;
 const msg = ref("");
 const route = useRoute();
 const game_type = route.params.game as string;
@@ -18,7 +16,7 @@ function isChecked(checked: boolean) {
   isPublic.value = checked;
 }
 
-onBeforeMount(async () => {
+onMounted(async () => {
   if (!["TicTacToe", "LASER_BOARD"].includes(game_type)) {
     await navigateTo(`/select-game`);
   }
