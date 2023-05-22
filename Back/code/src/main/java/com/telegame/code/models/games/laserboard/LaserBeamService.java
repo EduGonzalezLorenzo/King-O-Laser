@@ -25,8 +25,4 @@ public class LaserBeamService {
 
     private LaserBoardService laserBoardService;
 
-
-
-
-
 }

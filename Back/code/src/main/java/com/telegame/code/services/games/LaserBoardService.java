@@ -14,6 +14,7 @@ import com.telegame.code.models.Player;
 import com.telegame.code.models.games.laserboard.Block;
 import com.telegame.code.models.games.laserboard.LaserBoard;
 import com.telegame.code.models.games.laserboard.pieces.Bouncer;
+import com.telegame.code.models.games.laserboard.pieces.King;
 import com.telegame.code.models.games.laserboard.pieces.Piece;
 import com.telegame.code.models.games.laserboard.pieces.PieceSide;
 import com.telegame.code.repos.BoardRepo;
@@ -109,57 +110,6 @@ public class LaserBoardService {
         return (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN && piece.getOwner() == Piece.Owner.PLAYER_TWO);
     }
 
-    //TODO (Esta función la tenía en MatchService)
-
-//    public ResponseEntity<String> updateMatch(Long matchId, MovementForm movementForm) {
-//        try {
-//            GameMatch gameMatch = matchRepo.getReferenceById(matchId);
-//            Board board = gameMatch.getBoard();
-//            Board.MatchStatus matchStatus = board.getStatus();
-//            List<Piece> currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(movementForm.getCurrentPosY(), movementForm.getCurrentPosX(), board.getId());
-//            Piece piece = currentDisposition.get(0);
-//            if((matchStatus == Board.MatchStatus.PLAYER_ONE_TURN && piece.getOwner() == Piece.Owner.PLAYER_ONE) ||
-//                    (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN && piece.getOwner() == Piece.Owner.PLAYER_TWO)) {
-//                if (movementForm.getRotateTo() == null) {
-//                    if(!piece.move(movementForm.getNewPosY(), movementForm.getNewPosX())) return new ResponseEntity<>("Incorrect Movement", HttpStatus.BAD_REQUEST);
-//                } else {
-//                    if(!piece.rotate(movementForm.getRotateTo(), piece)) return new ResponseEntity<>("Incorrect Rotation Value", HttpStatus.BAD_REQUEST);
-//                }
-//            } else {
-//                System.out.println("Turno incorrecto");
-//                return new ResponseEntity<>("Wrong turn", HttpStatus.BAD_REQUEST);
-//            }
-//
-//            pieceRepo.save(piece);
-//
-//            boardRepo.save(board);
-//            if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(9, 7, board.getId());
-//            if(matchStatus == Board.MatchStatus.PLAYER_TWO_TURN) currentDisposition = pieceRepo.findByPosYAndPosXAndLaserBoardId(0, 0, board.getId());
-//            piece = currentDisposition.get(0);
-//            currentDisposition = pieceRepo.findByLaserBoardId(board.getId());
-//
-//            LaserBeam laserBeam = new LaserBeam();
-//            Map<String, Object> laserResult = laserBeam.shootLaser(matchStatus, piece.getRotation(), currentDisposition);
-//
-//            System.out.println("LASER RESULT: " + laserResult.get("message"));
-//            List<int[]> route = (List<int[]>) laserResult.get("route");
-//            System.out.println("last step: " + Arrays.toString(route.get(route.size() -1)));
-//
-//            if(matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
-//                board.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
-//            } else {
-//                board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
-//            }
-//
-//            boardRepo.save(board);
-//
-//            return new ResponseEntity<>("OK", HttpStatus.OK);
-//        } catch (RuntimeException e) {
-//            return new ResponseEntity<>("Incorrect Movement", HttpStatus.BAD_REQUEST);
-//        }
-//
-//    }
-
     public Board generateBoard(GameMatch newGameMatch, String metadata) {
         return LaserBoardBuilder.getKingOLaserBoard(newGameMatch, metadata);
     }
@@ -203,7 +153,7 @@ public class LaserBoardService {
 
         Map<String, Object> returnMap = new HashMap<>();
 
-        int[] currentPosition = new int[2];
+        int[] currentPosition;
         List<int[]> route = new ArrayList<>();
 
         if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_ONE_TURN) {
@@ -255,6 +205,12 @@ public class LaserBoardService {
                     return returnMap;
                 } else if (nextDirection == Piece.Direction.HIT) {
                     int[] next = forward(direction, currentPosition);
+                    piece = (Piece) board[next[0]][next[1]];
+                    if(piece instanceof King) {
+                        if(piece.getOwner() == Piece.Owner.PLAYER_ONE) laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
+                        else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
+                        boardRepo.save(laserBoard);
+                    }
                     deletePiece(next[0], next[1], laserBoard.getId());
                     drawBoard(board);
                     returnMap.put("message", "HIT");

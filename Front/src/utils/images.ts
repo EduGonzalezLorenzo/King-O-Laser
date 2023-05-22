@@ -9,19 +9,19 @@ export interface Image {
 export default function useImages() {
   const images = reactive<Image[]>([
     {
-      url: 'https://via.placeholder.com/300',
+      url: '/img/gamesSelectorImages/kingolaser.jpg',
       alt: 'Placeholder Image 1',
       title: 'LASER_BOARD',
     },
     {
-      url: 'https://via.placeholder.com/300',
+      url: '/img/gamesSelectorImages/tictactoe.jpg',
       alt: 'Placeholder Image 2',
       title: 'Tic Tac Toe',
     },
     {
-      url: 'https://via.placeholder.com/300',
+      url: '/img/gamesSelectorImages/PPTLS.jpg',
       alt: 'Placeholder Image 3',
-      title: 'Image 3',
+      title: 'PPTLS',
     },
   ]);
 
