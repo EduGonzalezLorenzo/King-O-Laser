@@ -413,10 +413,11 @@ function drawLaser(
   const trimmed = boardDisposition.lastAction;
   const steps = trimmed.split("*");
   const route: number[][] = steps.map((step) => {
-    const coordinates = step.split(",");
-    return coordinates.map(Number);
-  });
-  const thickness = 15;
+
+    const coordinates = step.split(',')
+    return coordinates.map(Number)
+  })
+  const thickness = Math.floor(cellHeight.value/4);
   ctx.fillStyle = "rgb(100, 255, 100)";
   route.forEach((target: number[]) => {
     ctx.beginPath();
