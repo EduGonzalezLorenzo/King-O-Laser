@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 const msg = ref<string>("");
 
 async function createUser() {
@@ -13,7 +12,7 @@ async function createUser() {
   const password = (document.getElementById("password") as HTMLInputElement)
     .value;
 
-  const response = await fetch("http://localhost:8080/signUp", {
+  await fetch("http://localhost:8080/signUp", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -25,14 +24,18 @@ async function createUser() {
       playerName,
       password,
     }),
-  });
-
-  if (response.ok) {
-    navigateTo("/login")
-
-  } else {
-    msg.value = "Error Creating User"
-  }
+  })
+    .then((response) => {
+      if (response.ok) {
+        navigateTo("/login");
+      } else {
+        msg.value = "Error Creating User";
+      }
+    })
+    .catch((error) => {
+      if(error)
+      navigateTo("/signup")
+    });
 }
 
 function checkPasswordsMatch() {
@@ -47,9 +50,9 @@ function checkPasswordsMatch() {
 function handleSubmit(event: any) {
   event.preventDefault();
   if (!checkPasswordsMatch()) {
-    msg.value = "Passwords do not match"
-  }else{
-    createUser()
+    msg.value = "Passwords do not match";
+  } else {
+    createUser();
   }
 }
 
@@ -81,10 +84,10 @@ function isStrongPassword(value: string) {
 
       <form
         id="signUp"
-        class="bg-white rounded-lg text-black m-10 p-10"
+        class="bg-white rounded-lg text-black m-10 p-10 grid grid-cols-1 gap-6 md:grid-cols-2"
         @submit="handleSubmit"
       >
-        <div class="mb-6">
+        <div>
           <label
             for="firstname"
             class="block mb-2 text-sm font-medium text-black"
@@ -97,7 +100,7 @@ function isStrongPassword(value: string) {
             required
           >
         </div>
-        <div class="mb-6">
+        <div>
           <label
             for="lastname"
             class="block mb-2 text-sm font-medium text-black"
@@ -110,7 +113,7 @@ function isStrongPassword(value: string) {
             required
           >
         </div>
-        <div class="mb-6">
+        <div>
           <label
             for="email"
             class="block mb-2 text-sm font-medium text-black"
@@ -118,12 +121,12 @@ function isStrongPassword(value: string) {
           <input
             id="email"
             type="email"
-            class="shadow-sm  text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
+            class="shadow-sm text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
             placeholder="name@email.com"
             required
           >
         </div>
-        <div class="mb-6">
+        <div>
           <label
             for="username"
             class="block mb-2 text-sm font-medium text-black"
@@ -131,12 +134,12 @@ function isStrongPassword(value: string) {
           <input
             id="username"
             type="text"
-            class="shadow-sm  text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
+            class="shadow-sm text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
             placeholder="Player1234"
             required
           >
         </div>
-        <div class="mb-6">
+        <div>
           <label
             for="password"
             class="block mb-2 text-sm font-medium text-black"
@@ -149,9 +152,12 @@ function isStrongPassword(value: string) {
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
             @change="(event:Event) => isStrongPassword((event.target as HTMLInputElement).value)"
           >
-          <span id="msg" />
+          <span
+            id="msg"
+            class="text-red-700 font-semibold"
+          />
         </div>
-        <div class="mb-6">
+        <div>
           <label
             for="repeat-password"
             class="block mb-2 text-sm font-medium text-black"
@@ -164,7 +170,7 @@ function isStrongPassword(value: string) {
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
           >
         </div>
-        <div class="flex items-start mb-6">
+        <div class="flex items-start">
           <div class="flex items-center h-5">
             <input
               id="terms"
@@ -177,32 +183,38 @@ function isStrongPassword(value: string) {
           <label
             for="terms"
             class="ml-2 text-sm font-medium text-white dark:text-gray-300"
-          >I agree with the
+          >
+            I agree with the
             <a
               href="#"
               class="text-blue-600 hover:underline dark:text-blue-500"
-            >terms and conditions</a></label>
+            >
+              terms and conditions
+            </a>
+          </label>
         </div>
         <p
-          class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
+          class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded col-span-2 text-center"
         >
           {{ msg }}
         </p>
-        <NuxtLink
-          to="/login"
-          class="text-blue-600 underline hover:text-red-600"
-        >
-          <p class="mb-4">
-            Already have an Account ?
-          </p>
-        </NuxtLink>
-        <button
-          id="submit"
-          type="submit"
-          class="signup font-bold py-2 px-4 rounded"
-        >
-          Sign Up
-        </button>
+        <div class="col-span-2">
+          <NuxtLink
+            to="/login"
+            class="text-blue-600 underline hover:text-red-600"
+          >
+            <p class="mb-4">
+              Already have an Account?
+            </p>
+          </NuxtLink>
+          <button
+            id="submit"
+            type="submit"
+            class="signup font-bold py-2 px-4 rounded"
+          >
+            Sign Up
+          </button>
+        </div>
       </form>
     </div>
   </div>

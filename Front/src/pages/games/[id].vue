@@ -55,7 +55,6 @@ const openSendMenu = ref(false);
 const id = ref(route.params.id);
 const jwt = ref<String>("")
 
-
 async function fetchMovement() {
   const currentPosY = newSelectedPieceY.value
   const currentPosX = newSelectedPieceX.value

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white flex justify-between py-4 px-8 pr-20 flex-col border-b-8 border-black"
+    class="bg-white flex justify-between py-4 px-8 pr-20 flex-col border-b-8 border-black w-full"
   >
     <div class="flex items-center">
       <div
@@ -21,7 +21,7 @@
           class="w-full h-full rounded-full object-cover"
         >
       </div>
-      <div class="flex ml-auto items-start flex-col">
+      <div class="flex items-start flex-col">
         <p class="m-2 text-2xl font-bold">
           {{ user.name }}
         </p>
