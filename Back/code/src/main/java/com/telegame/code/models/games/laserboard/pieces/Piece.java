@@ -37,7 +37,7 @@ public abstract class Piece implements Movable {
     private int posX;
     private int posY;
     @Enumerated(EnumType.STRING)
-    private Direction rotation;
+    public Direction rotation;
     @Transient
     private Map<Direction, PieceSide> sides = new HashMap<>();
 
