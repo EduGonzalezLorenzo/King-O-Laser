@@ -222,8 +222,10 @@ const handleClick = (event: MouseEvent) => {
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
-      menu.style.top = (event.offsetY) + "px";
-      menu.style.left = (event.offsetX - (cellWidth.value/2)) + "px";
+
+      menu.style.top = (mouseY.value*cellHeight.value) + "px";
+      menu.style.left = (mouseX.value*cellHeight.value) + "px";
+
       menuItem1.style.height = (cellHeight.value/2) + "px"
       menuItem2.style.height = (cellHeight.value/2) + "px"
       arrow1.style.height = (cellHeight.value/2) + "px"
@@ -574,14 +576,15 @@ canvas {
 .custom-menu {
   display: none;
 }
+
 .custom-menu-item:hover {
-  background-color: lightblue;
+  background-color: lightgreen;
   border-radius: 10px;
 }
 .show {
   display: block;
   position: absolute;
-  background-color: rgb(173, 216, 230, 0.7);
+  background-color: rgb(173, 216, 230, 0.5);
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 10px;
