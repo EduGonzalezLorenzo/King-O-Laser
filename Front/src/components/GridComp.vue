@@ -104,31 +104,59 @@ const id = ref(route.params.id);
 const jwt = ref<String>("");
 
 const updateCanvasSize = () => {
+  const ctx = canvas.value?.getContext("2d");
   if (window.innerWidth > 1200) {
     canvasWidth.value = 560;
     canvasHeight.value = 700;
     cellWidth.value = 70;
     cellHeight.value = 70;
+    if(ctx) {
+      chargeImages(imagesArr.value).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
   }
   if (window.innerWidth > 1000 && window.innerWidth <= 1200) {
     canvasWidth.value = 480;
     canvasHeight.value = 600;
     cellWidth.value = 60;
     cellHeight.value = 60;
+    if(ctx) {
+      chargeImages(imagesArr.value).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
   }
   if (window.innerWidth > 800 && window.innerWidth <= 1000) {
     canvasWidth.value = 320;
     canvasHeight.value = 400;
     cellWidth.value = 40;
     cellHeight.value = 40;
+    if(ctx) {
+      chargeImages(imagesArr.value).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
   }
   if (window.innerWidth < 800) {
     canvasWidth.value = 280;
     canvasHeight.value = 350;
     cellWidth.value = 35;
     cellHeight.value = 35;
+    if(ctx) {
+      chargeImages(imagesArr.value).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
   }
-  // location.reload()
 };
 
 const board = ref(new Array(tableRows));
@@ -165,14 +193,6 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
       cellHeight.value,
       cellWidth.value
     );
-    // ctx.stroke();
-    // ctx.fillStyle = "rgba(0,0,0)";
-    // ctx.font = "15px Arial";
-    // ctx.fillText(
-    //   `${cell.posY}:${cell.posX}`,
-    //   cell.posX * cellHeight.value + (cellHeight.value/5),
-    //   cell.posY * cellWidth.value + (cellHeight.value/1.5)
-    // );
   }
 };
 
@@ -197,8 +217,8 @@ const handleClick = (event: MouseEvent) => {
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
-      menu.style.top = event.offsetY + "px";
-      menu.style.left = event.offsetX + "px";
+      menu.style.top = (event.offsetY + cellHeight.value/2) + "px";
+      menu.style.left = (event.offsetX - cellWidth.value) + "px";
       menu.classList.add("show");
 
       selectedPieceY.value = mouseY.value;
