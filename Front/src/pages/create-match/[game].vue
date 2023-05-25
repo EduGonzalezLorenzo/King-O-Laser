@@ -69,6 +69,9 @@ function showBoard() {
       break;
   }
 }
+definePageMeta({
+  layout:"game-layout"
+})
 </script>
 <template>
   <div>

@@ -16,6 +16,9 @@
     "eslint": "^8.38.0",
     "nuxt": "^3.4.1",
     "vite-plugin-eslint": "^1.8.1"
+  },
+  "dependencies": {
+    "tsparticles": "^2.9.3",
+    "vue3-particles": "^2.9.3"
   }
-
 }

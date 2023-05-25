@@ -57,7 +57,7 @@ async function LogUser(event: Event) {
 
       <form
         id="login"
-        class="bg-white rounded-lg text-black m-10 p-10"
+        class="bg-white rounded-lg text-black m-10 p-10 w-80"
         @submit="(event:Event) => LogUser(event)"
       >
         <div class="mb-6">

@@ -8,4 +8,7 @@
 </template>
 <script setup lang="ts">
 import allMatches from "~/components/allMatches.vue";
+definePageMeta({
+  layout:"game-layout"
+})
 </script>

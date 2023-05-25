@@ -34,4 +34,7 @@ const { images } = useImages();
 function handleClick(title: string) {
   return navigateTo({ path: `/create-match/${title}` });
 }
+definePageMeta({
+  layout:"game-layout"
+})
 </script>
