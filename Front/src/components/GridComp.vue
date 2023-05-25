@@ -19,11 +19,11 @@
     <ul class="custom-menu-list flex flex-row">
       <li
         id="menu-item-1"
-        class="cursor-pointer hover:bg-blue-700"
+        class="custom-menu-item cursor-pointer"
       >
         <img
+          id="arrow_1"
           src="/img/commonIcon/arrowRight.webp"
-          class="w-12 min-w-[48px]"
         >
       </li>
       <li
@@ -31,8 +31,9 @@
         class="custom-menu-item cursor-pointer"
       >
         <img
+          id="arrow_2"
           src="/img/commonIcon/arrowLeft.webp"
-          class="w-12 rotate-240 min-w-[48px]"
+          class="rotate-240"
         >
       </li>
     </ul>
@@ -209,6 +210,10 @@ const emit = defineEmits<{
 
 const handleClick = (event: MouseEvent) => {
   const menu = document.getElementById("custom-menu") as HTMLElement;
+  const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
+  const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
+  const arrow1 = document.getElementById("arrow_1") as HTMLElement;
+  const arrow2 = document.getElementById("arrow_2") as HTMLElement;
 
   mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
   mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
@@ -217,8 +222,14 @@ const handleClick = (event: MouseEvent) => {
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
-      menu.style.top = (event.offsetY + cellHeight.value/2) + "px";
-      menu.style.left = (event.offsetX - cellWidth.value) + "px";
+      menu.style.top = (event.offsetY) + "px";
+      menu.style.left = (event.offsetX - (cellWidth.value/2)) + "px";
+      menuItem1.style.height = (cellHeight.value/2) + "px"
+      menuItem2.style.height = (cellHeight.value/2) + "px"
+      arrow1.style.height = (cellHeight.value/2) + "px"
+      arrow2.style.height = (cellHeight.value/2) + "px"
+      arrow1.style.width = (cellWidth.value/2) + "px"
+      arrow2.style.width = (cellWidth.value/2) + "px"
       menu.classList.add("show");
 
       selectedPieceY.value = mouseY.value;
@@ -563,11 +574,16 @@ canvas {
 .custom-menu {
   display: none;
 }
+.custom-menu-item:hover {
+  background-color: lightblue;
+  border-radius: 10px;
+}
 .show {
   display: block;
   position: absolute;
-  background-color: beige;
-  padding: 10px;
+  background-color: rgb(173, 216, 230, 0.7);
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-radius: 10px;
 }
 </style>
