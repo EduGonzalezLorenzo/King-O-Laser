@@ -25,9 +25,4 @@ public class GameMatch {
     @OneToMany(mappedBy = "gameMatch")
     @Singular
     List<PlayerPlayMatch> players;
-
-    public void addPlayer(PlayerPlayMatch newPlayer) {
-        this.players.add(newPlayer);
-    }
-
 }

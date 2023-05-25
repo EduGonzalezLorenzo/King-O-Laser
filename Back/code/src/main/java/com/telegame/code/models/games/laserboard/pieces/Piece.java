@@ -1,6 +1,5 @@
 package com.telegame.code.models.games.laserboard.pieces;
 
-import com.telegame.code.builder.games.laserboard.PieceBuilder;
 import com.telegame.code.models.games.laserboard.LaserBoard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,15 +18,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Piece implements Movable {
-
-    public enum Direction {
-        NORTH, SOUTH, EAST, WEST, STOPPED, HIT
-    }
-
-    public enum Owner {
-        UNASSIGNED, PLAYER_ONE, PLAYER_TWO
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -45,14 +35,13 @@ public abstract class Piece implements Movable {
     @JoinColumn(name = "laser_board_id")
     LaserBoard laserBoard;
 
-    public void setSide(Direction side, PieceSide pieceSide) {
+    public void addSide(Direction side, PieceSide pieceSide) {
         this.sides.put(side, pieceSide);
     }
 
-    public PieceSide getSide(Direction side) {
+    public PieceSide getSideInfo(Direction side) {
         return this.sides.get(side);
     }
-
 
     @Override
     public boolean rotate(String rotateTo, Piece piece) {
@@ -73,8 +62,8 @@ public abstract class Piece implements Movable {
         } else {
             return false;
         }
-        if (this.getClass() == Deflector.class) this.setSides(PieceBuilder.buildDeflectorSides(this.rotation));
-        if (this.getClass() == Defender.class) this.setSides(PieceBuilder.buildDefenderSides(this.rotation));
+        if (this.getClass() == Deflector.class) Deflector.rotate(this.rotation, piece);
+        if (this.getClass() == Defender.class) Defender.rotate(this.rotation, piece);
         return true;
     }
 
@@ -92,5 +81,13 @@ public abstract class Piece implements Movable {
             System.out.println("Movimiento incorrecto");
             return false;
         }
+    }
+
+    public enum Direction {
+        NORTH, SOUTH, EAST, WEST, STOPPED, HIT
+    }
+
+    public enum Owner {
+        PLAYER_ONE, PLAYER_TWO
     }
 }

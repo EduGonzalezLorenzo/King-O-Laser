@@ -180,16 +180,16 @@ public class LaserBoardService {
 
                 switch (direction) {
                     case NORTH:
-                        pieceSide = piece.getSide(Piece.Direction.SOUTH);
+                        pieceSide = piece.getSideInfo(Piece.Direction.SOUTH);
                         break;
                     case EAST:
-                        pieceSide = piece.getSide(Piece.Direction.WEST);
+                        pieceSide = piece.getSideInfo(Piece.Direction.WEST);
                         break;
                     case SOUTH:
-                        pieceSide = piece.getSide(Piece.Direction.NORTH);
+                        pieceSide = piece.getSideInfo(Piece.Direction.NORTH);
                         break;
                     case WEST:
-                        pieceSide = piece.getSide(Piece.Direction.EAST);
+                        pieceSide = piece.getSideInfo(Piece.Direction.EAST);
                         break;
                 }
 

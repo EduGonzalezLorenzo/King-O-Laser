@@ -3,8 +3,8 @@ package com.telegame.code.services;
 import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
-import com.telegame.code.exceptions.player.EmailException;
 import com.telegame.code.exceptions.InputFormException;
+import com.telegame.code.exceptions.player.EmailException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
@@ -17,13 +17,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-@Service
 @AllArgsConstructor
+@Service
 public class PlayerService {
 
     private ValidatorFactory validatorFactory;
