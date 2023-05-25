@@ -223,7 +223,7 @@ const handleClick = (event: MouseEvent) => {
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
 
-      menu.style.top = (mouseY.value*cellHeight.value) + "px";
+      menu.style.top = (mouseY.value*cellHeight.value) + ((window.innerHeight - canvasHeight.value)/2) + "px";
       menu.style.left = (mouseX.value*cellHeight.value) + "px";
 
       menuItem1.style.height = (cellHeight.value/2) + "px"
