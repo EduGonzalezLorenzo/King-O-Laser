@@ -19,11 +19,11 @@
     <ul class="custom-menu-list flex flex-row">
       <li
         id="menu-item-1"
-        class="cursor-pointer hover:bg-blue-700"
+        class="custom-menu-item cursor-pointer"
       >
         <img
+          id="arrow_1"
           src="/img/commonIcon/arrowRight.webp"
-          class="w-12 min-w-[48px]"
         >
       </li>
       <li
@@ -31,8 +31,9 @@
         class="custom-menu-item cursor-pointer"
       >
         <img
+          id="arrow_2"
           src="/img/commonIcon/arrowLeft.webp"
-          class="w-12 rotate-240 min-w-[48px]"
+          class="rotate-240"
         >
       </li>
     </ul>
@@ -104,31 +105,59 @@ const id = ref(route.params.id);
 const jwt = ref<String>("");
 
 const updateCanvasSize = () => {
+  const ctx = canvas.value?.getContext("2d");
   if (window.innerWidth > 1200) {
     canvasWidth.value = 560;
     canvasHeight.value = 700;
     cellWidth.value = 70;
     cellHeight.value = 70;
+    if(ctx) {
+      chargeImages(imagesArr.value).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
   }
   if (window.innerWidth > 1000 && window.innerWidth <= 1200) {
     canvasWidth.value = 480;
     canvasHeight.value = 600;
     cellWidth.value = 60;
     cellHeight.value = 60;
+    if(ctx) {
+      chargeImages(imagesArr.value).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
   }
   if (window.innerWidth > 800 && window.innerWidth <= 1000) {
     canvasWidth.value = 320;
     canvasHeight.value = 400;
     cellWidth.value = 40;
     cellHeight.value = 40;
+    if(ctx) {
+      chargeImages(imagesArr.value).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
   }
   if (window.innerWidth < 800) {
     canvasWidth.value = 280;
     canvasHeight.value = 350;
     cellWidth.value = 35;
     cellHeight.value = 35;
+    if(ctx) {
+      chargeImages(imagesArr.value).then((images) => {
+        if (imagesLoaded(images)) {
+          drawBoard(ctx, boardDisposition, images);
+        }
+      });
+    }
   }
-  // location.reload()
 };
 
 const board = ref(new Array(tableRows));
@@ -165,14 +194,6 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
       cellHeight.value,
       cellWidth.value
     );
-    // ctx.stroke();
-    // ctx.fillStyle = "rgba(0,0,0)";
-    // ctx.font = "15px Arial";
-    // ctx.fillText(
-    //   `${cell.posY}:${cell.posX}`,
-    //   cell.posX * cellHeight.value + (cellHeight.value/5),
-    //   cell.posY * cellWidth.value + (cellHeight.value/1.5)
-    // );
   }
 };
 
@@ -189,6 +210,10 @@ const emit = defineEmits<{
 
 const handleClick = (event: MouseEvent) => {
   const menu = document.getElementById("custom-menu") as HTMLElement;
+  const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
+  const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
+  const arrow1 = document.getElementById("arrow_1") as HTMLElement;
+  const arrow2 = document.getElementById("arrow_2") as HTMLElement;
 
   mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
   mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
@@ -197,8 +222,16 @@ const handleClick = (event: MouseEvent) => {
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
-      menu.style.top = event.offsetY + "px";
-      menu.style.left = event.offsetX + "px";
+
+      menu.style.top = (mouseY.value*cellHeight.value) + ((window.innerHeight - canvasHeight.value)/2) + (cellHeight.value/8) + "px";
+      menu.style.left = (mouseX.value*cellHeight.value) + "px";
+
+      menuItem1.style.height = (cellHeight.value/2) + "px"
+      menuItem2.style.height = (cellHeight.value/2) + "px"
+      arrow1.style.height = (cellHeight.value/2) + "px"
+      arrow2.style.height = (cellHeight.value/2) + "px"
+      arrow1.style.width = (cellWidth.value/2) + "px"
+      arrow2.style.width = (cellWidth.value/2) + "px"
       menu.classList.add("show");
 
       selectedPieceY.value = mouseY.value;
@@ -543,11 +576,17 @@ canvas {
 .custom-menu {
   display: none;
 }
+
+.custom-menu-item:hover {
+  background-color: lightgreen;
+  border-radius: 10px;
+}
 .show {
   display: block;
   position: absolute;
-  background-color: beige;
-  padding: 10px;
+  background-color: rgb(173, 216, 230, 0.5);
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-radius: 10px;
 }
 </style>
