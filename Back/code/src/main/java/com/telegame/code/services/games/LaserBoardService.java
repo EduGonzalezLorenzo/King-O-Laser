@@ -164,14 +164,12 @@ public class LaserBoardService {
 
         Object[][] board = buildBoard(boardDisposition);
 
-
         while (currentPosition[0] >= 0 && currentPosition[0] <= 9 &&
                 currentPosition[1] >= 0 && currentPosition[1] <= 7) {
 
             int[] newYX = forward(direction, currentPosition);
             int posY = newYX[0];
             int posX = newYX[1];
-
 
             if (board[posY][posX] instanceof Piece) {
                 Piece piece = (Piece) board[posY][posX];
@@ -198,7 +196,6 @@ public class LaserBoardService {
                 Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
 
                 if (nextDirection == Piece.Direction.STOPPED) {
-                    drawBoard(board);
                     returnMap.put("message", "BLOCK");
                     route.add(newYX);
                     returnMap.put("route", route);
@@ -212,7 +209,6 @@ public class LaserBoardService {
                         boardRepo.save(laserBoard);
                     }
                     deletePiece(next[0], next[1], laserBoard.getId());
-                    drawBoard(board);
                     returnMap.put("message", "HIT");
                     route.add(next);
                     returnMap.put("route", route);
@@ -229,13 +225,11 @@ public class LaserBoardService {
                 currentPosition[1] = posX;
                 route.add(new int[]{posY, posX});
                 if (posY == 0 && direction == Piece.Direction.NORTH || posY == 9 && direction == Piece.Direction.SOUTH) {
-                    drawBoard(board);
                     returnMap.put("message", "OUT");
                     returnMap.put("route", route);
                     return returnMap;
                 }
                 if (posX == 0 && direction == Piece.Direction.WEST || posX == 7 && direction == Piece.Direction.EAST) {
-                    drawBoard(board);
                     returnMap.put("message", "OUT");
                     returnMap.put("route", route);
                     return returnMap;
@@ -271,22 +265,5 @@ public class LaserBoardService {
             board[piece.getPosY()][piece.getPosX()] = piece;
         }
         return board;
-    }
-
-    public static void drawBoard(Object[][] board) {
-        System.out.println("--------------------------------------------------------");
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] == null) {
-                    board[i][j] = "  " + i + ":" + j + " ";
-                } else if (board[i][j] instanceof Piece) {
-                    Piece piece = (Piece) board[i][j];
-                    board[i][j] = piece.getRotation();
-                }
-                System.out.print(board[i][j] + "|");
-            }
-            System.out.println();
-            System.out.println("--------------------------------------------------------");
-        }
     }
 }
