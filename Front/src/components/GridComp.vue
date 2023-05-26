@@ -1,40 +1,14 @@
 <template>
-  <canvas
-    ref="canvas"
-    :width="canvasWidth"
-    :height="canvasHeight"
-    :mouseX="mouseX"
-    :mouseY="mouseY"
-    :selectedPieceY="selectedPieceY"
-    :selectedPieceX="selectedPieceX"
-    :selectedMovementY="selectedMovementY"
-    :selectedMovementX="selectedMovementX"
-    :rotationValue="rotationValue"
-    @click="handleClick"
-  />
-  <div
-    id="custom-menu"
-    class="custom-menu"
-  >
+  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
+    :selectedPieceY="selectedPieceY" :selectedPieceX="selectedPieceX" :selectedMovementY="selectedMovementY"
+    :selectedMovementX="selectedMovementX" :rotationValue="rotationValue" @click="handleClick" />
+  <div id="custom-menu" class="custom-menu">
     <ul class="custom-menu-list flex flex-row">
-      <li
-        id="menu-item-1"
-        class="custom-menu-item cursor-pointer"
-      >
-        <img
-          id="arrow_1"
-          src="/img/commonIcon/arrowRight.webp"
-        >
+      <li id="menu-item-1" class="custom-menu-item cursor-pointer">
+        <img id="arrow_1" src="/img/commonIcon/arrowRight.webp">
       </li>
-      <li
-        id="menu-item-2"
-        class="custom-menu-item cursor-pointer"
-      >
-        <img
-          id="arrow_2"
-          src="/img/commonIcon/arrowLeft.webp"
-          class="rotate-240"
-        >
+      <li id="menu-item-2" class="custom-menu-item cursor-pointer">
+        <img id="arrow_2" src="/img/commonIcon/arrowLeft.webp" class="rotate-240">
       </li>
     </ul>
   </div>
@@ -45,6 +19,9 @@ import { ref, onMounted, defineEmits } from "vue";
 import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
+import { watch } from 'vue';
+
+
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const canvasWidth = ref(560);
@@ -111,7 +88,7 @@ const updateCanvasSize = () => {
     canvasHeight.value = 700;
     cellWidth.value = 70;
     cellHeight.value = 70;
-    if(ctx) {
+    if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
@@ -124,7 +101,7 @@ const updateCanvasSize = () => {
     canvasHeight.value = 600;
     cellWidth.value = 60;
     cellHeight.value = 60;
-    if(ctx) {
+    if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
@@ -137,7 +114,7 @@ const updateCanvasSize = () => {
     canvasHeight.value = 400;
     cellWidth.value = 40;
     cellHeight.value = 40;
-    if(ctx) {
+    if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
@@ -150,7 +127,7 @@ const updateCanvasSize = () => {
     canvasHeight.value = 350;
     cellWidth.value = 35;
     cellHeight.value = 35;
-    if(ctx) {
+    if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
@@ -209,10 +186,29 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps({
-    playerTurn: { type: Boolean, required: true },
-  })
+  position: { type: String, required: true },
+  status: { type: String, required: true }
+});
 
-const handleClick = (event: MouseEvent) => {
+
+const playerTurnNew = ref(false);
+
+watch(
+  () => [props.status, props.position], 
+  ([newPlayerTurn, newPosition]) => {
+    if (newPlayerTurn && newPosition) { 
+      if ((newPlayerTurn === "PLAYER_ONE_TURN" && newPosition === "P1") || (newPlayerTurn === "PLAYER_TWO_TURN" && newPosition === "P2")) {
+        playerTurnNew.value = true;
+      } else {
+        playerTurnNew.value = false;
+      }
+    }
+  },
+  { immediate: true } 
+);
+
+
+const handleClick = async(event: MouseEvent) => {
   const menu = document.getElementById("custom-menu") as HTMLElement;
   const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
   const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
@@ -224,20 +220,23 @@ const handleClick = (event: MouseEvent) => {
 
   const ctx = canvas.value?.getContext("2d");
 
-  console.log("playerTurn: " + props.playerTurn)
+  console.log("Turn: " + props.status);
+  console.log("Position: " + props.position);
+
+  
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
 
-      menu.style.top = (mouseY.value*cellHeight.value) + ((window.innerHeight - canvasHeight.value)/2) + (cellHeight.value/8) + "px";
-      menu.style.left = (mouseX.value*cellHeight.value) + "px";
+      menu.style.top = (mouseY.value * cellHeight.value) + ((window.innerHeight - canvasHeight.value) / 2) + (cellHeight.value / 8) + "px";
+      menu.style.left = (mouseX.value * cellHeight.value) + "px";
 
-      menuItem1.style.height = (cellHeight.value/2) + "px"
-      menuItem2.style.height = (cellHeight.value/2) + "px"
-      arrow1.style.height = (cellHeight.value/2) + "px"
-      arrow2.style.height = (cellHeight.value/2) + "px"
-      arrow1.style.width = (cellWidth.value/2) + "px"
-      arrow2.style.width = (cellWidth.value/2) + "px"
+      menuItem1.style.height = (cellHeight.value / 2) + "px"
+      menuItem2.style.height = (cellHeight.value / 2) + "px"
+      arrow1.style.height = (cellHeight.value / 2) + "px"
+      arrow2.style.height = (cellHeight.value / 2) + "px"
+      arrow1.style.width = (cellWidth.value / 2) + "px"
+      arrow2.style.width = (cellWidth.value / 2) + "px"
       menu.classList.add("show");
 
       selectedPieceY.value = mouseY.value;
@@ -456,7 +455,7 @@ function drawLaser(
     const coordinates = step.split(',')
     return coordinates.map(Number)
   })
-  const thickness = Math.floor(cellHeight.value/4);
+  const thickness = Math.floor(cellHeight.value / 4);
   ctx.fillStyle = "rgb(100, 255, 100)";
   route.forEach((target: number[]) => {
     ctx.beginPath();
@@ -579,6 +578,7 @@ canvas {
   background-image: url(../public/img/kingolaser/Board.webp);
   background-size: contain;
 }
+
 .custom-menu {
   display: none;
 }
@@ -587,6 +587,7 @@ canvas {
   background-color: lightgreen;
   border-radius: 10px;
 }
+
 .show {
   display: block;
   position: absolute;

@@ -10,7 +10,8 @@
     </div>
     <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
       <Grid
-        :player-turn="playerTurn"
+        :status="currentStatus"
+        :position="currentPosition"
         @send-movement="sendMovement"
       />
     </div>
@@ -81,15 +82,18 @@ async function fetchMovement() {
   location.reload()
 }
 
-const playerTurn = ref(false)
+const currentStatus = ref('')
+const currentPosition = ref('')
 
 const checkPlayerTurn = (position: string, status: string) => {
   if((position === "P1" && status === "PLAYER_ONE_TURN") || (position === "P2" && status === "PLAYER_TWO_TURN")) {
-    console.log("es tu turno")
-    playerTurn.value = true;
+    currentStatus.value = status
+    currentPosition.value = position
+
   } else {
     console.log("no es tu turno")
-    playerTurn.value = false;
+    currentStatus.value = status
+    currentPosition.value = position
   }
 }
 
