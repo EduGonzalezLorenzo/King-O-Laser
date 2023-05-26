@@ -326,10 +326,10 @@ const drawBoard = (
 function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
   if (piece.owner == "PLAYER_ONE") {
     switch (piece.type) {
-      case "com.telegame.code.models.games.laserboard.pieces.King":
+      case "King":
         return images[1];
         break;
-      case "com.telegame.code.models.games.laserboard.pieces.Defender":
+      case "Defender":
         switch (piece.rotation) {
           case "NORTH":
             return images[2];
@@ -341,7 +341,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[5];
         }
         return images[0];
-      case "com.telegame.code.models.games.laserboard.pieces.Bouncer":
+      case "Bouncer":
         switch (piece.rotation) {
           case "NORTH":
             return images[6];
@@ -353,7 +353,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[7];
         }
         return images[0];
-      case "com.telegame.code.models.games.laserboard.pieces.Deflector":
+      case "Deflector":
         switch (piece.rotation) {
           case "NORTH":
             return images[8];
@@ -365,7 +365,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[11];
         }
         return images[0];
-      case "com.telegame.code.models.games.laserboard.pieces.Laser":
+      case "Laser":
         switch (piece.rotation) {
           case "NORTH":
             return images[12];
@@ -382,10 +382,10 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
     }
   } else {
     switch (piece.type) {
-      case "com.telegame.code.models.games.laserboard.pieces.King":
+      case "King":
         return images[16];
         break;
-      case "com.telegame.code.models.games.laserboard.pieces.Defender":
+      case "Defender":
         switch (piece.rotation) {
           case "NORTH":
             return images[17];
@@ -397,7 +397,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[20];
         }
         return images[0];
-      case "com.telegame.code.models.games.laserboard.pieces.Bouncer":
+      case "Bouncer":
         switch (piece.rotation) {
           case "NORTH":
             return images[21];
@@ -409,7 +409,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[22];
         }
         return images[0];
-      case "com.telegame.code.models.games.laserboard.pieces.Deflector":
+      case "Deflector":
         switch (piece.rotation) {
           case "NORTH":
             return images[23];
@@ -421,7 +421,7 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
             return images[26];
         }
         return images[0];
-      case "com.telegame.code.models.games.laserboard.pieces.Laser":
+      case "Laser":
         switch (piece.rotation) {
           case "NORTH":
             return images[27];

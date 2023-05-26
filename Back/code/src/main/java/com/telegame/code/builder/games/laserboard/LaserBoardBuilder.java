@@ -64,8 +64,8 @@ public class LaserBoardBuilder {
         playerOneAcePieces.add(PieceBuilder.buildPiece("Defender", Piece.Owner.PLAYER_ONE, 5, 7, Piece.Direction.EAST));
         playerOneAcePieces.add(PieceBuilder.buildPiece("Deflector", Piece.Owner.PLAYER_ONE, 9, 4, Piece.Direction.SOUTH));
         playerOneAcePieces.add(PieceBuilder.buildPiece("Deflector", Piece.Owner.PLAYER_ONE, 9, 3, Piece.Direction.EAST));
-        playerOneAcePieces.add(PieceBuilder.buildPiece("pieces.Deflector", Piece.Owner.PLAYER_ONE, 2, 7, Piece.Direction.EAST));
-        playerOneAcePieces.add(PieceBuilder.buildPiece("pieces.Deflector", Piece.Owner.PLAYER_ONE, 2, 4, Piece.Direction.EAST));
+        playerOneAcePieces.add(PieceBuilder.buildPiece("Deflector", Piece.Owner.PLAYER_ONE, 2, 7, Piece.Direction.EAST));
+        playerOneAcePieces.add(PieceBuilder.buildPiece("Deflector", Piece.Owner.PLAYER_ONE, 2, 4, Piece.Direction.EAST));
         playerOneAcePieces.add(PieceBuilder.buildPiece("Deflector", Piece.Owner.PLAYER_ONE, 2, 3, Piece.Direction.SOUTH));
         playerOneAcePieces.add(PieceBuilder.buildPiece("Deflector", Piece.Owner.PLAYER_ONE, 3, 2, Piece.Direction.EAST));
         playerOneAcePieces.add(PieceBuilder.buildPiece("Deflector", Piece.Owner.PLAYER_ONE, 7, 6, Piece.Direction.SOUTH));
