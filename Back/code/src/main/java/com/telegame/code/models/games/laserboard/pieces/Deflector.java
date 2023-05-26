@@ -3,9 +3,11 @@ package com.telegame.code.models.games.laserboard.pieces;
 import com.telegame.code.models.games.laserboard.Deflect;
 import com.telegame.code.models.games.laserboard.Hit;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 
 import java.util.HashMap;
 
+@AllArgsConstructor
 @Entity
 public class Deflector extends Piece {
     public Deflector(Direction rotation) {
