@@ -4,7 +4,6 @@ import com.telegame.code.DTO.games.laserboard.LaserBoardDTO;
 import com.telegame.code.DTO.games.laserboard.PieceDTO;
 import com.telegame.code.builder.games.laserboard.LaserBoardBuilder;
 import com.telegame.code.builder.games.laserboard.PieceBuilder;
-import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.IllegalMoveException;
 import com.telegame.code.exceptions.match.PieceNotFoundException;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
