@@ -194,9 +194,9 @@ const props = defineProps({
 const playerTurnNew = ref(false);
 
 watch(
-  () => [props.status, props.position], 
+  () => [props.status, props.position],
   ([newPlayerTurn, newPosition]) => {
-    if (newPlayerTurn && newPosition) { 
+    if (newPlayerTurn && newPosition) {
       if ((newPlayerTurn === "PLAYER_ONE_TURN" && newPosition === "P1") || (newPlayerTurn === "PLAYER_TWO_TURN" && newPosition === "P2")) {
         playerTurnNew.value = true;
       } else {
@@ -204,101 +204,101 @@ watch(
       }
     }
   },
-  { immediate: true } 
+  { immediate: true }
 );
 
 
-const handleClick = async(event: MouseEvent) => {
-  const menu = document.getElementById("custom-menu") as HTMLElement;
-  const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
-  const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
-  const arrow1 = document.getElementById("arrow_1") as HTMLElement;
-  const arrow2 = document.getElementById("arrow_2") as HTMLElement;
+const handleClick = (event: MouseEvent) => {
+  if (playerTurnNew.value) {
+    console.log("Es tu turno")
+    const menu = document.getElementById("custom-menu") as HTMLElement;
+    const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
+    const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
+    const arrow1 = document.getElementById("arrow_1") as HTMLElement;
+    const arrow2 = document.getElementById("arrow_2") as HTMLElement;
 
-  mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
-  mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
+    mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
+    mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
 
-  const ctx = canvas.value?.getContext("2d");
+    const ctx = canvas.value?.getContext("2d");
 
-  console.log("Turn: " + props.status);
-  console.log("Position: " + props.position);
+    if (ctx) {
+      if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
 
-  
+        menu.style.top = (mouseY.value * cellHeight.value) + ((window.innerHeight - canvasHeight.value) / 2) + (cellHeight.value / 8) + "px";
+        menu.style.left = (mouseX.value * cellHeight.value) + "px";
 
-  if (ctx) {
-    if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
+        menuItem1.style.height = (cellHeight.value / 2) + "px"
+        menuItem2.style.height = (cellHeight.value / 2) + "px"
+        arrow1.style.height = (cellHeight.value / 2) + "px"
+        arrow2.style.height = (cellHeight.value / 2) + "px"
+        arrow1.style.width = (cellWidth.value / 2) + "px"
+        arrow2.style.width = (cellWidth.value / 2) + "px"
+        menu.classList.add("show");
 
-      menu.style.top = (mouseY.value * cellHeight.value) + ((window.innerHeight - canvasHeight.value) / 2) + (cellHeight.value / 8) + "px";
-      menu.style.left = (mouseX.value * cellHeight.value) + "px";
+        selectedPieceY.value = mouseY.value;
+        selectedPieceX.value = mouseX.value;
 
-      menuItem1.style.height = (cellHeight.value / 2) + "px"
-      menuItem2.style.height = (cellHeight.value / 2) + "px"
-      arrow1.style.height = (cellHeight.value / 2) + "px"
-      arrow2.style.height = (cellHeight.value / 2) + "px"
-      arrow1.style.width = (cellWidth.value / 2) + "px"
-      arrow2.style.width = (cellWidth.value / 2) + "px"
-      menu.classList.add("show");
-
-      selectedPieceY.value = mouseY.value;
-      selectedPieceX.value = mouseX.value;
-
-      ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-      drawGrid(ctx);
-      chargeImages(imagesArr.value).then((images) => {
-        if (imagesLoaded(images)) {
-          drawBoard(ctx, boardDisposition, images);
-        }
-      });
-      for (let x = 0; x < tableRows; x++) {
-        for (let y = 0; y < tableColumns; y++) {
-          if (board.value[x][y] instanceof Cell) {
-            board.value[x][y].selectable = false;
+        ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+        drawGrid(ctx);
+        chargeImages(imagesArr.value).then((images) => {
+          if (imagesLoaded(images)) {
+            drawBoard(ctx, boardDisposition, images);
           }
-        }
-      }
-
-      for (let i = mouseX.value - 1; i <= mouseX.value + 1; i++) {
-        for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
-          if (
-            i >= 0 &&
-            i < board.value.length &&
-            j >= 0 &&
-            j < board.value.length
-          ) {
-            if (board.value[j][i] instanceof Piece) {
-              ctx.fillStyle = "rgb(250,10,10, 0.5)";
-              ctx.fillRect(
-                i * cellHeight.value,
-                j * cellWidth.value,
-                cellHeight.value,
-                cellWidth.value
-              );
-            } else if (board.value[j][i] instanceof Cell) {
-              ctx.fillStyle = "rgb(10,250,10, 0.5)";
-              ctx.fillRect(
-                i * cellHeight.value,
-                j * cellWidth.value,
-                cellHeight.value,
-                cellWidth.value
-              );
-              board.value[j][i].selectable = true;
+        });
+        for (let x = 0; x < tableRows; x++) {
+          for (let y = 0; y < tableColumns; y++) {
+            if (board.value[x][y] instanceof Cell) {
+              board.value[x][y].selectable = false;
             }
           }
         }
+
+        for (let i = mouseX.value - 1; i <= mouseX.value + 1; i++) {
+          for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
+            if (
+              i >= 0 &&
+              i < board.value.length &&
+              j >= 0 &&
+              j < board.value.length
+            ) {
+              if (board.value[j][i] instanceof Piece) {
+                ctx.fillStyle = "rgb(250,10,10, 0.5)";
+                ctx.fillRect(
+                  i * cellHeight.value,
+                  j * cellWidth.value,
+                  cellHeight.value,
+                  cellWidth.value
+                );
+              } else if (board.value[j][i] instanceof Cell) {
+                ctx.fillStyle = "rgb(10,250,10, 0.5)";
+                ctx.fillRect(
+                  i * cellHeight.value,
+                  j * cellWidth.value,
+                  cellHeight.value,
+                  cellWidth.value
+                );
+                board.value[j][i].selectable = true;
+              }
+            }
+          }
+        }
+      } else if (
+        board.value[mouseY.value][mouseX.value] instanceof Cell &&
+        board.value[mouseY.value][mouseX.value].selectable == true
+      ) {
+        emit(
+          "sendMovement",
+          selectedPieceY.value,
+          selectedPieceX.value,
+          mouseY.value,
+          mouseX.value,
+          rotationValue.value
+        );
       }
-    } else if (
-      board.value[mouseY.value][mouseX.value] instanceof Cell &&
-      board.value[mouseY.value][mouseX.value].selectable == true
-    ) {
-      emit(
-        "sendMovement",
-        selectedPieceY.value,
-        selectedPieceX.value,
-        mouseY.value,
-        mouseX.value,
-        rotationValue.value
-      );
     }
+  } else {
+    console.log("No es tu turno")
   }
 };
 
