@@ -4,7 +4,7 @@
       <div class="grid grid-cols-1 gap-12 game_container">
         <div class="mt-0 mb-auto">
           <UserProfileGameCard />
-          <StartedMatchList />
+          <StartedMatchList @send-position="sendPosition" />
         </div>
       </div>
     </div>
@@ -78,6 +78,18 @@ async function fetchMovement() {
     }),
   });
   location.reload()
+}
+
+const playerTurn = ref(false)
+
+const sendPosition = (position: string, status: string) => {
+  if((position === "P1" && status === "PLAYER_ONE_TURN") || (position === "P2" && status === "PLAYER_TWO_TURN")) {
+    console.log("es tu turno")
+    playerTurn.value = true;
+  } else {
+    console.log("no es tu turno")
+    playerTurn.value = false;
+  }
 }
 
 
