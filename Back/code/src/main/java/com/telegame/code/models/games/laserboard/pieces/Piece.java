@@ -90,4 +90,13 @@ public abstract class Piece implements Movable {
     public enum Owner {
         PLAYER_ONE, PLAYER_TWO
     }
+
+    public String getType(){
+        if (this instanceof Bouncer) return "Bouncer";
+        if (this instanceof Defender) return "Defender";
+        if (this instanceof Deflector) return "Deflector";
+        if (this instanceof King) return "King";
+        if (this instanceof Laser) return "Laser";
+        return "";
+    }
 }

@@ -116,7 +116,7 @@ public class MatchService {
 
     private GameMatch checkGameMatch(GameMatch gameMatch, JoinMatchForm joinMatchForm) throws NoSuchAlgorithmException {
         if (!gameMatch.getIsPublic()) checkPassword(joinMatchForm, gameMatch.getPassword());
-        //TODO check empty match case
+        if (gameMatch.getPlayers().size() == 0) deleteGameMatch(gameMatch);
         if (gameMatch.getPlayers().size() != 1) throw new FilledMatchException();
         return gameMatch;
     }
@@ -185,7 +185,7 @@ public class MatchService {
 
     private void checkPlayerInMatch(Player player, GameMatch gameMatch) {
         if (playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch).isEmpty()) {
-            throw new PlayerNoInMatchException();
+            throw new PlayerNotInMatchException();
         }
     }
 
@@ -224,4 +224,7 @@ public class MatchService {
         return generateGameMatchDTOsList(result);
     }
 
+    public void deleteGameMatch(GameMatch gameMatch) {
+        throw new MatchNoExistsException();
+    }
 }

@@ -86,7 +86,7 @@ public class MatchController {
             return new ResponseEntity<>(matchService.getMatchInfo(matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (PlayerNameException e) {
             return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
-        } catch (PlayerNoInMatchException e) {
+        } catch (PlayerNotInMatchException e) {
             return new ResponseEntity<>(Message.builder().message("The player is not in this match").build(), HttpStatus.CONFLICT);
         } catch (MatchNoExistsException e) {
             return new ResponseEntity<>(Message.builder().message("This match doesn't exists").build(), HttpStatus.NOT_FOUND);

@@ -3,9 +3,7 @@ package com.telegame.code.controllers;
 import com.telegame.code.DTO.Message;
 import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
-import com.telegame.code.exceptions.match.MatchInfoException;
-import com.telegame.code.exceptions.match.MatchNoExistsException;
-import com.telegame.code.exceptions.match.PieceNotFoundException;
+import com.telegame.code.exceptions.match.*;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.services.PlayerPlayMatchService;
@@ -28,15 +26,19 @@ public class PlayerPlayMatchController {
                     .message(playerPlayMatchService.doAction(actionForm, matchId, request.getAttribute("playerName").toString()))
                     .build(), HttpStatus.OK);
         } catch (InputFormException e) {
-            return new ResponseEntity<>(Message.builder().message("Action form error").build(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Input form error").build(), HttpStatus.BAD_REQUEST);
         } catch (MatchNoExistsException e) {
             return new ResponseEntity<>(Message.builder().message("Match no exists").build(), HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
             return new ResponseEntity<>(Message.builder().message("Player no exists").build(), HttpStatus.BAD_REQUEST);
+        } catch (PlayerNotInMatchException e) {
+            return new ResponseEntity<>(Message.builder().message("You are not in this game").build(), HttpStatus.BAD_REQUEST);
         } catch (MatchInfoException e) {
             return new ResponseEntity<>(Message.builder().message("Database error").build(), HttpStatus.CONFLICT);
         } catch (PieceNotFoundException e) {
             return new ResponseEntity<>(Message.builder().message("There is no piece in this coordinates").build(), HttpStatus.BAD_REQUEST);
+        } catch (IllegalMoveException e) {
+            return new ResponseEntity<>(Message.builder().message("You cant move this piece").build(), HttpStatus.BAD_REQUEST);
         }
     }
 }
