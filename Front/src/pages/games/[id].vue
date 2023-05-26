@@ -4,12 +4,13 @@
       <div class="grid grid-cols-1 gap-12 game_container">
         <div class="mt-0 mb-auto">
           <UserProfileGameCard />
-          <StartedMatchList @send-position="sendPosition" />
+          <StartedMatchList @send-position="checkPlayerTurn" />
         </div>
       </div>
     </div>
     <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
       <Grid
+        :player-turn="playerTurn"
         @send-movement="sendMovement"
       />
     </div>
@@ -82,7 +83,7 @@ async function fetchMovement() {
 
 const playerTurn = ref(false)
 
-const sendPosition = (position: string, status: string) => {
+const checkPlayerTurn = (position: string, status: string) => {
   if((position === "P1" && status === "PLAYER_ONE_TURN") || (position === "P2" && status === "PLAYER_TWO_TURN")) {
     console.log("es tu turno")
     playerTurn.value = true;

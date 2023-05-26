@@ -208,6 +208,10 @@ const emit = defineEmits<{
   ): void;
 }>();
 
+const props = defineProps({
+    playerTurn: { type: Boolean, required: true },
+  })
+
 const handleClick = (event: MouseEvent) => {
   const menu = document.getElementById("custom-menu") as HTMLElement;
   const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
@@ -219,6 +223,8 @@ const handleClick = (event: MouseEvent) => {
   mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
 
   const ctx = canvas.value?.getContext("2d");
+
+  console.log("playerTurn: " + props.playerTurn)
 
   if (ctx) {
     if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
