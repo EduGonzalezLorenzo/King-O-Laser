@@ -1,14 +1,40 @@
 <template>
-  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
-    :selectedPieceY="selectedPieceY" :selectedPieceX="selectedPieceX" :selectedMovementY="selectedMovementY"
-    :selectedMovementX="selectedMovementX" :rotationValue="rotationValue" @click="handleClick" />
-  <div id="custom-menu" class="custom-menu">
+  <canvas
+    ref="canvas"
+    :width="canvasWidth"
+    :height="canvasHeight"
+    :mouseX="mouseX"
+    :mouseY="mouseY"
+    :selectedPieceY="selectedPieceY"
+    :selectedPieceX="selectedPieceX"
+    :selectedMovementY="selectedMovementY"
+    :selectedMovementX="selectedMovementX"
+    :rotationValue="rotationValue"
+    @click="handleClick"
+  />
+  <div
+    id="custom-menu"
+    class="custom-menu"
+  >
     <ul class="custom-menu-list flex flex-row">
-      <li id="menu-item-1" class="custom-menu-item cursor-pointer">
-        <img id="arrow_1" src="/img/commonIcon/arrowRight.webp">
+      <li
+        id="menu-item-1"
+        class="custom-menu-item cursor-pointer"
+      >
+        <img
+          id="arrow_1"
+          src="/img/commonIcon/arrowRight.webp"
+        >
       </li>
-      <li id="menu-item-2" class="custom-menu-item cursor-pointer">
-        <img id="arrow_2" src="/img/commonIcon/arrowLeft.webp" class="rotate-240">
+      <li
+        id="menu-item-2"
+        class="custom-menu-item cursor-pointer"
+      >
+        <img
+          id="arrow_2"
+          src="/img/commonIcon/arrowLeft.webp"
+          class="rotate-240"
+        >
       </li>
     </ul>
   </div>
@@ -94,6 +120,7 @@ const updateCanvasSize = () => {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
+          drawLaser(ctx, boardDisposition);
         }
       });
     }
@@ -107,6 +134,7 @@ const updateCanvasSize = () => {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
+          drawLaser(ctx, boardDisposition);
         }
       });
     }
@@ -120,6 +148,7 @@ const updateCanvasSize = () => {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
+          drawLaser(ctx, boardDisposition);
         }
       });
     }
@@ -133,6 +162,7 @@ const updateCanvasSize = () => {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
+          drawLaser(ctx, boardDisposition);
         }
       });
     }
