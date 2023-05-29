@@ -283,8 +283,6 @@ const handleClick = (event: MouseEvent) => {
         );
       }
     }
-  } else {
-    console.log("No es tu turno")
   }
 };
 
