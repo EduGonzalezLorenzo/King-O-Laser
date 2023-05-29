@@ -19,9 +19,6 @@ import { ref, onMounted, defineEmits } from "vue";
 import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
-import { watch } from 'vue';
-
-
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const canvasWidth = ref(560);
@@ -190,26 +187,19 @@ const props = defineProps({
   status: { type: String, required: true }
 });
 
-
-const playerTurnNew = ref(false);
-
-watch(
-  () => [props.status, props.position],
-  ([newPlayerTurn, newPosition]) => {
-    if (newPlayerTurn && newPosition) {
-      if ((newPlayerTurn === "PLAYER_ONE_TURN" && newPosition === "P1") || (newPlayerTurn === "PLAYER_TWO_TURN" && newPosition === "P2")) {
-        playerTurnNew.value = true;
-      } else {
-        playerTurnNew.value = false;
-      }
-    }
-  },
-  { immediate: true }
-);
+const checkValidTurn = () => {
+  // debugger
+  console.log("GridComp: "+props.status, props.position)
+  if ((props.status === "PLAYER_ONE_TURN" && props.position === "P1") || (props.status === "PLAYER_TWO_TURN" && props.position === "P2")) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 
 const handleClick = (event: MouseEvent) => {
-  if (playerTurnNew.value) {
+  if (checkValidTurn()) {
     console.log("Es tu turno")
     const menu = document.getElementById("custom-menu") as HTMLElement;
     const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;

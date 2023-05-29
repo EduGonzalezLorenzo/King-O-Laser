@@ -86,15 +86,9 @@ const currentStatus = ref('')
 const currentPosition = ref('')
 
 const checkPlayerTurn = (position: string, status: string) => {
-  if((position === "P1" && status === "PLAYER_ONE_TURN") || (position === "P2" && status === "PLAYER_TWO_TURN")) {
-    currentStatus.value = status
-    currentPosition.value = position
-
-  } else {
-    console.log("no es tu turno")
-    currentStatus.value = status
-    currentPosition.value = position
-  }
+  // debugger
+  currentStatus.value = status
+  currentPosition.value = position
 }
 
 
