@@ -10,8 +10,6 @@
     </div>
     <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
       <Grid
-        :status="currentStatus"
-        :position="currentPosition"
         @send-movement="sendMovement"
       />
     </div>
@@ -19,12 +17,6 @@
       v-if="openSendMenu"
       class="send_menu fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
     >
-      <p> R{{ newRotationValue }}</p>
-      <p> MX{{ newSelectedMovementX }}</p>
-      <p> MY{{ newSelectedMovementY }}</p>
-      <p> PX{{ newSelectedPieceX }}</p>
-      <p> PY{{ newSelectedPieceY }}</p>
-
       <button
         class="confirm_button hover:bg-green-300"
         @click="fetchMovement"

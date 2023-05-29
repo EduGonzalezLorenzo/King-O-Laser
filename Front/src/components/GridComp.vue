@@ -38,6 +38,8 @@ const imagesArr = ref<HTMLImageElement[]>([])
 const boardDisposition = reactive<BoardDisposition>({
   lastAction: "",
   pieces: [],
+  status: "",
+  position: ""
 });
 
 const imagePaths = [
@@ -182,15 +184,15 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-const props = defineProps({
-  position: { type: String, required: true },
-  status: { type: String, required: true }
-});
+// const props = defineProps({
+//   position: { type: String, required: true },
+//   status: { type: String, required: true }
+// });
 
 const checkValidTurn = () => {
   // debugger
-  console.log("GridComp: "+props.status, props.position)
-  if ((props.status === "PLAYER_ONE_TURN" && props.position === "P1") || (props.status === "PLAYER_TWO_TURN" && props.position === "P2")) {
+  console.log("GridComp: " + boardDisposition.status, boardDisposition.position)
+  if ((boardDisposition.status === "PLAYER_ONE_TURN" && boardDisposition.position === "P1") || (boardDisposition.status === "PLAYER_TWO_TURN" && boardDisposition.position === "P2")) {
     return true;
   } else {
     return false;
@@ -475,7 +477,9 @@ onMounted(async () => {
     })
     .then((data) => {
       (boardDisposition.lastAction = data.lastAction),
-        (boardDisposition.pieces = data.pieces);
+        (boardDisposition.pieces = data.pieces),
+        (boardDisposition.status = data.status),
+        (boardDisposition.position = data.position);
     });
 
   const ctx = canvas.value?.getContext("2d");
