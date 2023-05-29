@@ -85,9 +85,7 @@ onMounted(async () =>{
 const emit = defineEmits(['sendPosition'])
 
 
-function goMatch(id, index) {
-  // console.log("StratedMatchList: "+users.value[index].position, users.value[index].status)
-  // emit('sendPosition', users.value[index].position, users.value[index].status)
+function goMatch(id) {
   navigateTo(`/games/` + id);
 }
 </script>

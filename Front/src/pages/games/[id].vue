@@ -4,7 +4,7 @@
       <div class="grid grid-cols-1 gap-12 game_container">
         <div class="mt-0 mb-auto">
           <UserProfileGameCard />
-          <StartedMatchList @send-position="checkPlayerTurn" />
+          <StartedMatchList />
         </div>
       </div>
     </div>
@@ -73,16 +73,6 @@ async function fetchMovement() {
   });
   location.reload()
 }
-
-const currentStatus = ref('')
-const currentPosition = ref('')
-
-const checkPlayerTurn = (position: string, status: string) => {
-  // debugger
-  currentStatus.value = status
-  currentPosition.value = position
-}
-
 
 const sendMovement = (
   selectedPieceY: number,

@@ -1,14 +1,40 @@
 <template>
-  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
-    :selectedPieceY="selectedPieceY" :selectedPieceX="selectedPieceX" :selectedMovementY="selectedMovementY"
-    :selectedMovementX="selectedMovementX" :rotationValue="rotationValue" @click="handleClick" />
-  <div id="custom-menu" class="custom-menu">
+  <canvas
+    ref="canvas"
+    :width="canvasWidth"
+    :height="canvasHeight"
+    :mouseX="mouseX"
+    :mouseY="mouseY"
+    :selectedPieceY="selectedPieceY"
+    :selectedPieceX="selectedPieceX"
+    :selectedMovementY="selectedMovementY"
+    :selectedMovementX="selectedMovementX"
+    :rotationValue="rotationValue"
+    @click="handleClick"
+  />
+  <div
+    id="custom-menu"
+    class="custom-menu"
+  >
     <ul class="custom-menu-list flex flex-row">
-      <li id="menu-item-1" class="custom-menu-item cursor-pointer">
-        <img id="arrow_1" src="/img/commonIcon/arrowRight.webp">
+      <li
+        id="menu-item-1"
+        class="custom-menu-item cursor-pointer"
+      >
+        <img
+          id="arrow_1"
+          src="/img/commonIcon/arrowRight.webp"
+        >
       </li>
-      <li id="menu-item-2" class="custom-menu-item cursor-pointer">
-        <img id="arrow_2" src="/img/commonIcon/arrowLeft.webp" class="rotate-240">
+      <li
+        id="menu-item-2"
+        class="custom-menu-item cursor-pointer"
+      >
+        <img
+          id="arrow_2"
+          src="/img/commonIcon/arrowLeft.webp"
+          class="rotate-240"
+        >
       </li>
     </ul>
   </div>
@@ -184,14 +210,7 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-// const props = defineProps({
-//   position: { type: String, required: true },
-//   status: { type: String, required: true }
-// });
-
 const checkValidTurn = () => {
-  // debugger
-  console.log("GridComp: " + boardDisposition.status, boardDisposition.position)
   if ((boardDisposition.status === "PLAYER_ONE_TURN" && boardDisposition.position === "P1") || (boardDisposition.status === "PLAYER_TWO_TURN" && boardDisposition.position === "P2")) {
     return true;
   } else {
@@ -199,10 +218,8 @@ const checkValidTurn = () => {
   }
 }
 
-
 const handleClick = (event: MouseEvent) => {
   if (checkValidTurn()) {
-    console.log("Es tu turno")
     const menu = document.getElementById("custom-menu") as HTMLElement;
     const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
     const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
@@ -289,8 +306,6 @@ const handleClick = (event: MouseEvent) => {
         );
       }
     }
-  } else {
-    console.log("No es tu turno")
   }
 };
 
