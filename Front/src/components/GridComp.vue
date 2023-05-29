@@ -1,40 +1,14 @@
 <template>
-  <canvas
-    ref="canvas"
-    :width="canvasWidth"
-    :height="canvasHeight"
-    :mouseX="mouseX"
-    :mouseY="mouseY"
-    :selectedPieceY="selectedPieceY"
-    :selectedPieceX="selectedPieceX"
-    :selectedMovementY="selectedMovementY"
-    :selectedMovementX="selectedMovementX"
-    :rotationValue="rotationValue"
-    @click="handleClick"
-  />
-  <div
-    id="custom-menu"
-    class="custom-menu"
-  >
+  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
+    :selectedPieceY="selectedPieceY" :selectedPieceX="selectedPieceX" :selectedMovementY="selectedMovementY"
+    :selectedMovementX="selectedMovementX" :rotationValue="rotationValue" @click="handleClick" />
+  <div id="custom-menu" class="custom-menu">
     <ul class="custom-menu-list flex flex-row">
-      <li
-        id="menu-item-1"
-        class="custom-menu-item cursor-pointer"
-      >
-        <img
-          id="arrow_1"
-          src="/img/commonIcon/arrowRight.webp"
-        >
+      <li id="menu-item-1" class="custom-menu-item cursor-pointer">
+        <img id="arrow_1" src="/img/commonIcon/arrowRight.webp">
       </li>
-      <li
-        id="menu-item-2"
-        class="custom-menu-item cursor-pointer"
-      >
-        <img
-          id="arrow_2"
-          src="/img/commonIcon/arrowLeft.webp"
-          class="rotate-240"
-        >
+      <li id="menu-item-2" class="custom-menu-item cursor-pointer">
+        <img id="arrow_2" src="/img/commonIcon/arrowLeft.webp" class="rotate-240">
       </li>
     </ul>
   </div>
@@ -45,6 +19,9 @@ import { ref, onMounted, defineEmits } from "vue";
 import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
+import { watch } from 'vue';
+
+
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const canvasWidth = ref(560);
@@ -111,7 +88,7 @@ const updateCanvasSize = () => {
     canvasHeight.value = 700;
     cellWidth.value = 70;
     cellHeight.value = 70;
-    if(ctx) {
+    if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
@@ -124,7 +101,7 @@ const updateCanvasSize = () => {
     canvasHeight.value = 600;
     cellWidth.value = 60;
     cellHeight.value = 60;
-    if(ctx) {
+    if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
@@ -137,7 +114,7 @@ const updateCanvasSize = () => {
     canvasHeight.value = 400;
     cellWidth.value = 40;
     cellHeight.value = 40;
-    if(ctx) {
+    if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
@@ -150,7 +127,7 @@ const updateCanvasSize = () => {
     canvasHeight.value = 350;
     cellWidth.value = 35;
     cellHeight.value = 35;
-    if(ctx) {
+    if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
@@ -208,92 +185,120 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-const handleClick = (event: MouseEvent) => {
-  const menu = document.getElementById("custom-menu") as HTMLElement;
-  const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
-  const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
-  const arrow1 = document.getElementById("arrow_1") as HTMLElement;
-  const arrow2 = document.getElementById("arrow_2") as HTMLElement;
+const props = defineProps({
+  position: { type: String, required: true },
+  status: { type: String, required: true }
+});
 
-  mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
-  mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
 
-  const ctx = canvas.value?.getContext("2d");
+const playerTurnNew = ref(false);
 
-  if (ctx) {
-    if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
-
-      menu.style.top = (mouseY.value*cellHeight.value) + ((window.innerHeight - canvasHeight.value)/2) + (cellHeight.value/8) + "px";
-      menu.style.left = (mouseX.value*cellHeight.value) + "px";
-
-      menuItem1.style.height = (cellHeight.value/2) + "px"
-      menuItem2.style.height = (cellHeight.value/2) + "px"
-      arrow1.style.height = (cellHeight.value/2) + "px"
-      arrow2.style.height = (cellHeight.value/2) + "px"
-      arrow1.style.width = (cellWidth.value/2) + "px"
-      arrow2.style.width = (cellWidth.value/2) + "px"
-      menu.classList.add("show");
-
-      selectedPieceY.value = mouseY.value;
-      selectedPieceX.value = mouseX.value;
-
-      ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-      drawGrid(ctx);
-      chargeImages(imagesArr.value).then((images) => {
-        if (imagesLoaded(images)) {
-          drawBoard(ctx, boardDisposition, images);
-        }
-      });
-      for (let x = 0; x < tableRows; x++) {
-        for (let y = 0; y < tableColumns; y++) {
-          if (board.value[x][y] instanceof Cell) {
-            board.value[x][y].selectable = false;
-          }
-        }
+watch(
+  () => [props.status, props.position],
+  ([newPlayerTurn, newPosition]) => {
+    if (newPlayerTurn && newPosition) {
+      if ((newPlayerTurn === "PLAYER_ONE_TURN" && newPosition === "P1") || (newPlayerTurn === "PLAYER_TWO_TURN" && newPosition === "P2")) {
+        playerTurnNew.value = true;
+      } else {
+        playerTurnNew.value = false;
       }
+    }
+  },
+  { immediate: true }
+);
 
-      for (let i = mouseX.value - 1; i <= mouseX.value + 1; i++) {
-        for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
-          if (
-            i >= 0 &&
-            i < board.value.length &&
-            j >= 0 &&
-            j < board.value.length
-          ) {
-            if (board.value[j][i] instanceof Piece) {
-              ctx.fillStyle = "rgb(250,10,10, 0.5)";
-              ctx.fillRect(
-                i * cellHeight.value,
-                j * cellWidth.value,
-                cellHeight.value,
-                cellWidth.value
-              );
-            } else if (board.value[j][i] instanceof Cell) {
-              ctx.fillStyle = "rgb(10,250,10, 0.5)";
-              ctx.fillRect(
-                i * cellHeight.value,
-                j * cellWidth.value,
-                cellHeight.value,
-                cellWidth.value
-              );
-              board.value[j][i].selectable = true;
+
+const handleClick = (event: MouseEvent) => {
+  if (playerTurnNew.value) {
+    console.log("Es tu turno")
+    const menu = document.getElementById("custom-menu") as HTMLElement;
+    const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
+    const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
+    const arrow1 = document.getElementById("arrow_1") as HTMLElement;
+    const arrow2 = document.getElementById("arrow_2") as HTMLElement;
+
+    mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
+    mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
+
+    const ctx = canvas.value?.getContext("2d");
+
+    if (ctx) {
+      if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
+
+        menu.style.top = (mouseY.value * cellHeight.value) + ((window.innerHeight - canvasHeight.value) / 2) + (cellHeight.value / 8) + "px";
+        menu.style.left = (mouseX.value * cellHeight.value) + "px";
+
+        menuItem1.style.height = (cellHeight.value / 2) + "px"
+        menuItem2.style.height = (cellHeight.value / 2) + "px"
+        arrow1.style.height = (cellHeight.value / 2) + "px"
+        arrow2.style.height = (cellHeight.value / 2) + "px"
+        arrow1.style.width = (cellWidth.value / 2) + "px"
+        arrow2.style.width = (cellWidth.value / 2) + "px"
+        menu.classList.add("show");
+
+        selectedPieceY.value = mouseY.value;
+        selectedPieceX.value = mouseX.value;
+
+        ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+        drawGrid(ctx);
+        chargeImages(imagesArr.value).then((images) => {
+          if (imagesLoaded(images)) {
+            drawBoard(ctx, boardDisposition, images);
+          }
+        });
+        for (let x = 0; x < tableRows; x++) {
+          for (let y = 0; y < tableColumns; y++) {
+            if (board.value[x][y] instanceof Cell) {
+              board.value[x][y].selectable = false;
             }
           }
         }
+
+        for (let i = mouseX.value - 1; i <= mouseX.value + 1; i++) {
+          for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
+            if (
+              i >= 0 &&
+              i < board.value.length &&
+              j >= 0 &&
+              j < board.value.length
+            ) {
+              if (board.value[j][i] instanceof Piece) {
+                ctx.fillStyle = "rgb(250,10,10, 0.5)";
+                ctx.fillRect(
+                  i * cellHeight.value,
+                  j * cellWidth.value,
+                  cellHeight.value,
+                  cellWidth.value
+                );
+              } else if (board.value[j][i] instanceof Cell) {
+                ctx.fillStyle = "rgb(10,250,10, 0.5)";
+                ctx.fillRect(
+                  i * cellHeight.value,
+                  j * cellWidth.value,
+                  cellHeight.value,
+                  cellWidth.value
+                );
+                board.value[j][i].selectable = true;
+              }
+            }
+          }
+        }
+      } else if (
+        board.value[mouseY.value][mouseX.value] instanceof Cell &&
+        board.value[mouseY.value][mouseX.value].selectable == true
+      ) {
+        emit(
+          "sendMovement",
+          selectedPieceY.value,
+          selectedPieceX.value,
+          mouseY.value,
+          mouseX.value,
+          rotationValue.value
+        );
       }
-    } else if (
-      board.value[mouseY.value][mouseX.value] instanceof Cell &&
-      board.value[mouseY.value][mouseX.value].selectable == true
-    ) {
-      emit(
-        "sendMovement",
-        selectedPieceY.value,
-        selectedPieceX.value,
-        mouseY.value,
-        mouseX.value,
-        rotationValue.value
-      );
     }
+  } else {
+    console.log("No es tu turno")
   }
 };
 
@@ -450,7 +455,7 @@ function drawLaser(
     const coordinates = step.split(',')
     return coordinates.map(Number)
   })
-  const thickness = Math.floor(cellHeight.value/4);
+  const thickness = Math.floor(cellHeight.value / 4);
   ctx.fillStyle = "rgb(100, 255, 100)";
   route.forEach((target: number[]) => {
     ctx.beginPath();
@@ -573,6 +578,7 @@ canvas {
   background-image: url(../public/img/kingolaser/Board.webp);
   background-size: contain;
 }
+
 .custom-menu {
   display: none;
 }
@@ -581,6 +587,7 @@ canvas {
   background-color: lightgreen;
   border-radius: 10px;
 }
+
 .show {
   display: block;
   position: absolute;
