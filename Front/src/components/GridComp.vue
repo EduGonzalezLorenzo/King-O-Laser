@@ -41,6 +41,8 @@ const imagesArr = ref<HTMLImageElement[]>([])
 const boardDisposition = reactive<BoardDisposition>({
   lastAction: "",
   pieces: [],
+  status: "",
+  position: ""
 });
 
 const imagePaths = [
@@ -185,32 +187,16 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-const props = defineProps({
-  position: { type: String, required: true },
-  status: { type: String, required: true }
-});
-
-
-const playerTurnNew = ref(false);
-
-watch(
-  () => [props.status, props.position],
-  ([newPlayerTurn, newPosition]) => {
-    if (newPlayerTurn && newPosition) {
-      if ((newPlayerTurn === "PLAYER_ONE_TURN" && newPosition === "P1") || (newPlayerTurn === "PLAYER_TWO_TURN" && newPosition === "P2")) {
-        playerTurnNew.value = true;
-      } else {
-        playerTurnNew.value = false;
-      }
-    }
-  },
-  { immediate: true }
-);
-
+const checkValidTurn = () => {
+  if ((boardDisposition.status === "PLAYER_ONE_TURN" && boardDisposition.position === "P1") || (boardDisposition.status === "PLAYER_TWO_TURN" && boardDisposition.position === "P2")) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 const handleClick = (event: MouseEvent) => {
-  if (playerTurnNew.value) {
-    console.log("Es tu turno")
+  if (checkValidTurn()) {
     const menu = document.getElementById("custom-menu") as HTMLElement;
     const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
     const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
@@ -485,7 +471,9 @@ onMounted(async () => {
     })
     .then((data) => {
       (boardDisposition.lastAction = data.lastAction),
-        (boardDisposition.pieces = data.pieces);
+        (boardDisposition.pieces = data.pieces),
+        (boardDisposition.status = data.status),
+        (boardDisposition.position = data.position);
     });
 
   const ctx = canvas.value?.getContext("2d");

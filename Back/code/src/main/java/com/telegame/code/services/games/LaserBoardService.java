@@ -11,6 +11,7 @@ import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
+import com.telegame.code.models.PlayerPlayMatch;
 import com.telegame.code.models.games.laserboard.Block;
 import com.telegame.code.models.games.laserboard.LaserBoard;
 import com.telegame.code.models.games.laserboard.pieces.Bouncer;
@@ -121,11 +122,13 @@ public class LaserBoardService {
         }
     }
 
-    public LaserBoardDTO generateLaserBoardDTO(LaserBoard board) {
+    public LaserBoardDTO generateLaserBoardDTO(LaserBoard board, Optional<PlayerPlayMatch> playerPlayMatch) {
 
         return LaserBoardDTO.builder()
                 .pieces(generatePieceListDTO(board.getPieceList()))
                 .lastAction(board.getLastAction())
+                .status(board.getStatus().toString())
+                .position(playerPlayMatch.get().getPosition())
                 .build();
     }
 

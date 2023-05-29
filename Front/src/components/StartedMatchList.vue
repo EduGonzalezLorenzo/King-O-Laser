@@ -84,9 +84,7 @@ onMounted(async () =>{
 
 const emit = defineEmits(['sendPosition'])
 
-
-function goMatch(id, index) {
-  emit('sendPosition', users.value[index].position, users.value[index].status)
+function goMatch(id) {
   navigateTo(`/games/` + id);
 }
 </script>

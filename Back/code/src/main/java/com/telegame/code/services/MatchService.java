@@ -179,8 +179,9 @@ public class MatchService {
         GameMatch gameMatch = getGameMatch(matchId);
         Player player = getPlayer(playerName);
         checkPlayerInMatch(player, gameMatch);
+        Optional<PlayerPlayMatch> playerPlayMatch = playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch);
 
-        return generateBoardDTO(getBoard(gameMatch));
+        return generateBoardDTO(getBoard(gameMatch), playerPlayMatch);
     }
 
     private void checkPlayerInMatch(Player player, GameMatch gameMatch) {
@@ -189,8 +190,8 @@ public class MatchService {
         }
     }
 
-    private LaserBoardDTO generateBoardDTO(Board board) {
-        if (board instanceof LaserBoard) return laserBoardService.generateLaserBoardDTO((LaserBoard) board);
+    private LaserBoardDTO generateBoardDTO(Board board, Optional<PlayerPlayMatch> playerPlayMatch) {
+        if (board instanceof LaserBoard) return laserBoardService.generateLaserBoardDTO((LaserBoard) board, playerPlayMatch);
         else return null;
     }
 
