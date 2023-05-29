@@ -4,12 +4,14 @@
       <div class="grid grid-cols-1 gap-12 game_container">
         <div class="mt-0 mb-auto">
           <UserProfileGameCard />
-          <StartedMatchList />
+          <StartedMatchList @send-position="checkPlayerTurn" />
         </div>
       </div>
     </div>
     <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
       <Grid
+        :status="currentStatus"
+        :position="currentPosition"
         @send-movement="sendMovement"
       />
     </div>

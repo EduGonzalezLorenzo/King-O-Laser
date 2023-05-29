@@ -84,7 +84,6 @@ onMounted(async () =>{
 
 const emit = defineEmits(['sendPosition'])
 
-
 function goMatch(id) {
   navigateTo(`/games/` + id);
 }
