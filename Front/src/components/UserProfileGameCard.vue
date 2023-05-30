@@ -56,6 +56,15 @@
             >
           </NuxtLink>
           <NuxtLink
+            to="/profile/settings"
+            class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500"
+          >
+            <img
+              src="/img/commonIcon/settings.webp"
+              class="w-6 h-6 mx-2"
+            >
+          </NuxtLink>
+          <NuxtLink
             class="transition duration-300 hover:bg-gray-200 hover:rounded m-1 p-1 hover:text-gray-600 hover:shadow text-slate-500 hover:cursor-pointer"
             @click="logout"
           >
