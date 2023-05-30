@@ -170,13 +170,14 @@ public class LaserBoardService {
         while (currentPosition[0] >= 0 && currentPosition[0] <= 9 &&
                 currentPosition[1] >= 0 && currentPosition[1] <= 7) {
 
+
             int[] newYX = forward(direction, currentPosition);
             int posY = newYX[0];
             int posX = newYX[1];
 
             if (board[posY][posX] instanceof Piece) {
+                route.add(new int[]{posY, posX});
                 Piece piece = (Piece) board[posY][posX];
-                System.out.println("sides: " + piece.getSides());
                 PieceSide pieceSide = new Block();
 
                 switch (direction) {

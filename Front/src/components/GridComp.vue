@@ -103,6 +103,7 @@ const imagePaths = [
   "/img/kingolaser/RedLaserS.webp",
   "/img/kingolaser/RedLaserE.webp",
   "/img/kingolaser/RedLaserW.webp",
+  "/img/kingolaser/laser_flare.webp",
 ];
 
 const route = useRoute();
@@ -120,7 +121,7 @@ const updateCanvasSize = () => {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
-          drawLaser(ctx, boardDisposition);
+          drawLaser(ctx, boardDisposition, images);
         }
       });
     }
@@ -134,7 +135,7 @@ const updateCanvasSize = () => {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
-          drawLaser(ctx, boardDisposition);
+          drawLaser(ctx, boardDisposition, images);
         }
       });
     }
@@ -148,7 +149,7 @@ const updateCanvasSize = () => {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
-          drawLaser(ctx, boardDisposition);
+          drawLaser(ctx, boardDisposition, images);
         }
       });
     }
@@ -162,7 +163,7 @@ const updateCanvasSize = () => {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
           drawBoard(ctx, boardDisposition, images);
-          drawLaser(ctx, boardDisposition);
+          drawLaser(ctx, boardDisposition, images);
         }
       });
     }
@@ -460,7 +461,8 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
 
 function drawLaser(
   ctx: CanvasRenderingContext2D,
-  boardDisposition: BoardDisposition
+  boardDisposition: BoardDisposition,
+  images: HTMLImageElement[]
 ) {
   const trimmed = boardDisposition.lastAction;
   const steps = trimmed.split("*");
@@ -472,15 +474,13 @@ function drawLaser(
   const thickness = Math.floor(cellHeight.value / 4);
   ctx.fillStyle = "rgb(100, 255, 100)";
   route.forEach((target: number[]) => {
-    ctx.beginPath();
-    ctx.arc(
-      target[1] * cellWidth.value + cellWidth.value / 2,
-      target[0] * cellHeight.value + cellWidth.value / 2,
-      thickness,
-      0,
-      2 * Math.PI
+    ctx.drawImage(
+      images[31],
+      target[1] * cellHeight.value,
+      target[0] * cellWidth.value,
+      cellHeight.value,
+      cellWidth.value
     );
-    ctx.fill();
   });
 }
 
@@ -516,7 +516,7 @@ onMounted(async () => {
       if (imagesLoaded(images)) {
         drawBoard(ctx, boardDisposition, images);
       }
-      drawLaser(ctx, boardDisposition);
+      drawLaser(ctx, boardDisposition, images);
     });
   }
   const menu = document.getElementById("custom-menu") as HTMLElement;
