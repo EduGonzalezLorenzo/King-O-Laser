@@ -1,4 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+async function googleLogin() {
+  await fetch("http://localhost:8080/logingoogle", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(response => response.text())
+  .then(data => {navigateTo(`${data}`, {external: true})})
+}
+</script>
 <template>
   <div
     id="home"
@@ -11,6 +22,7 @@
       <NuxtLink to="/login">
         <button
           class="bg-transparent font-semibold hover:text-black hover:bg-white hover:shadow-xl hover:shadow-white hover:mb-3 py-5 px-16 border rounded text-2xl transition duration-300 ease-in-out"
+          @click="googleLogin"
         >
           Play
         </button>
