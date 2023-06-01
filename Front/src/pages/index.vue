@@ -5,9 +5,7 @@ async function googleLogin() {
     headers: {
       "Content-Type": "application/json"
     }
-  })
-  // .then(response => response.text())
-  // .then(data => {navigateTo(`${data}`, {external: true})})
+  }) .then((response) => {return response.json()}).then((data) => {navigateTo(`${data.message}`, {external: true})})
 }
 </script>
 <template>
@@ -19,14 +17,12 @@ async function googleLogin() {
       Telegame
     </h1>
     <div class="text-center mt-auto mb-40">
-      <NuxtLink to="/login">
-        <button
-          class="bg-transparent font-semibold hover:text-black hover:bg-white hover:shadow-xl hover:shadow-white hover:mb-3 py-5 px-16 border rounded text-2xl transition duration-300 ease-in-out"
-          @click="googleLogin"
-        >
-          Play
-        </button>
-      </NuxtLink>
+      <button
+        class="bg-transparent font-semibold hover:text-black hover:bg-white hover:shadow-xl hover:shadow-white hover:mb-3 py-5 px-16 border rounded text-2xl transition duration-300 ease-in-out"
+        @click="googleLogin"
+      >
+        Play
+      </button>
     </div>
   </div>
 </template>
