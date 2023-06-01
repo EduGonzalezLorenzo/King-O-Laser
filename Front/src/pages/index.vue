@@ -6,8 +6,8 @@ async function googleLogin() {
       "Content-Type": "application/json"
     }
   })
-  .then(response => response.text())
-  .then(data => {navigateTo(`${data}`, {external: true})})
+  // .then(response => response.text())
+  // .then(data => {navigateTo(`${data}`, {external: true})})
 }
 </script>
 <template>
