@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col bg-slate-300 jusify-start">
+  <div class="flex flex-col bg-gray-700 justify-start">
     <ul class="grid grid-cols-1">
       <li
         v-for="(game, index) in users"
@@ -7,26 +7,26 @@
         class="border-white border-4 p-4"
       >
         <div
-          class="flex items-start" 
+          class="flex items-start cursor-pointer" 
           @click="goMatch(game.id, index)"
         >
           <div>
-            <p class="font-bold">
+            <p class="font-bold text-white">
               {{ game.name }}
             </p>
-            <p class="font-bold">
+            <p class="font-bold text-white">
               Players: {{ game.currPlayers }}/2
             </p>
             <div class="flex flex-row">
               <p
                 v-if="game.status === 'WAITING'"
-                class="font-bold bg-yellow-300 p-2 rounded mr-4"
+                class="font-bold bg-yellow-400 p-2 rounded mr-4"
               >
                 {{ game.status }}
               </p>
               <p
                 v-else
-                class="font-bold"
+                class="font-bold text-white"
               >
                 {{ game.status }}
               </p>
