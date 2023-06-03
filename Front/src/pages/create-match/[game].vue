@@ -50,7 +50,6 @@ async function createMatch(event:Event) {
   });
 }
 function showBoard() {
-  console.log(boardDisposition.value);
   switch (boardDisposition.value) {
     case "ace":
       imgPath.value = "/img/kingolaser/AceBoard.webp";

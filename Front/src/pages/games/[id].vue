@@ -17,12 +17,6 @@
       v-if="openSendMenu"
       class="send_menu fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
     >
-      <p> R{{ newRotationValue }}</p>
-      <p> MX{{ newSelectedMovementX }}</p>
-      <p> MY{{ newSelectedMovementY }}</p>
-      <p> PX{{ newSelectedPieceX }}</p>
-      <p> PY{{ newSelectedPieceY }}</p>
-
       <button
         class="confirm_button hover:bg-green-300"
         @click="fetchMovement"
@@ -79,7 +73,6 @@ async function fetchMovement() {
   });
   location.reload()
 }
-
 
 const sendMovement = (
   selectedPieceY: number,

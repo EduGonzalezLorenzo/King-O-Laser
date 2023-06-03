@@ -8,7 +8,7 @@
       >
         <div
           class="flex items-start" 
-          @click="goMatch(game.id)"
+          @click="goMatch(game.id, index)"
         >
           <div>
             <p class="font-bold">
@@ -74,13 +74,16 @@ onMounted(async () =>{
       currPlayers: userData.currentPlayers,
       matchCreation: userData.matchCreation,
       status: userData.status,
+      position: userData.position,
     }));
   })
   .catch((error) => {
     console.error(error);
-  });
-
+  })
 })
+
+const emit = defineEmits(['sendPosition'])
+
 function goMatch(id) {
   navigateTo(`/games/` + id);
 }

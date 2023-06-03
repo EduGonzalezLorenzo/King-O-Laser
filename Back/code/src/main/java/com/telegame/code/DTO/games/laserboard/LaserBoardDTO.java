@@ -12,6 +12,8 @@ import java.util.List;
 @Builder
 public class LaserBoardDTO {
     String lastAction;
+    String status;
+    String position;
 
     @Singular
     List<PieceDTO> pieces;

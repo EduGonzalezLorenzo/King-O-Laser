@@ -11,6 +11,7 @@ import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
+import com.telegame.code.models.PlayerPlayMatch;
 import com.telegame.code.models.games.laserboard.Block;
 import com.telegame.code.models.games.laserboard.LaserBoard;
 import com.telegame.code.models.games.laserboard.pieces.Bouncer;
@@ -118,11 +119,13 @@ public class LaserBoardService {
         }
     }
 
-    public LaserBoardDTO generateLaserBoardDTO(LaserBoard board) {
+    public LaserBoardDTO generateLaserBoardDTO(LaserBoard board, Optional<PlayerPlayMatch> playerPlayMatch) {
 
         return LaserBoardDTO.builder()
                 .pieces(generatePieceListDTO(board.getPieceList()))
                 .lastAction(board.getLastAction())
+                .status(board.getStatus().toString())
+                .position(playerPlayMatch.get().getPosition())
                 .build();
     }
 
@@ -164,13 +167,14 @@ public class LaserBoardService {
         while (currentPosition[0] >= 0 && currentPosition[0] <= 9 &&
                 currentPosition[1] >= 0 && currentPosition[1] <= 7) {
 
+
             int[] newYX = forward(direction, currentPosition);
             int posY = newYX[0];
             int posX = newYX[1];
 
             if (board[posY][posX] instanceof Piece) {
+                route.add(new int[]{posY, posX});
                 Piece piece = (Piece) board[posY][posX];
-                System.out.println("sides: " + piece.getSides());
                 PieceSide pieceSide = new Block();
 
                 switch (direction) {
