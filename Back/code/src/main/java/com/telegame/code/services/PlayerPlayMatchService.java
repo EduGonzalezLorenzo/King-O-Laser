@@ -55,7 +55,7 @@ public class PlayerPlayMatchService {
 
         String message;
         if (board instanceof LaserBoard) {
-            message = laserBoardService.movePiece((LaserBoard) board, actionForm, gameMatch);
+            message = laserBoardService.movePiece(actionForm, player, gameMatch, (LaserBoard) board);
         } else throw new MatchInfoException();
 
         return message;
@@ -64,7 +64,8 @@ public class PlayerPlayMatchService {
     private boolean playerInGame(Player player, GameMatch gameMatch) {
         List<PlayerPlayMatch> playersInMatch = playerPlayMatchRepo.findByGameMatchEquals(gameMatch);
         for (PlayerPlayMatch playerInMatch : playersInMatch) {
-            if (playerInMatch.getPlayer().getId().equals(player.getId())) return true;
+            long playerId = playerInMatch.getPlayer().getId();
+            if (playerId == player.getId()) return true;
         }
         return false;
     }

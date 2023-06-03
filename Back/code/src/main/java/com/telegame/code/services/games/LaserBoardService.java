@@ -4,11 +4,14 @@ import com.telegame.code.DTO.games.laserboard.LaserBoardDTO;
 import com.telegame.code.DTO.games.laserboard.PieceDTO;
 import com.telegame.code.builder.games.laserboard.LaserBoardBuilder;
 import com.telegame.code.builder.games.laserboard.PieceBuilder;
-import com.telegame.code.exceptions.match.IllegalMoveException;
+import com.telegame.code.exceptions.InputFormException;
+import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.PieceNotFoundException;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
+import com.telegame.code.models.Player;
+import com.telegame.code.models.games.laserboard.Block;
 import com.telegame.code.models.games.laserboard.LaserBoard;
 import com.telegame.code.models.games.laserboard.pieces.Bouncer;
 import com.telegame.code.models.games.laserboard.pieces.King;
@@ -17,11 +20,9 @@ import com.telegame.code.models.games.laserboard.pieces.PieceSide;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.games.laserboard.PieceRepo;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -29,131 +30,60 @@ public class LaserBoardService {
     private PieceRepo pieceRepo;
     private BoardRepo boardRepo;
 
-    public String movePiece(LaserBoard laserBoard, LaserBoardMoveForm laserBoardMoveForm, GameMatch gameMatch) {
-        Piece piece = getPieceFromForm(laserBoardMoveForm, gameMatch, laserBoard);
+    public String movePiece(LaserBoardMoveForm laserBoardMoveForm, Player player, GameMatch gameMatch, LaserBoard laserBoard) {
 
-        if (playerCanMove(laserBoard.getStatus(), piece)) {
+        Board.MatchStatus matchStatus = laserBoard.getStatus();
+        List<Piece> piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(
+                laserBoardMoveForm.getCurrentPosY(),
+                laserBoardMoveForm.getCurrentPosX(),
+                laserBoard.getId());
+        if (piecesList.size() == 0) throw new PieceNotFoundException();
+        //TODO El siguiente error tiene más implicaciones que hay que contemplar. Si pasara habría que borrar la partida
+        if (piecesList.size() != 1) throw new RuntimeException();
+        Piece piece = piecesList.get(0);
+
+        if (playerCanMove(matchStatus, piece)) {
             if (laserBoardMoveForm.getRotateTo() == null || laserBoardMoveForm.getRotateTo().equals("")) {
                 if (!piece.move(laserBoardMoveForm.getNewPosY(), laserBoardMoveForm.getNewPosX())) {
-                    throw new IllegalMoveException();
+                    throw new InputFormException();
                 }
             } else {
-                if (!piece.rotate(laserBoardMoveForm.getRotateTo(), piece)) throw new IllegalMoveException();
+                if (!piece.rotate(laserBoardMoveForm.getRotateTo(), piece)) throw new InputFormException();
             }
-        } else throw new IllegalMoveException();
+        } else throw new InputFormException();
 
-        prepareLaserShoot(laserBoard);
+        pieceRepo.save(piece);
+        boardRepo.save(laserBoard);
+
+        List<Piece> boardDisposition = pieceRepo.findByLaserBoardId(laserBoard.getId());
+
+        prepareLaser(laserBoard, matchStatus, boardDisposition);
 
         return "Ok";
     }
 
-    private void prepareLaserShoot(LaserBoard laserBoard) {
-        Piece piece = getPieceFromLaserBoard(laserBoard);
-        List<Piece> currentDisposition = pieceRepo.findByLaserBoardId(laserBoard.getId());
-        LaserBean laserBean = shootLaser(laserBoard, piece.getRotation(), currentDisposition);
+    private List<int[]> prepareLaser(LaserBoard laserBoard, Board.MatchStatus matchStatus, List<Piece> piecesList) {
+        Piece piece;
+        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN)
+            piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(9, 7, laserBoard.getId());
+        if (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN)
+            piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(0, 0, laserBoard.getId());
 
-        if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_ONE_TURN)
-            laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
+        piece = piecesList.get(0);
+        List<Piece> currentDisposition = pieceRepo.findByLaserBoardId(laserBoard.getId());
+
+        Map<String, Object> laserResult = shootLaser(laserBoard, piece.getRotation(), currentDisposition);
+
+        List<int[]> route = (List<int[]>) laserResult.get("route");
+
+        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
         else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
 
-        laserBoard.setLastAction(formatRoute(laserBean.route));
-        pieceRepo.save(piece);
+        laserBoard.setLastAction(formatRoute(route));
+
         boardRepo.save(laserBoard);
-    }
 
-    public LaserBean shootLaser(LaserBoard laserBoard, Piece.Direction direction, List<Piece> boardDisposition) {
-        int[] currentPosition = getStartPoint(laserBoard);
-        List<int[]> route = new ArrayList<>();
-        route.add(getStartPoint(laserBoard));
-        Object[][] board = buildBoard(boardDisposition);
-
-        while (positionInBoard(currentPosition)) {
-            int[] newYX = forward(direction, currentPosition);
-            int posY = newYX[0];
-            int posX = newYX[1];
-
-            if (board[posY][posX] instanceof Piece piece) {
-                PieceSide pieceSide = getPieceSide(direction, piece);
-                boolean bouncer = (piece instanceof Bouncer);
-                Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
-
-                if (nextDirection == Piece.Direction.STOPPED) {
-                    route.add(newYX);
-                    return LaserBean.builder()
-                            .message("BLOCK")
-                            .route(route)
-                            .build();
-                } else if (nextDirection == Piece.Direction.HIT) {
-                    int[] next = forward(direction, currentPosition);
-                    piece = (Piece) board[next[0]][next[1]];
-                    if (piece instanceof King) {
-                        if (piece.getOwner() == Piece.Owner.PLAYER_ONE)
-                            laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
-                        else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
-                        boardRepo.save(laserBoard);
-                    }
-                    deletePiece(next[0], next[1], laserBoard.getId());
-                    route.add(next);
-                    return LaserBean.builder()
-                            .route(route)
-                            .message("HIT").build();
-                } else {
-                    direction = nextDirection;
-                    currentPosition = newYX;
-                    route.add(newYX);
-                }
-
-            } else {
-                board[posY][posX] = "  /\\  ";
-                currentPosition[0] = posY;
-                currentPosition[1] = posX;
-                route.add(new int[]{posY, posX});
-                if ((posY == 0 && direction == Piece.Direction.NORTH || posY == 9 && direction == Piece.Direction.SOUTH) ||
-                        (posX == 0 && direction == Piece.Direction.WEST || posX == 7 && direction == Piece.Direction.EAST)) {
-                    return LaserBean.builder()
-                            .route(route)
-                            .message("OUT").build();
-                }
-            }
-        }
-        return LaserBean.builder()
-                .route(route)
-                .message("OUT").build();
-    }
-
-    private PieceSide getPieceSide(Piece.Direction direction, Piece piece) {
-        return switch (direction) {
-            case NORTH -> piece.getSideInfo(Piece.Direction.SOUTH);
-            case EAST -> piece.getSideInfo(Piece.Direction.WEST);
-            case SOUTH -> piece.getSideInfo(Piece.Direction.NORTH);
-            case WEST -> piece.getSideInfo(Piece.Direction.EAST);
-            default -> throw new PieceNotFoundException();
-        };
-    }
-
-    private int[] getStartPoint(LaserBoard laserBoard) {
-        if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_ONE_TURN) return new int[]{9, 7};
-        else return new int[]{0, 0};
-    }
-
-    private boolean positionInBoard(int[] currentPosition) {
-        return currentPosition[0] >= 0 && currentPosition[0] <= 9 &&
-                currentPosition[1] >= 0 && currentPosition[1] <= 7;
-    }
-
-    private Piece getPieceFromLaserBoard(LaserBoard laserBoard) {
-        List<Piece> piecesList = laserBoard.getPieceList();
-        if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_ONE_TURN)
-            return getPieceFromCoordinates(7, 9, piecesList);
-        else
-            return getPieceFromCoordinates(0, 0, piecesList);
-    }
-
-    private Piece getPieceFromCoordinates(int x, int y, List<Piece> pieceList) {
-        for (Piece piece : pieceList) {
-            if (piece.getPosX() == x && piece.getPosY() == y) return piece;
-        }
-        throw new PieceNotFoundException();
+        return route;
     }
 
     private String formatRoute(List<int[]> route) {
@@ -189,6 +119,7 @@ public class LaserBoardService {
     }
 
     public LaserBoardDTO generateLaserBoardDTO(LaserBoard board) {
+
         return LaserBoardDTO.builder()
                 .pieces(generatePieceListDTO(board.getPieceList()))
                 .lastAction(board.getLastAction())
@@ -203,7 +134,7 @@ public class LaserBoardService {
                     .y(piece.getPosY())
                     .owner(piece.getOwner().name())
                     .rotation(piece.getRotation().name())
-                    .type(piece.getType())
+                    .type(piece.getClass().getName())
                     .build());
         }
         return pieceDTOList;
@@ -215,14 +146,112 @@ public class LaserBoardService {
         pieceRepo.delete(pieceToDelete);
     }
 
+    public Map<String, Object> shootLaser(LaserBoard laserBoard, Piece.Direction direction, List<Piece> boardDisposition) {
+
+        Map<String, Object> returnMap = new HashMap<>();
+
+        int[] currentPosition;
+        List<int[]> route = new ArrayList<>();
+
+        if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_ONE_TURN) {
+            currentPosition = new int[]{9, 7};
+        } else {
+            currentPosition = new int[]{0, 0};
+        }
+
+        Object[][] board = buildBoard(boardDisposition);
+
+        while (currentPosition[0] >= 0 && currentPosition[0] <= 9 &&
+                currentPosition[1] >= 0 && currentPosition[1] <= 7) {
+
+            int[] newYX = forward(direction, currentPosition);
+            int posY = newYX[0];
+            int posX = newYX[1];
+
+            if (board[posY][posX] instanceof Piece) {
+                Piece piece = (Piece) board[posY][posX];
+                System.out.println("sides: " + piece.getSides());
+                PieceSide pieceSide = new Block();
+
+                switch (direction) {
+                    case NORTH:
+                        pieceSide = piece.getSideInfo(Piece.Direction.SOUTH);
+                        break;
+                    case EAST:
+                        pieceSide = piece.getSideInfo(Piece.Direction.WEST);
+                        break;
+                    case SOUTH:
+                        pieceSide = piece.getSideInfo(Piece.Direction.NORTH);
+                        break;
+                    case WEST:
+                        pieceSide = piece.getSideInfo(Piece.Direction.EAST);
+                        break;
+                }
+
+                boolean bouncer = (piece instanceof Bouncer);
+
+                Piece.Direction nextDirection = pieceSide.interact(direction, piece.getRotation(), bouncer);
+
+                if (nextDirection == Piece.Direction.STOPPED) {
+                    returnMap.put("message", "BLOCK");
+                    route.add(newYX);
+                    returnMap.put("route", route);
+                    return returnMap;
+                } else if (nextDirection == Piece.Direction.HIT) {
+                    int[] next = forward(direction, currentPosition);
+                    piece = (Piece) board[next[0]][next[1]];
+                    if (piece instanceof King) {
+                        if (piece.getOwner() == Piece.Owner.PLAYER_ONE)
+                            laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
+                        else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
+                        boardRepo.save(laserBoard);
+                    }
+                    deletePiece(next[0], next[1], laserBoard.getId());
+                    returnMap.put("message", "HIT");
+                    route.add(next);
+                    returnMap.put("route", route);
+                    return returnMap;
+                } else {
+                    direction = nextDirection;
+                    currentPosition = newYX;
+                    route.add(newYX);
+                }
+
+            } else {
+                board[posY][posX] = "  /\\  ";
+                currentPosition[0] = posY;
+                currentPosition[1] = posX;
+                route.add(new int[]{posY, posX});
+                if (posY == 0 && direction == Piece.Direction.NORTH || posY == 9 && direction == Piece.Direction.SOUTH) {
+                    returnMap.put("message", "OUT");
+                    returnMap.put("route", route);
+                    return returnMap;
+                }
+                if (posX == 0 && direction == Piece.Direction.WEST || posX == 7 && direction == Piece.Direction.EAST) {
+                    returnMap.put("message", "OUT");
+                    returnMap.put("route", route);
+                    return returnMap;
+                }
+            }
+        }
+        return returnMap;
+    }
+
     private int[] forward(Piece.Direction direction, int[] currentPosition) {
         int posY = currentPosition[0];
         int posX = currentPosition[1];
         switch (direction) {
-            case NORTH -> posY--;
-            case EAST -> posX++;
-            case SOUTH -> posY++;
-            case WEST -> posX--;
+            case NORTH:
+                posY--;
+                break;
+            case EAST:
+                posX++;
+                break;
+            case SOUTH:
+                posY++;
+                break;
+            case WEST:
+                posX--;
         }
         return new int[]{posY, posX};
     }
@@ -234,26 +263,5 @@ public class LaserBoardService {
             board[piece.getPosY()][piece.getPosX()] = piece;
         }
         return board;
-    }
-
-    private Piece getPieceFromForm(LaserBoardMoveForm laserBoardMoveForm, GameMatch gameMatch, LaserBoard laserBoard) {
-        List<Piece> piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(
-                laserBoardMoveForm.getCurrentPosY(),
-                laserBoardMoveForm.getCurrentPosX(),
-                laserBoard.getId());
-        if (piecesList.size() == 0) throw new PieceNotFoundException();
-        //La siguiente linea genera un bucle infinito en el que matchService tiene un LaserBoardService y
-        //LaserBoardService tiene un matchService, provocando esto un error de compilación.
-        //Ser no es estrictamente necesario borrar la partida, ya que sobre el papel este caso no se debería dar nunca
-        //pero precisamente por eso si se diera la partida se consideraría corrupta al habar varias piezas en la misma casiila
-        //y habria que borrarla.Hay que decidir que hacer, si pasar o si buscar una manera con una clase nueva para evitar el bucle.
-        //if (piecesList.size() != 1) matchService.deleteGameMatch(gameMatch);
-        return piecesList.get(0);
-    }
-
-    @Builder
-    public static class LaserBean {
-        List<int[]> route;
-        String message;
     }
 }
