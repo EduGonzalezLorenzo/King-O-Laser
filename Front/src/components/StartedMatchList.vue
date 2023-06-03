@@ -2,12 +2,12 @@
   <div class="flex flex-col bg-gray-700 justify-start">
     <ul class="grid grid-cols-1">
       <li
-        v-for="(game, index) in users"
+        v-for="(game, index) in props.users"
         :key="index"
         class="border-white border-4 p-4"
       >
         <div
-          class="flex items-start cursor-pointer" 
+          class="flex items-start cursor-pointer"
           @click="goMatch(game.id, index)"
         >
           <div>
@@ -45,45 +45,21 @@
 </template>
 
 <script setup>
-const users = ref([]);
-
-const jwt = ref("")
-
-onMounted(async () =>{
-  const localStore = localStorage.getItem("jwt")
-  jwt.value = localStore;
-
-  await fetch("http://localhost:8080/match", {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + jwt.value,
+const props = defineProps({
+  users: {
+    type: Object,
+    required: false,
+    default: () => ({
+      id: 0,
+      name: "",
+      isPublic: false,
+      currentPlayers: 0,
+      matchCreation: "",
+      status: "",
+      position: "",
+    }),
   },
-})
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Error en la solicitud al servidor");
-    }
-    return response.json();
-  })
-  .then((data) => {
-    users.value = data.map((userData) => ({
-      id: userData.id,
-      name: userData.name,
-      isPublic: userData.isPublic ? "Public" : "Private",
-      currPlayers: userData.currentPlayers,
-      matchCreation: userData.matchCreation,
-      status: userData.status,
-      position: userData.position,
-    }));
-  })
-  .catch((error) => {
-    console.error(error);
-  })
-})
-
-const emit = defineEmits(['sendPosition'])
-
+});
 function goMatch(id) {
   navigateTo(`/games/` + id);
 }

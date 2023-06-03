@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <h1 class="text-7xl text-center mt-40 mb-28 text-white">
+  <div
+    class="h-screen"
+  >
+    <h1 class="text-7xl text-center mb-28 text-white">
       Select a Game
     </h1>
     <div
@@ -27,8 +29,6 @@
 
 <script setup lang="ts">
 import useImages from "@/utils/images";
-
-
 const { images } = useImages();
 
 function handleClick(title: string) {

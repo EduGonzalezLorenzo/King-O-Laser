@@ -45,8 +45,6 @@ import { ref, onMounted, defineEmits } from "vue";
 import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
-import { watch } from 'vue';
-
 
 
 const canvas = ref<HTMLCanvasElement | null>(null);
@@ -127,10 +125,10 @@ const updateCanvasSize = () => {
     }
   }
   if (window.innerWidth > 1000 && window.innerWidth <= 1200) {
-    canvasWidth.value = 480;
-    canvasHeight.value = 600;
-    cellWidth.value = 60;
-    cellHeight.value = 60;
+    canvasWidth.value = 480*2;
+    canvasHeight.value = 600*2;
+    cellWidth.value = 60*2;
+    cellHeight.value = 60*2;
     if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
@@ -141,10 +139,10 @@ const updateCanvasSize = () => {
     }
   }
   if (window.innerWidth > 800 && window.innerWidth <= 1000) {
-    canvasWidth.value = 320;
-    canvasHeight.value = 400;
-    cellWidth.value = 40;
-    cellHeight.value = 40;
+    canvasWidth.value = 320 *2;
+    canvasHeight.value = 400*2;
+    cellWidth.value = 40*2;
+    cellHeight.value = 40*2;
     if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
@@ -154,7 +152,7 @@ const updateCanvasSize = () => {
       });
     }
   }
-  if (window.innerWidth < 800) {
+  if (window.innerWidth < 750) {
     canvasWidth.value = 280;
     canvasHeight.value = 350;
     cellWidth.value = 35;

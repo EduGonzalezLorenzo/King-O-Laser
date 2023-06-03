@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-
+const jwt = ref<String>("");
 const msg = ref<string>("");
 const is_email = ref<boolean>(true);
 
@@ -40,8 +40,24 @@ async function LogUser(event: Event) {
     })
     .then((data) => {
       localStorage.setItem('jwt', data.message);
-      navigateTo(`/profile/user`);
+      
     });
+    const localStore = localStorage.getItem("jwt");
+    jwt.value = localStore as String;
+    await fetch("http://localhost:8080/getPlayer", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+     navigateTo("/profile/"+ data.playerName)
+    });
+
 }
 </script>
 
