@@ -7,6 +7,7 @@ import com.telegame.code.builder.games.laserboard.PieceBuilder;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.PieceNotFoundException;
+import com.telegame.code.exceptions.match.PlayerNoInMatchException;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
@@ -19,9 +20,11 @@ import com.telegame.code.models.games.laserboard.pieces.King;
 import com.telegame.code.models.games.laserboard.pieces.Piece;
 import com.telegame.code.models.games.laserboard.pieces.PieceSide;
 import com.telegame.code.repos.BoardRepo;
+import com.telegame.code.repos.PlayerPlayMatchRepo;
 import com.telegame.code.repos.games.laserboard.PieceRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 
 @Service
@@ -29,6 +32,7 @@ import java.util.*;
 public class LaserBoardService {
     private PieceRepo pieceRepo;
     private BoardRepo boardRepo;
+    private PlayerPlayMatchRepo playerPlayMatchRepo;
 
     public String movePiece(LaserBoardMoveForm laserBoardMoveForm, Player player, GameMatch gameMatch) {
 
@@ -46,7 +50,7 @@ public class LaserBoardService {
         if (piecesList.size() != 1) throw new RuntimeException();
         Piece piece = piecesList.get(0);
 
-        if (playerCanMove(matchStatus, piece)) {
+        if (playerCanMove(matchStatus, piece, player, gameMatch)) {
             if (laserBoardMoveForm.getRotateTo() == null || laserBoardMoveForm.getRotateTo().equals("")) {
                 if (!piece.move(laserBoardMoveForm.getNewPosY(), laserBoardMoveForm.getNewPosX())) {
                     throw new InputFormException();
@@ -99,16 +103,24 @@ public class LaserBoardService {
     }
 
 
-    private static boolean playerCanMove(Board.MatchStatus matchStatus, Piece piece) {
-        return playerOneCanMove(matchStatus, piece) || playerTwoCanMove(matchStatus, piece);
+    private boolean playerCanMove(Board.MatchStatus matchStatus, Piece piece, Player player, GameMatch gameMatch) {
+        Optional<PlayerPlayMatch> optional = playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch);
+        if (optional.isEmpty()) throw new PlayerNoInMatchException();
+        PlayerPlayMatch playerPlayMatch = optional.get();
+
+        return playerOneCanMove(matchStatus, piece, playerPlayMatch) || playerTwoCanMove(matchStatus, piece, playerPlayMatch);
     }
 
-    private static boolean playerOneCanMove(Board.MatchStatus matchStatus, Piece piece) {
-        return matchStatus == Board.MatchStatus.PLAYER_ONE_TURN && piece.getOwner() == Piece.Owner.PLAYER_ONE;
+    private boolean playerOneCanMove(Board.MatchStatus matchStatus, Piece piece, PlayerPlayMatch playerPlayMatch) {
+        return matchStatus == Board.MatchStatus.PLAYER_ONE_TURN
+                && piece.getOwner() == Piece.Owner.PLAYER_ONE
+                && playerPlayMatch.getPosition().equals("P1");
     }
 
-    private static boolean playerTwoCanMove(Board.MatchStatus matchStatus, Piece piece) {
-        return (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN && piece.getOwner() == Piece.Owner.PLAYER_TWO);
+    private boolean playerTwoCanMove(Board.MatchStatus matchStatus, Piece piece, PlayerPlayMatch playerPlayMatch) {
+        return (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN
+                && piece.getOwner() == Piece.Owner.PLAYER_TWO)
+                && playerPlayMatch.getPosition().equals("P2");
     }
 
     public Board generateBoard(GameMatch newGameMatch, String metadata) {
@@ -207,8 +219,9 @@ public class LaserBoardService {
                 } else if (nextDirection == Piece.Direction.HIT) {
                     int[] next = forward(direction, currentPosition);
                     piece = (Piece) board[next[0]][next[1]];
-                    if(piece instanceof King) {
-                        if(piece.getOwner() == Piece.Owner.PLAYER_ONE) laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
+                    if (piece instanceof King) {
+                        if (piece.getOwner() == Piece.Owner.PLAYER_ONE)
+                            laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
                         else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
                         boardRepo.save(laserBoard);
                     }
