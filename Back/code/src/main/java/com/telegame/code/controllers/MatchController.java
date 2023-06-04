@@ -36,8 +36,6 @@ public class MatchController {
             return new ResponseEntity<>(Message.builder().message("Match form error").build(), HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
             return new ResponseEntity<>(Message.builder().message("Player no exists").build(), HttpStatus.BAD_REQUEST);
-        } catch (MatchInfoException e) {
-            return new ResponseEntity<>(Message.builder().message("Game Metadata Error").build(), HttpStatus.CONFLICT);
         } catch (GameNoExistsException e) {
             return new ResponseEntity<>(Message.builder().message("Game no exists").build(), HttpStatus.BAD_REQUEST);
         }
