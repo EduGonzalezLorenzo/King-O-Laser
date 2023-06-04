@@ -1,21 +1,31 @@
 <template>
-  <div class="grid grid-cols-2">
-    <div class="w-2/3">
-      <div class="grid grid-cols-1 gap-12 game_container">
-        <div class="mt-0 mb-auto">
-          <UserProfileGameCard />
-          <StartedMatchList />
-        </div>
+  <div v-if="loading">
+    <LoadingComponent />
+  </div>
+  <div
+    v-else
+    class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3"
+  >
+    <div class="col-span-1 md:col-span-1 lg:col-span-1 w-full">
+      <div class="flex flex-col h-full">
+        <UserProfileGameCard
+          :user="user"
+          @dropdown-click="showStartedMatchList = !showStartedMatchList"
+        />
+        <StartedMatchList v-if="showStartedMatchList" />
       </div>
     </div>
-    <div class="-ml-80 grid h-screen place-items-center canvas_container justify-self-center mr-auto">
-      <Grid
-        @send-movement="sendMovement"
-      />
+    <div class="col-span-2 ml-auto mr-auto">
+      <div
+        class="grid mt-10 lg:h-screen items-center canvas_container justify-center"
+      >
+        <Grid @send-movement="sendMovement" />
+      </div>
     </div>
+
     <div
       v-if="openSendMenu"
-      class="send_menu fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
     >
       <button
         class="confirm_button hover:bg-green-300"
@@ -38,7 +48,7 @@ import Grid from "~/components/GridComp.vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
 
-const route = useRoute()
+const route = useRoute();
 
 const newSelectedPieceY = ref(0);
 const newSelectedPieceX = ref(0);
@@ -47,16 +57,24 @@ const newSelectedMovementX = ref(0);
 const newRotationValue = ref("");
 const openSendMenu = ref(false);
 const id = ref(route.params.id);
-const jwt = ref<String>("")
+const jwt = ref<String>("");
+const loading = ref(false);
+const showStartedMatchList = ref(false);
+
+
+const user = ref({
+  name: String,
+  loggedIn: Boolean,
+  profileImg: String,
+});
 
 async function fetchMovement() {
-  const currentPosY = newSelectedPieceY.value
-  const currentPosX = newSelectedPieceX.value
-  const newPosY = newSelectedMovementY.value
-  const newPosX = newSelectedMovementX.value
-  const rotateTo = newRotationValue.value
-  const localStore = localStorage.getItem("jwt")
-  jwt.value = localStore as String;
+  const currentPosY = newSelectedPieceY.value;
+  const currentPosX = newSelectedPieceX.value;
+  const newPosY = newSelectedMovementY.value;
+  const newPosX = newSelectedMovementX.value;
+  const rotateTo = newRotationValue.value;
+
   await fetch("http://localhost:8080/match/" + id.value + "/action", {
     method: "POST",
     headers: {
@@ -68,12 +86,33 @@ async function fetchMovement() {
       currentPosX,
       newPosY,
       newPosX,
-      rotateTo
+      rotateTo,
     }),
   });
-  location.reload()
+  location.reload();
 }
+onMounted(async () =>{
+  loading.value= true
+  const localStore = localStorage.getItem("jwt");
+  jwt.value = localStore as String;
+  await fetch("http://localhost:8080/getPlayer", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      user.value.name = data.playerName;
+      user.value.loggedIn = data.loggedIn;
+      user.value.profileImg = data.profileImg;
+    });
+    loading.value= false
 
+})
 const sendMovement = (
   selectedPieceY: number,
   selectedPieceX: number,
@@ -94,14 +133,6 @@ const closeSendMenu = () => {
 };
 </script>
 <style scoped>
-.game_container {
-  display: flex;
-  align-items: flex-start;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
 .canvas_container {
   position: relative;
 }
