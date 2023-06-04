@@ -5,9 +5,8 @@ import com.telegame.code.DTO.games.laserboard.PieceDTO;
 import com.telegame.code.builder.games.laserboard.LaserBoardBuilder;
 import com.telegame.code.builder.games.laserboard.PieceBuilder;
 import com.telegame.code.exceptions.InputFormException;
-import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.PieceNotFoundException;
-import com.telegame.code.exceptions.match.PlayerNoInMatchException;
+import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
 import com.telegame.code.models.Board;
 import com.telegame.code.models.GameMatch;
@@ -34,12 +33,7 @@ public class LaserBoardService {
     private BoardRepo boardRepo;
     private PlayerPlayMatchRepo playerPlayMatchRepo;
 
-    public String movePiece(LaserBoardMoveForm laserBoardMoveForm, Player player, GameMatch gameMatch) {
-
-        Optional<Board> laserBoardOptional = boardRepo.findBoardByGameMatch(gameMatch);
-        if (laserBoardOptional.isEmpty()) throw new MatchInfoException();
-        LaserBoard laserBoard = (LaserBoard) laserBoardOptional.get();
-
+    public String movePiece(LaserBoardMoveForm laserBoardMoveForm, Player player, GameMatch gameMatch, LaserBoard laserBoard) {
         Board.MatchStatus matchStatus = laserBoard.getStatus();
         List<Piece> piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(
                 laserBoardMoveForm.getCurrentPosY(),
@@ -105,7 +99,7 @@ public class LaserBoardService {
 
     private boolean playerCanMove(Board.MatchStatus matchStatus, Piece piece, Player player, GameMatch gameMatch) {
         Optional<PlayerPlayMatch> optional = playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch);
-        if (optional.isEmpty()) throw new PlayerNoInMatchException();
+        if (optional.isEmpty()) throw new PlayerNameException();
         PlayerPlayMatch playerPlayMatch = optional.get();
 
         return playerOneCanMove(matchStatus, piece, playerPlayMatch) || playerTwoCanMove(matchStatus, piece, playerPlayMatch);
@@ -134,13 +128,13 @@ public class LaserBoardService {
         }
     }
 
-    public LaserBoardDTO generateLaserBoardDTO(LaserBoard board, Optional<PlayerPlayMatch> playerPlayMatch) {
+    public LaserBoardDTO generateLaserBoardDTO(LaserBoard board, PlayerPlayMatch playerPlayMatch) {
 
         return LaserBoardDTO.builder()
                 .pieces(generatePieceListDTO(board.getPieceList()))
                 .lastAction(board.getLastAction())
                 .status(board.getStatus().toString())
-                .position(playerPlayMatch.get().getPosition())
+                .position(playerPlayMatch.getPosition())
                 .build();
     }
 
