@@ -6,12 +6,17 @@
         :key="index"
         class="border-white border-4 p-4"
       >
-        <div class="flex items-start" @click="goMatch(game.id)">
+        <div
+          class="flex items-start"
+          @click="goMatch(game.id)"
+        >
           <div>
             <p class="font-bold">
               {{ game.name }}
             </p>
-            <p class="font-bold">Players: {{ game.currPlayers }}/2</p>
+            <p class="font-bold">
+              Players: {{ game.currPlayers }}/2
+            </p>
             <div class="flex flex-row">
               <p
                 v-if="game.status === 'WAITING'"
@@ -19,7 +24,10 @@
               >
                 {{ game.status }}
               </p>
-              <p v-else class="font-bold">
+              <p
+                v-else
+                class="font-bold"
+              >
                 {{ game.status }}
               </p>
               <p
