@@ -10,6 +10,14 @@ function isEmail(value: string) {
   }
 }
 
+async function googleLogin() {
+  await fetch("http://localhost:8080/logingoogle", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }) .then((response) => {return response.json()}).then((data) => {navigateTo(`${data.message}`, {external: true})})
+}
 async function LogUser(event: Event) {
   event.preventDefault();
   const password = (document.getElementById("password") as HTMLInputElement)
@@ -100,6 +108,22 @@ async function LogUser(event: Event) {
             Dont have an Account?
           </p>
         </NuxtLink>
+        <button
+          class="flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 ease-in-out"
+          @click="googleLogin"
+        >
+          <svg
+            class="w-6 h-6 mr-2"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M20.6 11.5h-9.1v3.7h5.3c-0.2 1.4-1.4 4.1-5.3 4.1-3.2 0-5.9-2.7-5.9-6s2.7-6 5.9-6c1.8 0 3.1 0.8 3.9 1.5l2.7-2.6c-1.7-1.5-3.9-2.4-6.6-2.4-5.5 0-10 4.5-10 10s4.5 10 10 10c6.1 0 9.5-4.3 9.5-9.8 0-0.7-0.1-1.3-0.3-1.9z"
+            />
+          </svg>
+          Google Login
+        </button>
+
         <button
           id="submit"
           type="submit"
