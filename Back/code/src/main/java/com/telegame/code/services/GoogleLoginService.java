@@ -55,6 +55,7 @@ public class GoogleLoginService {
         parameters.put("redirect_uri", redirectUri);
         String json = doPost(url, parameters);
         Map<String, Object> mappedJason = new Gson().fromJson(json, HashMap.class);
+
         return mappedJason.get("access_token").toString();
     }
 
@@ -73,11 +74,12 @@ public class GoogleLoginService {
         throw new RuntimeException("Error in post");
     }
 
-    public Map<String, String> getUserInfo(String token) throws URISyntaxException, IOException {
+    public Map<String, String> getUserInfo(String code) throws URISyntaxException, IOException {
         URIBuilder uriBuilder = new URIBuilder("https://www.googleapis.com/oauth2/v1/userinfo");
-        uriBuilder.addParameter("access_token", token);
+        uriBuilder.addParameter("access_token", getAccessToken(code));
         uriBuilder.addParameter("alt", "json");
         String json = doGet(uriBuilder.build().toURL());
+
         return new Gson().fromJson(json, HashMap.class);
     }
 
@@ -85,7 +87,7 @@ public class GoogleLoginService {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet get = new HttpGet(url.toString());
         CloseableHttpResponse response = httpClient.execute(get);
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             return EntityUtils.toString(response.getEntity());
         }
         throw new RuntimeException("Error in get");
