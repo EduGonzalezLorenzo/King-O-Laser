@@ -5,6 +5,7 @@ import com.telegame.code.DTO.games.laserboard.PieceDTO;
 import com.telegame.code.builder.games.laserboard.LaserBoardBuilder;
 import com.telegame.code.builder.games.laserboard.PieceBuilder;
 import com.telegame.code.exceptions.InputFormException;
+import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.PieceNotFoundException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.games.LaserBoardMoveForm;
@@ -40,8 +41,7 @@ public class LaserBoardService {
                 laserBoardMoveForm.getCurrentPosX(),
                 laserBoard.getId());
         if (piecesList.size() == 0) throw new PieceNotFoundException();
-        //TODO El siguiente error tiene más implicaciones que hay que contemplar. Si pasara habría que borrar la partida
-        if (piecesList.size() != 1) throw new RuntimeException();
+        if (piecesList.size() != 1) throw new MatchInfoException();
         Piece piece = piecesList.get(0);
 
         if (playerCanMove(matchStatus, piece, player, gameMatch)) {
