@@ -79,7 +79,7 @@ definePageMeta({
   <div>
     <div
       id="home"
-      class="text-black grid md:grid-cols-2 h-screen lg:-mt-20 md:-mt-44"
+      class="text-black grid md:grid-cols-2 h-screen "
     >
       <div class="flex flex-col justify-center items-center">
         <h1 class="text-7xl text-center text-white">
