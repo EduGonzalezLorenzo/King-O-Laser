@@ -36,7 +36,13 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+const jwt = ref<String>("");
+const password = ref("")
+onMounted(() =>{
+  const localStore = localStorage.getItem("jwt");
+  jwt.value = localStore as String;
+})
 const props = defineProps({
   matches: {
     type: Object,
@@ -52,7 +58,7 @@ const props = defineProps({
     }),
   },
 });
-async function goMatch(id) {
+async function goMatch(id:Number) {
   await fetch("http://localhost:8080/match/" + id, {
     method: "POST",
     headers: {
