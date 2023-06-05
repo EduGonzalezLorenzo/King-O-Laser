@@ -28,7 +28,11 @@
                 v-else
                 class="font-bold text-white"
               >
-                {{ game.status }}
+                {{
+                  (game.status === "PLAYER_ONE_TURN" && game.position === "P1")
+                    || (game.status === "PLAYER_TWO_TURN" && game.position === "P2")
+                    ? "YOUR TURN" : "OPPONENT TURN"
+                }}
               </p>
               <p
                 v-if="game.isPublic === 'Private'"
