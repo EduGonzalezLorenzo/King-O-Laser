@@ -53,6 +53,7 @@ onMounted(async () => {
       return response.json();
     })
     .then((data) => {
+      console.log(data)
       user.value.name = data.playerName;
       user.value.loggedIn = data.loggedIn;
       user.value.profileImg = data.profileImg;
