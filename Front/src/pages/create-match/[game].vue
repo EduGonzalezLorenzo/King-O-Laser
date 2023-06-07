@@ -56,9 +56,6 @@ function showBoard() {
     case "ace":
       imgPath.value = "/img/kingolaser/AceBoard.webp";
       break;
-    case "std":
-      imgPath.value = "/img/kingolaser/StandardBoard.webp";
-      break;
     case "cur":
       imgPath.value = "/img/kingolaser/CuriosityBoard.webp";
       break;
@@ -120,9 +117,6 @@ definePageMeta({
                 selected
               >
                 Select Board Disposition
-              </option>
-              <option value="std">
-                Standard
               </option>
               <option value="ace">
                 Ace
