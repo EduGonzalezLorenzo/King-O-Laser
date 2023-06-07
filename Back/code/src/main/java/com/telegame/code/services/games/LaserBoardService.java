@@ -59,12 +59,12 @@ public class LaserBoardService {
 
         List<Piece> boardDisposition = pieceRepo.findByLaserBoardId(laserBoard.getId());
 
-        shootLaser(laserBoard, matchStatus, boardDisposition);
+        prepareLaserShoot(laserBoard, matchStatus, boardDisposition);
 
         return "Ok";
     }
 
-    private List<int[]> shootLaser(LaserBoard laserBoard, Board.MatchStatus matchStatus, List<Piece> piecesList) {
+    private List<int[]> prepareLaserShoot(LaserBoard laserBoard, Board.MatchStatus matchStatus, List<Piece> piecesList) {
         Piece piece;
         if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN)
             piecesList = pieceRepo.findByPosYAndPosXAndLaserBoardId(9, 7, laserBoard.getId());
@@ -78,14 +78,23 @@ public class LaserBoardService {
 
         List<int[]> route = (List<int[]>) laserResult.get("route");
 
-        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
-        else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
-
-        laserBoard.setLastAction(formatRoute(route));
-
-        boardRepo.save(laserBoard);
-
+        if (!gameIsOver(matchStatus, laserBoard)) {
+            laserBoard.setLastAction(formatRoute(route));
+            boardRepo.save(laserBoard);
+        }
         return route;
+    }
+
+    private boolean gameIsOver(Board.MatchStatus matchStatus, LaserBoard laserBoard) {
+        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
+            laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
+            return false;
+        }
+        if (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN) {
+            laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
+            return false;
+        }
+        return matchStatus != Board.MatchStatus.WAITING;
     }
 
     private String formatRoute(List<int[]> route) {
@@ -214,10 +223,7 @@ public class LaserBoardService {
                     int[] next = forward(direction, currentPosition);
                     piece = (Piece) board[next[0]][next[1]];
                     if (piece instanceof King) {
-                        if (piece.getOwner() == Piece.Owner.PLAYER_ONE)
-                            laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
-                        else laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
-                        boardRepo.save(laserBoard);
+                        endGame(laserBoard, piece);
                     }
                     deletePiece(next[0], next[1], laserBoard.getId());
                     returnMap.put("message", "HIT");
@@ -248,6 +254,15 @@ public class LaserBoardService {
             }
         }
         return returnMap;
+    }
+
+    private void endGame(LaserBoard laserBoard, Piece piece) {
+        if (piece.getOwner() == Piece.Owner.PLAYER_ONE) {
+            laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
+        } else {
+            laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
+        }
+        boardRepo.save(laserBoard);
     }
 
     private int[] forward(Piece.Direction direction, int[] currentPosition) {
