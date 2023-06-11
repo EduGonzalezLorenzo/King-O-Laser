@@ -1,6 +1,13 @@
 package com.telegame.code.services;
 
 import com.google.gson.Gson;
+import com.telegame.code.Utils.HashUtils;
+import com.telegame.code.exceptions.player.LoginException;
+import com.telegame.code.exceptions.player.PlayerNameException;
+import com.telegame.code.forms.PlayerForm;
+import com.telegame.code.models.Player;
+import com.telegame.code.repos.PlayerRepo;
+import lombok.AllArgsConstructor;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -19,9 +26,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class GoogleLoginService {
     @Value("${redirectcallback}")
     String redirectUri;
@@ -31,6 +40,12 @@ public class GoogleLoginService {
 
     @Value("${clientsecret}")
     String clientSecret;
+
+    PlayerRepo playerRepo;
+
+    PlayerService playerService;
+
+    TokenService tokenService;
 
     public String getRedirect() throws URISyntaxException, MalformedURLException {
         URIBuilder uriBuilder = new URIBuilder("https://accounts.google.com/o/oauth2/v2/auth");
@@ -54,9 +69,8 @@ public class GoogleLoginService {
         parameters.put("grant_type", "authorization_code");
         parameters.put("redirect_uri", redirectUri);
         String json = doPost(url, parameters);
-        Map<String, Object> mappedJason = new Gson().fromJson(json, HashMap.class);
-
-        return mappedJason.get("access_token").toString();
+        
+        return new Gson().fromJson(json, HashMap.class).get("access_token").toString();
     }
 
     private String doPost(URL url, Map<String, String> parameters) throws IOException {
@@ -71,16 +85,34 @@ public class GoogleLoginService {
         if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             return EntityUtils.toString(resp.getEntity());
         }
-        throw new RuntimeException("Error in post");
+        throw new LoginException();
     }
 
-    public Map<String, String> getUserInfo(String code) throws URISyntaxException, IOException {
+    public String getUserInfo(String code) throws URISyntaxException, IOException, NoSuchAlgorithmException {
         URIBuilder uriBuilder = new URIBuilder("https://www.googleapis.com/oauth2/v1/userinfo");
         uriBuilder.addParameter("access_token", getAccessToken(code));
         uriBuilder.addParameter("alt", "json");
         String json = doGet(uriBuilder.build().toURL());
+        String email = new Gson().fromJson(json, HashMap.class).get("email").toString();
+        Player player = buildPlayerByEmail(email);
+        return tokenService.createUserToken(player);
+    }
 
-        return new Gson().fromJson(json, HashMap.class);
+    private Player buildPlayerByEmail(String email) throws NoSuchAlgorithmException {
+        Optional<Player> player = playerRepo.findByEmailEquals(email);
+        if (player.isEmpty()) playerService.signUp(buildPlayerForm(email));
+        if (player.isPresent()) return player.get();
+        throw new PlayerNameException();
+    }
+
+    private PlayerForm buildPlayerForm(String email) throws NoSuchAlgorithmException {
+        String randomValue = HashUtils.getHashSHA256(email).substring(0, 6);
+        return PlayerForm.builder()
+                .playerName(randomValue)
+                .firstName(randomValue)
+                .lastName(randomValue)
+                .email(email)
+                .build();
     }
 
     private String doGet(URL url) throws IOException {
@@ -90,6 +122,6 @@ public class GoogleLoginService {
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             return EntityUtils.toString(response.getEntity());
         }
-        throw new RuntimeException("Error in get");
+        throw new LoginException();
     }
 }
