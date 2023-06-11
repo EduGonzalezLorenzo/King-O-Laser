@@ -1,8 +1,8 @@
 <script setup lang="ts">
-
 const jwt = ref<String>("");
 const msg = ref<string>("");
 const is_email = ref<boolean>(true);
+const loginResponse = ref<boolean>(false);
 
 function isEmail(value: string) {
   if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
@@ -14,50 +14,63 @@ function isEmail(value: string) {
 
 async function LogUser(event: Event) {
   event.preventDefault();
-  const password = (document.getElementById('password') as HTMLInputElement).value;
+  const password = (document.getElementById("password") as HTMLInputElement)
+    .value;
 
   let content = {};
   if (is_email.value) {
-    const email = (document.getElementById('email') as HTMLInputElement).value;
+    const email = (document.getElementById("email") as HTMLInputElement).value;
     content = { email, password };
   } else {
-    const playerName = (document.getElementById('email') as HTMLInputElement).value;
+    const playerName = (document.getElementById("email") as HTMLInputElement)
+      .value;
     content = { playerName, password };
   }
-  await fetch('http://localhost:8080/login', {
-    method: 'POST',
+  await fetch("http://localhost:8080/login", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(content),
   })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        msg.value = 'Error Logging User';
-      }
+    .then(async (response) => {
+      return {
+        response,
+        message: await response.json(),
+      };
     })
-    .then((data) => {
-      localStorage.setItem('jwt', data.message);
-      
+    .then(async (data) => {
+      if (data.response.ok) {
+        loginResponse.value = true;
+        localStorage.setItem("jwt", await data.message.message);
+      }else{
+        msg.value = await data.message.message;
+      }
     });
+
+  if (loginResponse.value) {
     const localStore = localStorage.getItem("jwt");
     jwt.value = localStore as String;
     await fetch("http://localhost:8080/getPlayer", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  })
-    .then((response) => {
-      return response.json();
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwt.value,
+      },
     })
-    .then((data) => {
-     navigateTo("/profile/"+ data.playerName)
-    });
-
+      .then(async (response) => {
+        return {
+          response,
+          user: await response.json()
+        };
+      })
+      .then(async (data) => {
+        console.log(data.user)
+        if (data.response.ok) {
+          navigateTo("/profile/" + await data.user.playerName);
+        }
+      });
+  }
 }
 </script>
 

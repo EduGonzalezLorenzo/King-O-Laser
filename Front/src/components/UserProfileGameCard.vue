@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const isRotated = ref(false);
+const isRotated = ref(true);
 const props = defineProps({
   user: {
     type: Object,
@@ -22,7 +22,7 @@ const logout = () => {
   router.push("/login");
 };
 
-const dropDownShow = ref(false);
+const dropDownShow = ref(true);
 
 function dropdownClick() {
   isRotated.value = !isRotated.value;
