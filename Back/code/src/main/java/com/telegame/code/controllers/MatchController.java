@@ -36,8 +36,6 @@ public class MatchController {
             return new ResponseEntity<>(Message.builder().message("Match form error").build(), HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
             return new ResponseEntity<>(Message.builder().message("Player no exists").build(), HttpStatus.BAD_REQUEST);
-        } catch (MatchInfoException e) {
-            return new ResponseEntity<>(Message.builder().message("Game Metadata Error").build(), HttpStatus.CONFLICT);
         } catch (GameNoExistsException e) {
             return new ResponseEntity<>(Message.builder().message("Game no exists").build(), HttpStatus.BAD_REQUEST);
         }
@@ -54,11 +52,11 @@ public class MatchController {
         } catch (MatchNoExistsException e) {
             return new ResponseEntity<>(Message.builder().message("Match not found").build(), HttpStatus.NOT_FOUND);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.I_AM_A_TEAPOT);
         } catch (PlayerAlreadyInMatchException e) {
             return new ResponseEntity<>(Message.builder().message("You are already in this match").build(), HttpStatus.CONFLICT);
         } catch (MatchInfoException e) {
-            return new ResponseEntity<>(Message.builder().message("Wrong password").build(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Wrong password").build(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -67,7 +65,7 @@ public class MatchController {
         try {
             return new ResponseEntity<>(matchService.getAvailableMatches(), HttpStatus.OK);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.I_AM_A_TEAPOT);
         }
     }
 
@@ -76,7 +74,7 @@ public class MatchController {
         try {
             return new ResponseEntity<>(matchService.getPlayerCurrentMatches(request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.I_AM_A_TEAPOT);
         }
     }
 
@@ -85,9 +83,11 @@ public class MatchController {
         try {
             return new ResponseEntity<>(matchService.getMatchInfo(matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.I_AM_A_TEAPOT);
         } catch (PlayerNoInMatchException e) {
-            return new ResponseEntity<>(Message.builder().message("The player is not in this match").build(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Message.builder().message("The player is not in this match").build(), HttpStatus.UNAUTHORIZED);
+        } catch (MatchNoExistsException e) {
+            return new ResponseEntity<>(Message.builder().message("Match not found").build(), HttpStatus.NOT_FOUND);
         }
     }
 }

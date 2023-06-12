@@ -1,7 +1,6 @@
 package com.telegame.code.controllers;
 
 import com.telegame.code.DTO.Message;
-import com.telegame.code.exceptions.GameNoExistsException;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.match.MatchInfoException;
 import com.telegame.code.exceptions.match.MatchNoExistsException;
@@ -30,9 +29,9 @@ public class PlayerPlayMatchController {
         } catch (InputFormException e) {
             return new ResponseEntity<>(Message.builder().message("Action form error").build(), HttpStatus.BAD_REQUEST);
         } catch (MatchNoExistsException e) {
-            return new ResponseEntity<>(Message.builder().message("Match no exists").build(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Match no exists").build(), HttpStatus.NOT_FOUND);
         } catch (PlayerNameException e) {
-            return new ResponseEntity<>(Message.builder().message("Player no exists").build(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.builder().message("Player no exists").build(), HttpStatus.I_AM_A_TEAPOT);
         } catch (MatchInfoException e) {
             return new ResponseEntity<>(Message.builder().message("Database error").build(), HttpStatus.CONFLICT);
         } catch (PieceNotFoundException e) {

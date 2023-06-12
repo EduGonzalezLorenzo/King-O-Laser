@@ -33,8 +33,7 @@ async function createUser() {
       }
     })
     .catch((error) => {
-      if(error)
-      navigateTo("/signup")
+      if (error) navigateTo("/signup");
     });
 }
 
@@ -71,44 +70,44 @@ function isStrongPassword(value: string) {
   }
 }
 </script>
-
+ 
 <template>
   <div>
     <div
       id="home"
-      class="text-black flex flex-col items-center justify-center h-screen"
+      class="text-white flex flex-col items-center justify-center min-h-screen"
     >
-      <h1 class="text-7xl text-center mt-28 text-white">
+      <h1 class="text-5xl font-bold mb-8">
         SignUp
       </h1>
 
       <form
         id="signUp"
-        class="bg-white rounded-lg text-black m-10 p-10 grid grid-cols-1 gap-6 md:grid-cols-2"
+        class="bg-gray-900 bg-opacity-75 rounded-lg text-white m-10 p-10 md:grid md:grid-cols-2 md:gap-6"
         @submit="handleSubmit"
       >
         <div>
           <label
             for="firstname"
-            class="block mb-2 text-sm font-medium text-black"
+            class="block mb-2 text-sm font-medium"
           >First Name</label>
           <input
             id="firstname"
             type="text"
-            class="shadow-sm text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
-            placeholder="Jhon"
+            class="bg-gray-800 rounded-lg px-4 py-2 w-full"
+            placeholder="John"
             required
           >
         </div>
         <div>
           <label
             for="lastname"
-            class="block mb-2 text-sm font-medium text-black"
+            class="block mb-2 text-sm font-medium"
           >Last Name</label>
           <input
             id="lastname"
             type="text"
-            class="shadow-sm text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
+            class="bg-gray-800 rounded-lg px-4 py-2 w-full"
             placeholder="Presley"
             required
           >
@@ -116,25 +115,25 @@ function isStrongPassword(value: string) {
         <div>
           <label
             for="email"
-            class="block mb-2 text-sm font-medium text-black"
+            class="block mb-2 text-sm font-medium"
           >Email</label>
           <input
             id="email"
             type="email"
-            class="shadow-sm text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
-            placeholder="name@email.com"
+            class="bg-gray-800 rounded-lg px-4 py-2 w-full"
+            placeholder="name@example.com"
             required
           >
         </div>
         <div>
           <label
             for="username"
-            class="block mb-2 text-sm font-medium text-black"
+            class="block mb-2 text-sm font-medium"
           >User Name</label>
           <input
             id="username"
             type="text"
-            class="shadow-sm text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
+            class="bg-gray-800 rounded-lg px-4 py-2 w-full"
             placeholder="Player1234"
             required
           >
@@ -142,75 +141,66 @@ function isStrongPassword(value: string) {
         <div>
           <label
             for="password"
-            class="block mb-2 text-sm font-medium text-black"
+            class="block mb-2 text-sm font-medium"
           >Your password</label>
           <input
             id="password"
             type="password"
-            class="shadow-sm text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
+            class="bg-gray-800 rounded-lg px-4 py-2 w-full"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
             @change="(event:Event) => isStrongPassword((event.target as HTMLInputElement).value)"
           >
-          <span
-            id="msg"
-            class="text-red-700 font-semibold"
-          />
         </div>
         <div>
           <label
             for="repeat-password"
-            class="block mb-2 text-sm font-medium text-black"
+            class="block mb-2 text-sm font-medium"
           >Repeat password</label>
           <input
             id="repeat-password"
             type="password"
-            class="shadow-sm text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
+            class="bg-gray-800 rounded-lg px-4 py-2 w-full"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
           >
         </div>
-        <div class="flex items-start">
-          <div class="flex items-center h-5">
+        <div class="col-span-2">
+          <p
+            id="msg"
+            class="text-red-500 font-bold mb-4"
+          >
+            {{ msg }}
+          </p>
+        </div>
+        <div class="flex items-start col-span-2">
+          <div class="flex items-center">
             <input
               id="terms"
               type="checkbox"
               value=""
-              class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-              required
+              class="mr-2"
             >
-          </div>
-          <label
-            for="terms"
-            class="ml-2 text-sm font-medium text-white dark:text-gray-300"
-          >
-            I agree with the
-            <a
+            <label
+              for="terms"
+              class="text-sm font-medium"
+            >I agree with the <a
               href="#"
-              class="text-blue-600 hover:underline dark:text-blue-500"
-            >
-              terms and conditions
-            </a>
-          </label>
+              class="text-blue-600 hover:underline"
+            >terms and conditions</a></label>
+          </div>
         </div>
-        <p
-          class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded col-span-2 text-center"
-        >
-          {{ msg }}
-        </p>
-        <div class="col-span-2">
+        <div class="col-span-2 flex flex-col">
           <NuxtLink
             to="/login"
-            class="text-blue-600 underline hover:text-red-600"
+            class="text-blue-600 underline hover:text-red-600 mt-4"
           >
-            <p class="mb-4">
-              Already have an Account?
-            </p>
+            Already have an Account?
           </NuxtLink>
           <button
             id="submit"
             type="submit"
-            class="signup font-bold py-2 px-4 rounded"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
           >
             Sign Up
           </button>

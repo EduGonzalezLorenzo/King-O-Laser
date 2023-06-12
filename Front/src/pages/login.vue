@@ -1,4 +1,6 @@
 <script setup lang="ts">
+
+const jwt = ref<String>("");
 const msg = ref<string>("");
 const is_email = ref<boolean>(true);
 
@@ -20,22 +22,20 @@ async function googleLogin() {
 }
 async function LogUser(event: Event) {
   event.preventDefault();
-  const password = (document.getElementById("password") as HTMLInputElement)
-    .value;
+  const password = (document.getElementById('password') as HTMLInputElement).value;
 
   let content = {};
   if (is_email.value) {
-    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const email = (document.getElementById('email') as HTMLInputElement).value;
     content = { email, password };
   } else {
-    const playerName = (document.getElementById("email") as HTMLInputElement)
-      .value;
+    const playerName = (document.getElementById('email') as HTMLInputElement).value;
     content = { playerName, password };
   }
-  await fetch("http://localhost:8080/login", {
-    method: "POST",
+  await fetch('http://localhost:8080/login', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(content),
   })
@@ -43,13 +43,29 @@ async function LogUser(event: Event) {
       if (response.ok) {
         return response.json();
       } else {
-        msg.value = "Error Logging User";
+        msg.value = 'Error Logging User';
       }
     })
     .then((data) => {
-      localStorage.setItem("jwt", data.message);
-      navigateTo(`/profile/hola`);
+      localStorage.setItem('jwt', data.message);
+
     });
+    const localStore = localStorage.getItem("jwt");
+    jwt.value = localStore as String;
+    await fetch("http://localhost:8080/getPlayer", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+     navigateTo("/profile/"+ data.playerName)
+    });
+
 }
 </script>
 
@@ -57,46 +73,47 @@ async function LogUser(event: Event) {
   <div>
     <div
       id="home"
-      class="text-black flex flex-col items-center justify-center h-screen"
+      class="text-white flex flex-col items-center justify-center h-screen"
     >
-      <h1 class="text-7xl text-center mt-28 text-white">
+      <h1 class="text-5xl font-bold mb-8">
         Login
       </h1>
 
       <form
         id="login"
-        class="bg-white rounded-lg text-black m-10 p-10 w-80"
+        class="min-w-[25%] bg-gray-900 bg-opacity-75 rounded-lg text-white m-10 p-10 grid gap-6 md:grid-cols-2"
         @submit="(event:Event) => LogUser(event)"
       >
-        <div class="mb-6">
+        <div class="mb-4 col-span-2">
           <label
             for="email"
-            class="block mb-2 text-sm font-medium text-black"
+            class="block mb-2"
           >Your Username or Email</label>
           <input
             id="email"
             type="text"
-            class="shadow-sm text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light text-white"
+            class="bg-gray-800 rounded-lg px-4 py-2 w-full"
             placeholder="name@email.com"
             required
             @change="(event:Event) => isEmail((event.target as HTMLInputElement).value)"
           >
         </div>
-        <div class="mb-6">
+        <div class="mb-4 col-span-2">
           <label
             for="password"
-            class="block mb-2 text-sm font-medium text-black"
-          >Your password</label>
+            class="block mb-2"
+          >Your Password</label>
           <input
             id="password"
             type="password"
-            class="shadow-sm  text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 shadow-sm-light"
+            class="bg-gray-800 rounded-lg px-4 py-2 w-full"
             required
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
           >
         </div>
         <p
-          class="text-red-600 font-bold text-lg m-4 bg-gray-700 px-3 py-1 ml-0 rounded"
+          v-if="msg"
+          class="transition text-red-500 font-bold mb-4"
         >
           {{ msg }}
         </p>

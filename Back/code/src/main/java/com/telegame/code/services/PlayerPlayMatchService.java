@@ -48,7 +48,7 @@ public class PlayerPlayMatchService {
 
         String message;
         if (board instanceof LaserBoard) {
-            message = laserBoardService.movePiece(actionForm, player, gameMatch);
+            message = laserBoardService.movePiece(actionForm, player, gameMatch, (LaserBoard) board);
         } else throw new MatchInfoException();
 
         return message;

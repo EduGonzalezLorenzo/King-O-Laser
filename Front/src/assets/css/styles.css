@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-    --color-primario: #a4036f;
+    --color-primario: #1E40AF;
     --color-secundario: #380036;
-    --gradiente: linear-gradient(180deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    --gradiente: linear-gradient(90deg, var(--color-primario) 0%, var(--color-secundario) 100%);
 }
 
 * {
@@ -20,8 +20,8 @@ body {
     background-attachment: fixed;
 }
 
-button.signup,button.login{
-    background-color: lightseagreen;
-    color:white;
+button.signup, button.login {
+    background-color: var(--color-primario);
+    color: white;
     font-weight: bold;
 }
