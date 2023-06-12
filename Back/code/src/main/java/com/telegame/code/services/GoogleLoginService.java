@@ -7,7 +7,6 @@ import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.PlayerForm;
 import com.telegame.code.models.Player;
 import com.telegame.code.repos.PlayerRepo;
-import lombok.AllArgsConstructor;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -19,6 +18,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
 public class GoogleLoginService {
     @Value("${redirectcallback}")
     String redirectUri;
@@ -41,10 +40,13 @@ public class GoogleLoginService {
     @Value("${clientsecret}")
     String clientSecret;
 
+    @Autowired
     PlayerRepo playerRepo;
 
+    @Autowired
     PlayerService playerService;
 
+    @Autowired
     TokenService tokenService;
 
     public String getRedirect() throws URISyntaxException, MalformedURLException {
@@ -69,7 +71,7 @@ public class GoogleLoginService {
         parameters.put("grant_type", "authorization_code");
         parameters.put("redirect_uri", redirectUri);
         String json = doPost(url, parameters);
-        
+
         return new Gson().fromJson(json, HashMap.class).get("access_token").toString();
     }
 

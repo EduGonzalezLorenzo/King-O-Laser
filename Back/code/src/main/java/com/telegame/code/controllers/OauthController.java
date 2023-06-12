@@ -36,7 +36,7 @@ public class OauthController {
     @GetMapping("/login/callback")
     public String callBack(String code) throws IOException, URISyntaxException, NoSuchAlgorithmException {
         try {
-            return "redirect:http://localhost:3000/profile/" + googleLoginService.getUserInfo(code);
+            return "redirect:http://localhost:3000/successLoginGoogle?playerName=" + googleLoginService.getUserInfo(code);
         } catch (PlayerNameException e) {
             return "Google Login Error";
         }

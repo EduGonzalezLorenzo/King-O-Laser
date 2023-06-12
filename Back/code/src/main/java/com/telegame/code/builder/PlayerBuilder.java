@@ -13,7 +13,7 @@ public class PlayerBuilder {
                 .email(playerForm.getEmail())
                 .firstName(playerForm.getFirstName())
                 .lastName(playerForm.getLastName())
-                .password(HashUtils.getHashSHA256(playerForm.getPassword()))
+                .password(playerForm.getPassword() == null ? null : HashUtils.getHashSHA256(playerForm.getPassword()))
                 .build();
     }
 
