@@ -78,23 +78,25 @@ public class LaserBoardService {
 
         List<int[]> route = (List<int[]>) laserResult.get("route");
 
-        if (!gameIsOver(matchStatus, laserBoard)) {
+        if (!gameIsOver(laserBoard)) {
             laserBoard.setLastAction(formatRoute(route));
             boardRepo.save(laserBoard);
         }
+        laserBoard.setLastAction(formatRoute(route));
+        boardRepo.save(laserBoard);
         return route;
     }
 
-    private boolean gameIsOver(Board.MatchStatus matchStatus, LaserBoard laserBoard) {
-        if (matchStatus == Board.MatchStatus.PLAYER_ONE_TURN) {
+    private boolean gameIsOver(LaserBoard laserBoard) {
+        if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_ONE_TURN) {
             laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
             return false;
         }
-        if (matchStatus == Board.MatchStatus.PLAYER_TWO_TURN) {
+       if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_TWO_TURN) {
             laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
             return false;
         }
-        return matchStatus != Board.MatchStatus.WAITING;
+        return laserBoard.getStatus() != Board.MatchStatus.WAITING;
     }
 
     private String formatRoute(List<int[]> route) {
