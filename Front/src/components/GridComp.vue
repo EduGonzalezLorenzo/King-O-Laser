@@ -1,40 +1,14 @@
 <template>
-  <canvas
-    ref="canvas"
-    :width="canvasWidth"
-    :height="canvasHeight"
-    :mouseX="mouseX"
-    :mouseY="mouseY"
-    :selectedPieceY="selectedPieceY"
-    :selectedPieceX="selectedPieceX"
-    :selectedMovementY="selectedMovementY"
-    :selectedMovementX="selectedMovementX"
-    :rotationValue="rotationValue"
-    @click="handleClick"
-  />
-  <div
-    id="custom-menu"
-    class="custom-menu"
-  >
+  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
+    :selectedPieceY="selectedPieceY" :selectedPieceX="selectedPieceX" :selectedMovementY="selectedMovementY"
+    :selectedMovementX="selectedMovementX" :rotationValue="rotationValue" @click="handleClick" />
+  <div id="custom-menu" class="custom-menu">
     <ul class="custom-menu-list flex flex-row">
-      <li
-        id="menu-item-1"
-        class="custom-menu-item cursor-pointer"
-      >
-        <img
-          id="arrow_1"
-          src="/img/commonIcon/arrowRight.webp"
-        >
+      <li id="menu-item-1" class="custom-menu-item cursor-pointer">
+        <img id="arrow_1" src="/img/commonIcon/arrowRight.webp">
       </li>
-      <li
-        id="menu-item-2"
-        class="custom-menu-item cursor-pointer"
-      >
-        <img
-          id="arrow_2"
-          src="/img/commonIcon/arrowLeft.webp"
-          class="rotate-240"
-        >
+      <li id="menu-item-2" class="custom-menu-item cursor-pointer">
+        <img id="arrow_2" src="/img/commonIcon/arrowLeft.webp" class="rotate-240">
       </li>
     </ul>
   </div>
@@ -125,10 +99,10 @@ const updateCanvasSize = () => {
     }
   }
   if (window.innerWidth > 1000 && window.innerWidth <= 1200) {
-    canvasWidth.value = 480*2;
-    canvasHeight.value = 600*2;
-    cellWidth.value = 60*2;
-    cellHeight.value = 60*2;
+    canvasWidth.value = 480 * 2;
+    canvasHeight.value = 600 * 2;
+    cellWidth.value = 60 * 2;
+    cellHeight.value = 60 * 2;
     if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
@@ -139,10 +113,10 @@ const updateCanvasSize = () => {
     }
   }
   if (window.innerWidth > 800 && window.innerWidth <= 1000) {
-    canvasWidth.value = 320 *2;
-    canvasHeight.value = 400*2;
-    cellWidth.value = 40*2;
-    cellHeight.value = 40*2;
+    canvasWidth.value = 320 * 2;
+    canvasHeight.value = 400 * 2;
+    cellWidth.value = 40 * 2;
+    cellHeight.value = 40 * 2;
     if (ctx) {
       chargeImages(imagesArr.value).then((images) => {
         if (imagesLoaded(images)) {
@@ -224,6 +198,14 @@ const checkValidTurn = () => {
   }
 }
 
+const checkValidPiece = (piece: Piece) => {
+  if ((piece.owner === "PLAYER_ONE" && boardDisposition.status === "PLAYER_ONE_TURN") || (piece.owner === "PLAYER_TWO" && boardDisposition.status === "PLAYER_TWO_TURN")) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const handleClick = (event: MouseEvent) => {
   if (checkValidTurn()) {
     const menu = document.getElementById("custom-menu") as HTMLElement;
@@ -239,61 +221,63 @@ const handleClick = (event: MouseEvent) => {
 
     if (ctx) {
       if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
+        const piece = board.value[mouseY.value][mouseX.value]
+        if (checkValidPiece(piece)) {
+          menu.style.top = (mouseY.value * cellHeight.value) + ((window.innerHeight - canvasHeight.value) / 2) + (cellHeight.value / 8) + "px";
+          menu.style.left = (mouseX.value * cellHeight.value) + "px";
 
-        menu.style.top = (mouseY.value * cellHeight.value) + ((window.innerHeight - canvasHeight.value) / 2) + (cellHeight.value / 8) + "px";
-        menu.style.left = (mouseX.value * cellHeight.value) + "px";
+          menuItem1.style.height = (cellHeight.value / 2) + "px"
+          menuItem2.style.height = (cellHeight.value / 2) + "px"
+          arrow1.style.height = (cellHeight.value / 2) + "px"
+          arrow2.style.height = (cellHeight.value / 2) + "px"
+          arrow1.style.width = (cellWidth.value / 2) + "px"
+          arrow2.style.width = (cellWidth.value / 2) + "px"
+          menu.classList.add("show");
 
-        menuItem1.style.height = (cellHeight.value / 2) + "px"
-        menuItem2.style.height = (cellHeight.value / 2) + "px"
-        arrow1.style.height = (cellHeight.value / 2) + "px"
-        arrow2.style.height = (cellHeight.value / 2) + "px"
-        arrow1.style.width = (cellWidth.value / 2) + "px"
-        arrow2.style.width = (cellWidth.value / 2) + "px"
-        menu.classList.add("show");
+          selectedPieceY.value = mouseY.value;
+          selectedPieceX.value = mouseX.value;
 
-        selectedPieceY.value = mouseY.value;
-        selectedPieceX.value = mouseX.value;
-
-        ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-        drawGrid(ctx);
-        chargeImages(imagesArr.value).then((images) => {
-          if (imagesLoaded(images)) {
-            drawBoard(ctx, boardDisposition, images);
-          }
-        });
-        for (let x = 0; x < tableRows; x++) {
-          for (let y = 0; y < tableColumns; y++) {
-            if (board.value[x][y] instanceof Cell) {
-              board.value[x][y].selectable = false;
+          ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+          drawGrid(ctx);
+          chargeImages(imagesArr.value).then((images) => {
+            if (imagesLoaded(images)) {
+              drawBoard(ctx, boardDisposition, images);
+            }
+          });
+          for (let x = 0; x < tableRows; x++) {
+            for (let y = 0; y < tableColumns; y++) {
+              if (board.value[x][y] instanceof Cell) {
+                board.value[x][y].selectable = false;
+              }
             }
           }
-        }
 
-        for (let i = mouseX.value - 1; i <= mouseX.value + 1; i++) {
-          for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
-            if (
-              i >= 0 &&
-              i < board.value.length &&
-              j >= 0 &&
-              j < board.value.length
-            ) {
-              if (board.value[j][i] instanceof Piece) {
-                ctx.fillStyle = "rgb(250,10,10, 0.5)";
-                ctx.fillRect(
-                  i * cellHeight.value,
-                  j * cellWidth.value,
-                  cellHeight.value,
-                  cellWidth.value
-                );
-              } else if (board.value[j][i] instanceof Cell) {
-                ctx.fillStyle = "rgb(10,250,10, 0.5)";
-                ctx.fillRect(
-                  i * cellHeight.value,
-                  j * cellWidth.value,
-                  cellHeight.value,
-                  cellWidth.value
-                );
-                board.value[j][i].selectable = true;
+          for (let i = mouseX.value - 1; i <= mouseX.value + 1; i++) {
+            for (let j = mouseY.value - 1; j <= mouseY.value + 1; j++) {
+              if (
+                i >= 0 &&
+                i < board.value.length &&
+                j >= 0 &&
+                j < board.value.length
+              ) {
+                if (board.value[j][i] instanceof Piece) {
+                  ctx.fillStyle = "rgb(250,10,10, 0.5)";
+                  ctx.fillRect(
+                    i * cellHeight.value,
+                    j * cellWidth.value,
+                    cellHeight.value,
+                    cellWidth.value
+                  );
+                } else if (board.value[j][i] instanceof Cell) {
+                  ctx.fillStyle = "rgb(10,250,10, 0.5)";
+                  ctx.fillRect(
+                    i * cellHeight.value,
+                    j * cellWidth.value,
+                    cellHeight.value,
+                    cellWidth.value
+                  );
+                  board.value[j][i].selectable = true;
+                }
               }
             }
           }
@@ -469,7 +453,7 @@ function drawLaser(
     const coordinates = step.split(',')
     return coordinates.map(Number)
   })
-  
+
   ctx.fillStyle = "rgb(100, 255, 100)";
   route.forEach((target: number[]) => {
     ctx.drawImage(
