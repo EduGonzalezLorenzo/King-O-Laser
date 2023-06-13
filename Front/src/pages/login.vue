@@ -48,7 +48,6 @@ async function LogUser(event: Event) {
     })
     .then((data) => {
       localStorage.setItem('jwt', data.message);
-
     });
     const localStore = localStorage.getItem("jwt");
     jwt.value = localStore as String;

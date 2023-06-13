@@ -40,14 +40,17 @@ public class GoogleLoginService {
     @Value("${clientsecret}")
     String clientSecret;
 
-    @Autowired
     PlayerRepo playerRepo;
 
-    @Autowired
     PlayerService playerService;
 
-    @Autowired
     TokenService tokenService;
+
+    public GoogleLoginService(PlayerRepo playerRepo, PlayerService playerService, TokenService tokenService) {
+        this.playerRepo = playerRepo;
+        this.playerService = playerService;
+        this.tokenService = tokenService;
+    }
 
     public String getRedirect() throws URISyntaxException, MalformedURLException {
         URIBuilder uriBuilder = new URIBuilder("https://accounts.google.com/o/oauth2/v2/auth");

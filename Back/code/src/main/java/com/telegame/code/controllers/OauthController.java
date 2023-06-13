@@ -4,10 +4,12 @@ import com.telegame.code.DTO.Message;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.services.GoogleLoginService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.telegame.code.services.TokenService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -18,9 +20,10 @@ import java.security.NoSuchAlgorithmException;
 
 @CrossOrigin()
 @Controller
+@AllArgsConstructor
 public class OauthController {
-    @Autowired
     GoogleLoginService googleLoginService;
+    TokenService tokenService;
 
     @GetMapping("/logingoogle")
     public ResponseEntity<Message> loginGoogle() throws MalformedURLException, URISyntaxException {
@@ -34,9 +37,9 @@ public class OauthController {
     }
 
     @GetMapping("/login/callback")
-    public String callBack(String code) throws IOException, URISyntaxException, NoSuchAlgorithmException {
+    public String callBack(String code, Model model) throws IOException, URISyntaxException, NoSuchAlgorithmException {
         try {
-            return "redirect:http://localhost:3000/successLoginGoogle?playerName=" + googleLoginService.getUserInfo(code);
+            return "redirect:http://localhost:3000/succesGoogleLogin?jwt=" + googleLoginService.getUserInfo(code);
         } catch (PlayerNameException e) {
             return "Google Login Error";
         }
