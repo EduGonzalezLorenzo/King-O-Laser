@@ -1,5 +1,19 @@
 <script setup lang="ts">
 const isRotated = ref(false);
+
+const name = computed<string>(() => {
+  return ([props.user.name]?.filter(Boolean).splice(0,2).join(' ') || props.user.name)
+});
+
+const color = computed<string[]>(() => {
+  const nameValue = name.value;
+  const hash = Array.from(nameValue).reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
+  const r = (hash >> 16) & 255;
+  const g = (hash >> 8) & 255;
+  const b = hash & 255;
+  return [`rgb(${r},${g},${b},0.3)`, `rgb(${r},${g},${b},1)`];
+});
+
 const props = defineProps({
   user: {
     type: Object,
@@ -47,9 +61,17 @@ function dropdownClick() {
         ]"
       >
         <img
+          v-if="props.user.profileImg"
           :src="props.user.profileImg"
           class="w-full h-full rounded-full object-cover"
         >
+        <div
+          v-else
+          :style="{background:color[0],color:color[1],}"
+          class="w-full h-full rounded-full items-center justify-center flex font-bold text-4xl"
+        >
+          {{ name.split(' ').map((s)=>s[0].toUpperCase()).join(' ') }}
+        </div>
       </div>
       <div class="flex items-start flex-col">
         <p class="m-2 text-2xl font-bold text-white">
