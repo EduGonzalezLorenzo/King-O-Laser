@@ -72,6 +72,7 @@ import { ref, onMounted } from "vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
 import LoadingComponent from "~/components/LodingComp.vue";
+import api from '@/utils/axios.ts';
 
 const loading = ref(false);
 const isMobile = ref(false);
@@ -98,50 +99,42 @@ onMounted(async () => {
   checkMobile();
   window.addEventListener("resize", checkMobile);
   const localStore = localStorage.getItem("jwt");
-  jwt.value = localStore as String;
+  jwt.value = localStore as string;
 
-  await fetch("http://localhost:8080/getPlayer", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      user.value.name = data.playerName;
-      user.value.loggedIn = data.loggedIn;
-      user.value.profileImg = data.profileImg;
-    });
-  await fetch("http://localhost:8080/match", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error en la solicitud al servidor");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      users.value = data.map((userData: UserData) => ({
-        id: userData.id,
-        name: userData.name,
-        isPublic: userData.isPublic ? "Public" : "Private",
-        currPlayers: userData.currentPlayers,
-        matchCreation: userData.matchCreation,
-        status: userData.status,
-        position: userData.position,
-      }));
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  try {
+    const responsePlayer = await api.get("/getPlayer");
+
+    const dataPlayer = responsePlayer.data;
+
+    user.value.name = dataPlayer.playerName;
+    user.value.loggedIn = dataPlayer.loggedIn;
+    user.value.profileImg = dataPlayer.profileImg;
+  } catch (error) {
+    console.error(error);
+  }
+
+  try {
+    const responseMatch = await api.get("/match");
+
+    if (responseMatch.status !== 200) {
+      throw new Error("Error en la solicitud al servidor");
+    }
+
+    const dataMatch = responseMatch.data;
+
+    users.value = dataMatch.map((userData: UserData) => ({
+      id: userData.id,
+      name: userData.name,
+      isPublic: userData.isPublic ? "Public" : "Private",
+      currPlayers: userData.currentPlayers,
+      matchCreation: userData.matchCreation,
+      status: userData.status,
+      position: userData.position,
+    }));
+  } catch (error) {
+    console.error(error);
+  }
+
   loading.value = false;
 });
 

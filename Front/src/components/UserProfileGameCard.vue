@@ -7,7 +7,11 @@ const name = computed<string>(() => {
 
 const color = computed<string[]>(() => {
   const nameValue = name.value;
-  const hash = Array.from(nameValue).reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
+  const hash = [];
+if (nameValue !== null && Array.from(nameValue)) {
+  hash = Array.from(nameValue).reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
+}
+
   const r = (hash >> 16) & 255;
   const g = (hash >> 8) & 255;
   const b = hash & 255;
@@ -70,7 +74,7 @@ function dropdownClick() {
           :style="{background:color[0],color:color[1],}"
           class="w-full h-full rounded-full items-center justify-center flex font-bold text-4xl"
         >
-          {{ name.split(' ').map((s)=>s[0].toUpperCase()).join(' ') }}
+          {{ name?.split(' ').map((s)=>s[0]?.toUpperCase()).join(' ') }}
         </div>
       </div>
       <div class="flex items-start flex-col">

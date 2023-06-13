@@ -17,8 +17,8 @@
 </template>
 <script setup lang="ts">
 import LoadingComponent from "~/components/LodingComp.vue";
+import api from '@/utils/axios.ts';
 
-const jwt = ref<String>("");
 const loading = ref(false);
 const showStartedMatchList = ref(false);
 const users = ref([]);
@@ -40,52 +40,43 @@ interface UserData {
 
 onMounted(async () => {
   loading.value = true;
-  const localStore = localStorage.getItem("jwt");
-  jwt.value = localStore as String;
-  await fetch("http://localhost:8080/getPlayer", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data)
-      user.value.name = data.playerName;
-      user.value.loggedIn = data.loggedIn;
-      user.value.profileImg = data.profileImg;
+  try {
+    const response = await api.get('getPlayer');
+
+    const data = response.data;
+
+    user.value.name = data.playerName;
+    user.value.loggedIn = data.loggedIn;
+    user.value.profileImg = data.profileImg;
+  } catch (error) {
+    console.error(error);
+  }
+  try {
+    const response = await api.get('/match', {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwt.value,
+      },
     });
 
-  await fetch("http://localhost:8080/match", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error en la solicitud al servidor");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      users.value = data.map((userData: UserData) => ({
-        id: userData.id,
-        name: userData.name,
-        isPublic: userData.isPublic ? "Public" : "Private",
-        currPlayers: userData.currentPlayers,
-        matchCreation: userData.matchCreation,
-        status: userData.status,
-        position: userData.position,
-      }));
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    if (!response.ok) {
+      throw new Error("Error en la solicitud al servidor");
+    }
+
+    const data = response.data;
+
+    users.value = data.map((userData: UserData) => ({
+      id: userData.id,
+      name: userData.name,
+      isPublic: userData.isPublic ? "Public" : "Private",
+      currPlayers: userData.currentPlayers,
+      matchCreation: userData.matchCreation,
+      status: userData.status,
+      position: userData.position,
+    }));
+  } catch (error) {
+    console.error(error);
+  }
   loading.value = false;
 });
 </script>

@@ -45,40 +45,38 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
-import Grid from "~/components/GridComp.vue";
-import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
-import StartedMatchList from "~/components/StartedMatchList.vue";
+import api from '@/utils/axios.ts';
 
 const users = ref([]);
-const route = useRoute();
+const route = useRouter();
 
 const newSelectedPieceY = ref(0);
 const newSelectedPieceX = ref(0);
 const newSelectedMovementY = ref(0);
 const newSelectedMovementX = ref(0);
-const newRotationValue = ref("");
+const newRotationValue = ref('');
 const openSendMenu = ref(false);
-const id = ref(route.params.id);
-const jwt = ref<String>("");
+const id = ref<Number>();
 const loading = ref(false);
 const showStartedMatchList = ref(true);
 
 const user = ref({
-  name: String,
-  loggedIn: Boolean,
-  profileImg: String,
+  name: '',
+  loggedIn: false,
+  profileImg: '',
 });
+
 interface UserData {
-  id: Number;
-  name: String;
-  isPublic: Boolean;
-  currentPlayers: Number;
-  matchCreation: String;
-  status: String;
-  position: String;
+  id: number;
+  name: string;
+  isPublic: boolean;
+  currentPlayers: number;
+  matchCreation: string;
+  status: string;
+  position: string;
 }
+
 async function fetchMovement() {
   const currentPosY = newSelectedPieceY.value;
   const currentPosX = newSelectedPieceX.value;
@@ -86,70 +84,57 @@ async function fetchMovement() {
   const newPosX = newSelectedMovementX.value;
   const rotateTo = newRotationValue.value;
 
-  await fetch("http://localhost:8080/match/" + id.value + "/action", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-    body: JSON.stringify({
+  try {
+    await api.post(`match/${id.value}/action`, {
       currentPosY,
       currentPosX,
       newPosY,
       newPosX,
       rotateTo,
-    }),
-  });
-  location.reload();
+    });
+
+    location.reload();
+  } catch (error) {
+    console.error(error);
+  }
 }
+
 onMounted(async () => {
   loading.value = true;
-  const localStore = localStorage.getItem("jwt");
-  jwt.value = localStore as String;
-  await fetch("http://localhost:8080/getPlayer", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      user.value.name = data.playerName;
-      user.value.loggedIn = data.loggedIn;
-      user.value.profileImg = data.profileImg;
-    });
-  await fetch("http://localhost:8080/match", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error en la solicitud al servidor");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      users.value = data.map((userData: UserData) => ({
-        id: userData.id,
-        name: userData.name,
-        isPublic: userData.isPublic ? "Public" : "Private",
-        currPlayers: userData.currentPlayers,
-        matchCreation: userData.matchCreation,
-        status: userData.status,
-        position: userData.position,
-      }));
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  id.value = route.params?.id
+  try {
+    const response = await api.get('getPlayer');
+
+    const data = response.data;
+
+    user.value.name = data.playerName;
+    user.value.loggedIn = data.loggedIn;
+    user.value.profileImg = data.profileImg;
+  } catch (error) {
+    console.error(error);
+  }
+
+  try {
+    const response = await api.get('match');
+
+    const data = response.data;
+
+    users.value = data.map((userData: UserData) => ({
+      id: userData.id,
+      name: userData.name,
+      isPublic: userData.isPublic ? 'Public' : 'Private',
+      currPlayers: userData.currentPlayers,
+      matchCreation: userData.matchCreation,
+      status: userData.status,
+      position: userData.position,
+    }));
+  } catch (error) {
+    console.error(error);
+  }
+
   loading.value = false;
 });
+
 const sendMovement = (
   selectedPieceY: number,
   selectedPieceX: number,
@@ -169,6 +154,8 @@ const closeSendMenu = () => {
   openSendMenu.value = false;
 };
 </script>
+
+
 <style scoped>
 .canvas_container {
   position: relative;

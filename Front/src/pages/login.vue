@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import api from '@/utils/axios.ts';
 
-const jwt = ref<String>("");
 const msg = ref<string>("");
 const is_email = ref<boolean>(true);
 
@@ -42,21 +42,14 @@ async function LogUser(event: Event) {
       localStorage.setItem('jwt', data.message);
       
     });
-    const localStore = localStorage.getItem("jwt");
-    jwt.value = localStore as String;
-    await fetch("http://localhost:8080/getPlayer", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
+    await api.get("http://localhost:8080/getPlayer")
+  .then((response) => {
+    return response.data;
   })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-     navigateTo("/profile/"+ data.playerName)
-    });
+  .then((data) => {
+    navigateTo("/profile/" + data.playerName);
+  });
+
 
 }
 </script>

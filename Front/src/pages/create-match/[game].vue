@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import api from "@/utils/axios.ts";
 
 const msg = ref("");
 const route = useRoute();
@@ -10,7 +10,6 @@ const boardDisposition = ref<string>("");
 const matchName = ref<string>("");
 const password = ref<string>("");
 const imgPath = ref<string>("");
-const jwt = ref<string>("");
 
 function isChecked(checked: boolean) {
   password.value = "";
@@ -25,8 +24,7 @@ onMounted(async () => {
 
 async function createMatch(event: Event) {
   event.preventDefault();
-  const localStore = localStorage.getItem("jwt");
-  jwt.value = localStore as string;
+
   const content = {
     password: password.value,
     isPublic: !isPublic.value,
@@ -35,20 +33,28 @@ async function createMatch(event: Event) {
     matchName: matchName.value,
   };
 
-  await fetch("http://localhost:8080/match", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-    body: JSON.stringify(content),
-  }).then((response) => {
+  try {
+    const response = await api.post("/match", content, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    });
+
     if (response.ok) {
-      navigateTo(`/profile/` + "hola");
-    } else {
-      msg.value = "Error creating match.";
+      await api
+        .get("/getPlayer")
+        .then((response) => {
+          return response.data;
+        })
+        .then((data) => {
+          navigateTo("/profile/" + data.playerName);
+        });
     }
-  });
+  } catch (error) {
+    console.error(error);
+    msg.value = "Error creating match.";
+  }
 }
 
 function showBoard() {
@@ -72,11 +78,12 @@ definePageMeta({
   layout: "game-layout",
 });
 </script>
+
 <template>
   <div>
     <div
       id="home"
-      class="text-black grid md:grid-cols-2 h-screen "
+      class="text-black grid md:grid-cols-2 h-screen"
     >
       <div class="flex flex-col justify-center items-center">
         <h1 class="text-7xl text-center text-white">
