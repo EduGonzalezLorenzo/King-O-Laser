@@ -46,6 +46,7 @@
 
 <script setup lang="ts">
 const jwt = ref<String>("");
+const msg = ref("");
 const password = ref("")
 onMounted(() =>{
   const localStore = localStorage.getItem("jwt");
@@ -76,7 +77,7 @@ async function goMatch(id:Number) {
     body: JSON.stringify({ password: password.value }),
   }).then((response) => {
     if (!response.ok) {
-      throw new Error("Error en la solicitud al servidor");
+      console.log(response)
     }
     return response.json();
   });

@@ -25,16 +25,17 @@ async function createUser() {
       password,
     }),
   })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         navigateTo("/login");
-      } else {
-        msg.value = "Error Creating User";
       }
+      return{
+        response,
+        message:await response.json()
+      }
+    }).then(async (data) =>{
+        msg.value = await data.message.message
     })
-    .catch((error) => {
-      if (error) navigateTo("/signup");
-    });
 }
 
 function checkPasswordsMatch() {
