@@ -72,7 +72,7 @@ import { ref, onMounted } from "vue";
 import UserProfileGameCard from "~/components/UserProfileGameCard.vue";
 import StartedMatchList from "~/components/StartedMatchList.vue";
 import LoadingComponent from "~/components/LodingComp.vue";
-import api from '@/utils/axios.ts';
+import api from '@/utils/axios';
 
 const loading = ref(false);
 const isMobile = ref(false);
@@ -141,6 +141,9 @@ onMounted(async () => {
 function checkMobile() {
   isMobile.value = window.innerWidth < window.innerHeight;
 }
+useHead({
+  title: `Your Profile` ,
+})
 </script>
 
 <style>

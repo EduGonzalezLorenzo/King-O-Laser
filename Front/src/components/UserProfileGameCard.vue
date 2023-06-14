@@ -1,16 +1,18 @@
 <script setup lang="ts">
 const isRotated = ref(true);
+const isMobile = ref(false);
 
 const name = computed<string>(() => {
-  return ([props.user.name]?.filter(Boolean).splice(0,2).join(' ') || props.user.name)
+  const nameValue = props.user.name;
+  return [nameValue]?.filter(Boolean).splice(0, 2).join(' ') || nameValue;
 });
 
 const color = computed<string[]>(() => {
   const nameValue = name.value;
   let hash = 0;
-if (nameValue !== null && Array.from(nameValue)) {
-  hash = Array.from(nameValue).reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
-}
+  if (nameValue !== null && Array.from(nameValue)) {
+    hash = Array.from(nameValue).reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
+  }
 
   const r = (hash >> 16) & 255;
   const g = (hash >> 8) & 255;
@@ -23,21 +25,34 @@ const props = defineProps({
     type: Object,
     required: false,
     default: () => ({
-      name: "",
+      name: '',
       loggedIn: true,
-      profileImg: "",
+      profileImg: '',
     }),
   },
 });
 
-const emit = defineEmits(["dropdown-click"]);
+watchEffect(() => {
+  checkMobile();
+  window.addEventListener("resize", checkMobile);
+  if (window.innerWidth < window.innerHeight) {
+    isMobile.value = true;
+  } else {
+    isMobile.value = false;
+  }
+});
 
+function checkMobile() {
+  isMobile.value = window.innerWidth < window.innerHeight;
+}
+
+const emit = defineEmits(['dropdown-click']);
 const router = useRouter();
 
 const logout = () => {
-  localStorage.setItem("jwt", "");
-  localStorage.setItem("jwtExp", "");
-  router.push("/login");
+  localStorage.setItem('jwt', '');
+  localStorage.setItem('jwtExp', '');
+  router.push('/login');
 };
 
 const dropDownShow = ref(true);
@@ -45,7 +60,7 @@ const dropDownShow = ref(true);
 function dropdownClick() {
   isRotated.value = !isRotated.value;
   dropDownShow.value = !dropDownShow.value;
-  emit("dropdown-click", dropDownShow.value);
+  emit('dropdown-click', dropDownShow.value);
 }
 </script>
 
@@ -84,6 +99,7 @@ function dropdownClick() {
         <div class="flex ml-auto items-end flex-row">
           <NuxtLink
             :to="`/profile/${props.user.name}`"
+            name="home"
             class="transition duration-300 hover:bg-gray-900 hover:rounded m-1 p-1 hover:text-gray-300 hover:shadow text-yellow-300"
           >
             <svg
@@ -104,6 +120,7 @@ function dropdownClick() {
 
           <NuxtLink
             to="/select-game"
+            name="create-match"
             class="transition duration-300 hover:bg-gray-900 hover:rounded m-1 p-1 hover:text-gray-300 hover:shadow text-purple-500"
           >
             <svg
@@ -123,6 +140,7 @@ function dropdownClick() {
           </NuxtLink>
           <NuxtLink
             to="/search-match"
+            name="search-match"
             class="transition duration-300 hover:bg-gray-900 hover:rounded m-1 p-1 hover:text-gray-300 hover:shadow text-blue-500"
           >
             <svg
@@ -144,6 +162,7 @@ function dropdownClick() {
 
           <NuxtLink
             to="/profile/settings"
+            name="settings"
             class="transition duration-300 hover:bg-gray-900 hover:rounded m-1 p-1 hover:text-gray-300 hover:shadow  text-slate-400 hover:cursor-pointer"
           >
             <svg
@@ -162,6 +181,7 @@ function dropdownClick() {
             /><path d="M13.765 2.152C13.398 2 12.932 2 12 2c-.932 0-1.398 0-1.765.152a2 2 0 0 0-1.083 1.083c-.092.223-.129.484-.143.863a1.617 1.617 0 0 1-.79 1.353a1.617 1.617 0 0 1-1.567.008c-.336-.178-.579-.276-.82-.308a2 2 0 0 0-1.478.396C4.04 5.79 3.806 6.193 3.34 7c-.466.807-.7 1.21-.751 1.605a2 2 0 0 0 .396 1.479c.148.192.355.353.676.555c.473.297.777.803.777 1.361c0 .558-.304 1.064-.777 1.36c-.321.203-.529.364-.676.556a2 2 0 0 0-.396 1.479c.052.394.285.798.75 1.605c.467.807.7 1.21 1.015 1.453a2 2 0 0 0 1.479.396c.24-.032.483-.13.819-.308a1.617 1.617 0 0 1 1.567.008c.483.28.77.795.79 1.353c.014.38.05.64.143.863a2 2 0 0 0 1.083 1.083C10.602 22 11.068 22 12 22c.932 0 1.398 0 1.765-.152a2 2 0 0 0 1.083-1.083c.092-.223.129-.483.143-.863c.02-.558.307-1.074.79-1.353a1.617 1.617 0 0 1 1.567-.008c.336.178.579.276.819.308a2 2 0 0 0 1.479-.396c.315-.242.548-.646 1.014-1.453c.466-.807.7-1.21.751-1.605a2 2 0 0 0-.396-1.479c-.148-.192-.355-.353-.676-.555A1.617 1.617 0 0 1 19.562 12c0-.558.304-1.064.777-1.36c.321-.203.529-.364.676-.556a2 2 0 0 0 .396-1.479c-.052-.394-.285-.798-.75-1.605c-.467-.807-.7-1.21-1.015-1.453a2 2 0 0 0-1.479-.396c-.24.032-.483.13-.82.308a1.617 1.617 0 0 1-1.566-.008a1.617 1.617 0 0 1-.79-1.353c-.014-.38-.05-.64-.143-.863a2 2 0 0 0-1.083-1.083Z" /></g></svg>
           </NuxtLink>
           <NuxtLink
+            name="drop-down"
             class="transition duration-300 hover:bg-gray-900 hover:rounded m-1 p-1 hover:text-gray-300 hover:shadow text-red-500 hover:cursor-pointer"
             @click="logout"
           >
@@ -181,6 +201,7 @@ function dropdownClick() {
             </svg>
           </NuxtLink>
           <NuxtLink
+            v-if="isMobile"
             id="dropDown"
             class="cursor-pointer transition duration-300 hover:bg-gray-900 hover:rounded m-1 p-1 hover:text-gray-300 hover:shadow text-pink-500"
             @click="dropdownClick"

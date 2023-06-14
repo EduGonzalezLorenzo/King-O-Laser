@@ -88,4 +88,7 @@ function updateUser(){
 definePageMeta({
   layout: "game-layout",
 });
+useHead({
+  title: `Settings` ,
+})
 </script>

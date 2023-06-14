@@ -4,7 +4,6 @@
       <ParticlesComponent
         id="tsparticles"
         :particles-init="particlesInit"
-        :particles-loaded="particlesLoaded"
         :options="particlesOptions"
       />
       <NuxtPage />
@@ -130,10 +129,6 @@ const particlesOptions = {
 
 const particlesInit = async (engine) => {
   await loadFull(engine);
-};
-
-const particlesLoaded = async (container) => {
-  console.log("Particles container loaded", container);
 };
 </script>
 <style>

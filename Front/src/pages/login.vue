@@ -71,6 +71,10 @@ async function LogUser(event: Event) {
   });
   }
 }
+useHead({
+  title: 'Login',
+})
+
 </script>
 
 <template>

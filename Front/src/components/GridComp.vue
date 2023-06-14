@@ -1,14 +1,40 @@
 <template>
-  <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" :mouseX="mouseX" :mouseY="mouseY"
-    :selectedPieceY="selectedPieceY" :selectedPieceX="selectedPieceX" :selectedMovementY="selectedMovementY"
-    :selectedMovementX="selectedMovementX" :rotationValue="rotationValue" @click="handleClick" />
-  <div id="custom-menu" class="custom-menu">
+  <canvas
+    ref="canvas"
+    :width="canvasWidth"
+    :height="canvasHeight"
+    :mouseX="mouseX"
+    :mouseY="mouseY"
+    :selectedPieceY="selectedPieceY"
+    :selectedPieceX="selectedPieceX"
+    :selectedMovementY="selectedMovementY"
+    :selectedMovementX="selectedMovementX"
+    :rotationValue="rotationValue"
+    @click="handleClick"
+  />
+  <div
+    id="custom-menu"
+    class="custom-menu"
+  >
     <ul class="custom-menu-list flex flex-row">
-      <li id="menu-item-1" class="custom-menu-item cursor-pointer">
-        <img id="arrow_1" src="/img/commonIcon/arrowRight.webp">
+      <li
+        id="menu-item-1"
+        class="custom-menu-item cursor-pointer"
+      >
+        <img
+          id="arrow_1"
+          src="/img/commonIcon/arrowRight.webp"
+        >
       </li>
-      <li id="menu-item-2" class="custom-menu-item cursor-pointer">
-        <img id="arrow_2" src="/img/commonIcon/arrowLeft.webp" class="rotate-240">
+      <li
+        id="menu-item-2"
+        class="custom-menu-item cursor-pointer"
+      >
+        <img
+          id="arrow_2"
+          src="/img/commonIcon/arrowLeft.webp"
+          class="rotate-240"
+        >
       </li>
     </ul>
   </div>
@@ -511,7 +537,7 @@ onMounted(async () => {
   const menuItem1 = document.getElementById("menu-item-1") as HTMLElement;
   const menuItem2 = document.getElementById("menu-item-2") as HTMLElement;
 
-  menuItem1.addEventListener("click", function () {
+  menuItem1?.addEventListener("click", function () {
     rotationValue.value = "R";
     emit(
       "sendMovement",
@@ -525,7 +551,7 @@ onMounted(async () => {
     menu.classList.remove("show");
   });
 
-  menuItem2.addEventListener("click", function () {
+  menuItem2?.addEventListener("click", function () {
     rotationValue.value = "L";
     emit(
       "sendMovement",

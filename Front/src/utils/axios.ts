@@ -14,8 +14,9 @@ api.interceptors.request.use(
       }
       config.headers['Authorization'] = 'Bearer ' + jwt;
     } else {
+      navigateTo('/error/NoLoggued')
       throw new Error('No se proporcionó un token JWT');
-      navigateTo('/error/')
+      
     }
 
     return config;

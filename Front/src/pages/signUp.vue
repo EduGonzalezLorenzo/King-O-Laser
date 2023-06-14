@@ -70,6 +70,9 @@ function isStrongPassword(value: string) {
     myButton.disabled = false;
   }
 }
+useHead({
+  title: 'SignUp',
+})
 </script>
  
 <template>

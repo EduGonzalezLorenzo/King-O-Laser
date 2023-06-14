@@ -18,7 +18,7 @@ function isChecked(checked: boolean) {
 }
 
 onMounted(async () => {
-  if (!["TicTacToe", "LASER_BOARD"].includes(game_type)) {
+  if (!["LASER_BOARD"].includes(game_type)) {
     await navigateTo(`/select-game`);
   }
 });
@@ -86,16 +86,24 @@ function showBoard() {
 definePageMeta({
   layout: "game-layout",
 });
+useHead({
+  title: `Create a Match` ,
+})
 </script>
 
 <template>
   <div>
     <div
       id="home"
-      class="text-black grid md:grid-cols-2 h-screen"
+      class="text-black flex items-center justify-center flex-col m-5 lg:flex-row"
+      :class="{'flex items-center justify-evenly transition': boardDisposition}"
     >
-      <div class="flex flex-col justify-center items-center">
-        <h1 class="text-7xl text-center text-white">
+      <div
+        class="flex flex-col justify-center items-center"
+      >
+        <h1
+          class="text-7xl text-center text-white"
+        >
           Match
         </h1>
         <form
@@ -226,7 +234,7 @@ definePageMeta({
       </div>
 
       <div
-        class="flex justify-center items-center m-5 lg:m-10 md:overflow-y-hidden"
+        class="flex justify-center items-center md:overflow-y-hidden"
       >
         <img
           :src="imgPath"

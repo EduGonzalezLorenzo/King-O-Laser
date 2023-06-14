@@ -18,9 +18,9 @@
         />
       </div>
     </div>
-    <div class="col-span-2 ml-auto mr-auto">
+    <div class="col-span-2 m-auto mt-10 lg:mt-0">
       <div
-        class="grid mt-10 lg:h-screen items-center canvas_container justify-center"
+        class="grid lg:h-screen items-center canvas_container justify-center"
       >
         <Grid @send-movement="sendMovement" />
       </div>
@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import api from '@/utils/axios';
 import Grid from '~/components/GridComp.vue';
+import LoadingComponent from "~/components/LodingComp.vue";
 import { useRoute } from "vue-router";
 
 const users = ref([]);
@@ -156,6 +157,9 @@ const sendMovement = (
 const closeSendMenu = () => {
   openSendMenu.value = false;
 };
+useHead({
+  title: `Game` ,
+})
 </script>
 
 
