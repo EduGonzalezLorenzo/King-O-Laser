@@ -63,7 +63,7 @@ const openSendMenu = ref(false);
 const id = ref(route.params.id);
 const jwt = ref<String>("");
 const loading = ref(false);
-const showStartedMatchList = ref(false);
+const showStartedMatchList = ref(true);
 
 const user = ref({
   name: String,

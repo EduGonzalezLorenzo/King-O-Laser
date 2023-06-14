@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class PlayerForm {
+public class SignUpForm {
     @Email
     @Size(min = 6, max = 30)
     @NotNull

@@ -76,7 +76,7 @@ import LoadingComponent from "~/components/LodingComp.vue";
 const loading = ref(false);
 const isMobile = ref(false);
 const jwt = ref<String>("");
-const showStartedMatchList = ref(false);
+const showStartedMatchList = ref(true);
 const users = ref([]);
 
 const user = ref({

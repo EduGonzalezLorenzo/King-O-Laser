@@ -8,7 +8,8 @@ import com.telegame.code.exceptions.player.GoogleException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
-import com.telegame.code.forms.PlayerForm;
+import com.telegame.code.forms.SignUpForm;
+import com.telegame.code.forms.UpdatePlayerForm;
 import com.telegame.code.services.PlayerService;
 import com.telegame.code.services.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,10 +28,10 @@ public class PlayerController {
     TokenService tokenService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<Message> signUp(@RequestBody PlayerForm playerForm) throws NoSuchAlgorithmException {
+    public ResponseEntity<Message> signUp(@RequestBody SignUpForm signUpForm) throws NoSuchAlgorithmException {
         try {
             return new ResponseEntity<>(Message.builder()
-                    .message(playerService.signUp(playerForm))
+                    .message(playerService.signUp(signUpForm))
                     .build(), HttpStatus.OK);
         } catch (InputFormException e) {
             return new ResponseEntity<>(Message.builder().message("Player form error").build(), HttpStatus.BAD_REQUEST);
@@ -57,16 +58,18 @@ public class PlayerController {
 
     @GetMapping("/getPlayer")
     public ResponseEntity<PlayerDTO> getPlayerInfo(HttpServletRequest request) {
-        return new ResponseEntity<>(playerService.getPlayerInfo(request.getAttribute("playerName")), HttpStatus.OK);
+        return new ResponseEntity<>(playerService.getPlayerInfo(request.getAttribute("playerName").toString()), HttpStatus.OK);
     }
 
-//    @PutMapping("/update/{PlayerId}")
-//    public Map<String, String> updatePlayerInfo(@RequestBody PlayerForm playerForm, @PathVariable Long playerId, HttpServletRequest request) {
-//        return playerService.updatePlayerInfo(playerForm, playerId, request.getAttribute("player"));
-//    }
-//
-//    @DeleteMapping("/update/{playerId}")
-//    public Map<String, String> deletePlayer(@PathVariable Long playerId, HttpServletRequest request) {
-//        return playerService.deletePlayerInfo(playerId, request.getAttribute("player"));
-//    }
+    @PostMapping("/settings")
+    public ResponseEntity<Message> updatePlayerInfo(@RequestBody UpdatePlayerForm updatePlayerForm, HttpServletRequest request) throws NoSuchAlgorithmException {
+        try {
+            return new ResponseEntity<>(Message.builder()
+                    .message(playerService.updatePlayerInfo(updatePlayerForm, request.getAttribute("playerName").toString()))
+                    .build(), HttpStatus.OK);
+        } catch (InputFormException e) {
+
+            return new ResponseEntity<>(Message.builder().message("Player form error").build(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
