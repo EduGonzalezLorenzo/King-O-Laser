@@ -19,7 +19,7 @@
             </p>
             <div class="flex flex-row">
               <p
-                v-if="game.status === 'WAITING'"
+                v-if="game.status === 'WAITING' || game.status === 'PLAYER_ONE_WIN' || game.status === 'PLAYER_TWO_WIN'"
                 class="font-bold bg-yellow-400 p-2 rounded mr-4"
               >
                 {{ game.status }}
