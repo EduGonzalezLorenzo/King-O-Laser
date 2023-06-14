@@ -26,13 +26,6 @@ function parseJwt (token) {
 async function LogUser(parsed) {
   const playerName = parsed;
   const content = {playerName};
-//   if (is_email.value) {
-//     const email = (document.getElementById('email') as HTMLInputElement).value;
-//     content = { email, password };
-//   } else {
-//     const playerName = (document.getElementById('email') as HTMLInputElement).value;
-//     content = { playerName, password };
-//   }
   await fetch('http://localhost:8080/login', {
     method: 'POST',
     headers: {
@@ -55,7 +48,7 @@ async function LogUser(parsed) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
+      Authorization: "Bearer " + jwt,
     },
   })
     .then((response) => {
