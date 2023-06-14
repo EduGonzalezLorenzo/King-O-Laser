@@ -1,6 +1,5 @@
 package com.telegame.code.services;
 
-import com.telegame.code.DTO.Message;
 import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
@@ -14,11 +13,9 @@ import com.telegame.code.forms.SignUpForm;
 import com.telegame.code.forms.UpdatePlayerForm;
 import com.telegame.code.models.Player;
 import com.telegame.code.repos.PlayerRepo;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;

@@ -2,7 +2,6 @@ package com.telegame.code.controllers;
 
 import com.telegame.code.DTO.Message;
 import com.telegame.code.exceptions.player.GoogleException;
-import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.services.GoogleLoginService;
 import com.telegame.code.services.TokenService;
@@ -37,9 +36,9 @@ public class OauthController {
     public String callBack(String code, Model model) throws IOException, URISyntaxException, NoSuchAlgorithmException {
         try {
             return "redirect:http://localhost:3000/successGoogleLogin?jwt=" + googleLoginService.getUserInfo(code);
-        } catch (PlayerNameException e){
+        } catch (PlayerNameException e) {
             return "Player has no defined name";
-        }catch (GoogleException e) {
+        } catch (GoogleException e) {
             return "Google Login Error";
         }
     }

@@ -5,7 +5,7 @@ import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.exceptions.player.GoogleException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
-import com.telegame.code.forms.PlayerForm;
+import com.telegame.code.forms.SignUpForm;
 import com.telegame.code.models.Player;
 import com.telegame.code.repos.PlayerRepo;
 import org.apache.http.HttpStatus;
@@ -19,7 +19,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -112,9 +111,9 @@ public class GoogleLoginService {
         return playerRepo.findByEmailEquals(email).orElse(null);
     }
 
-    private PlayerForm buildPlayerForm(String email) throws NoSuchAlgorithmException {
+    private SignUpForm buildPlayerForm(String email) throws NoSuchAlgorithmException {
         String randomValue = HashUtils.getHashSHA256(email).substring(0, 6);
-        return PlayerForm.builder()
+        return SignUpForm.builder()
                 .playerName(randomValue)
                 .firstName(randomValue)
                 .lastName(randomValue)
