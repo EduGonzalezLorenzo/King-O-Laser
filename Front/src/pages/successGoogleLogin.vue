@@ -1,21 +1,15 @@
 <template>
     <div>
-        <h1>google</h1>
     </div>
 </template>
 <script>
 
 const values = window.location.search;
-console.log(values)
 const jwt = values.substring(5)
-console.log(jwt)
-
 localStorage.setItem('jwt', jwt);
 
 const parsed = parseJwt(jwt)
-console.log(parsed.sub)
 
-// navigateTo("/profile/" + parsed.sub)
 window.location.href=`http://localhost:3000/profile/${parsed.sub}`
 
 function parseJwt (token) {
