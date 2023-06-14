@@ -39,7 +39,7 @@ public class OauthController {
     @GetMapping("/login/callback")
     public String callBack(String code, Model model) throws IOException, URISyntaxException, NoSuchAlgorithmException {
         try {
-            return "redirect:http://localhost:3000/profile/successGoogleLogin?jwt=" + googleLoginService.getUserInfo(code);
+            return "redirect:http://localhost:3000/successGoogleLogin?jwt=" + googleLoginService.getUserInfo(code);
         } catch (PlayerNameException e) {
             return "Google Login Error";
         }
