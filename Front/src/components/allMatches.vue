@@ -76,8 +76,8 @@ async function goMatch(id:Number) {
     },
     body: JSON.stringify({ password: password.value }),
   }).then((response) => {
-    if (!response.ok) {
-      console.log(response)
+    if (response.status !== 200) {
+      throw new Error("Error en la solicitud al servidor");
     }
     return response.json();
   });

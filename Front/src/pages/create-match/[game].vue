@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import api from "@/utils/axios";
 
 const msg = ref("");
 const route = useRoute();
@@ -10,7 +10,6 @@ const boardDisposition = ref<string>("");
 const matchName = ref<string>("");
 const password = ref<string>("");
 const imgPath = ref<string>("");
-const jwt = ref<string>("");
   const matchResponse = ref<boolean>(false);
 
 function isChecked(checked: boolean) {
@@ -19,15 +18,14 @@ function isChecked(checked: boolean) {
 }
 
 onMounted(async () => {
-  if (!["TicTacToe", "LASER_BOARD"].includes(game_type)) {
+  if (!["LASER_BOARD"].includes(game_type)) {
     await navigateTo(`/select-game`);
   }
 });
 
 async function createMatch(event: Event) {
   event.preventDefault();
-  const localStore = localStorage.getItem("jwt");
-  jwt.value = localStore as string;
+
   const content = {
     password: password.value,
     isPublic: !isPublic.value,
@@ -36,46 +34,35 @@ async function createMatch(event: Event) {
     matchName: matchName.value,
   };
 
-  await fetch("http://localhost:8080/match", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + jwt.value,
-    },
-    body: JSON.stringify(content),
-  }).then(async (response) => {
-    return {
-        response,
-        message: await response.json(),
-      };
+  try {
+    const response = await api.post("/match", content);
 
-  }).then(async (data) => {
-    if (data.response.ok) {
-      matchResponse.value = true
+    const data = {
+      response,
+      message: response.data,
+    };
+
+    if (data.response.status === 200) {
+      matchResponse.value = true;
     } else {
       msg.value = data.message.message;
-      console.log(msg.value)
+      console.log(msg.value);
     }
-    });
-  if (matchResponse.value) {
-    await fetch("http://localhost:8080/getPlayer", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + jwt.value,
-      },
-    })
-      .then(async (response) => {
-        return {
-          response,
-          user: await response.json(),
-        };
-      })
-      .then(async (data) => {
-        if (data.response.ok) {
-          navigateTo("/profile/" + await data.user.playerName);
-        }
-      });
+
+    if (matchResponse.value) {
+      const playerResponse = await api.get("/getPlayer");
+
+      const playerData = {
+        response: playerResponse,
+        user: playerResponse.data,
+      };
+
+      if (playerData.response.status === 200) {
+        navigateTo("/profile/" + playerData.user.playerName);
+      }
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
 
@@ -99,15 +86,24 @@ function showBoard() {
 definePageMeta({
   layout: "game-layout",
 });
+useHead({
+  title: `Create a Match` ,
+})
 </script>
+
 <template>
   <div>
     <div
       id="home"
-      class="text-black grid md:grid-cols-2 h-screen "
+      class="text-black flex items-center justify-center flex-col m-5 lg:flex-row"
+      :class="{'flex items-center justify-evenly transition': boardDisposition}"
     >
-      <div class="flex flex-col justify-center items-center">
-        <h1 class="text-7xl text-center text-white">
+      <div
+        class="flex flex-col justify-center items-center"
+      >
+        <h1
+          class="text-7xl text-center text-white"
+        >
           Match
         </h1>
         <form
@@ -238,7 +234,7 @@ definePageMeta({
       </div>
 
       <div
-        class="flex justify-center items-center m-5 lg:m-10 md:overflow-y-hidden"
+        class="flex justify-center items-center md:overflow-y-hidden"
       >
         <img
           :src="imgPath"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const jwt = ref<String>("");
+import api from '@/utils/axios';
 const msg = ref<string>("");
 const is_email = ref<boolean>(true);
 const loginResponse = ref<boolean>(false);
@@ -62,29 +62,19 @@ async function LogUser(event: Event) {
     });
 
   if (loginResponse.value) {
-    const localStore = localStorage.getItem("jwt");
-    jwt.value = localStore as String;
-    await fetch("http://localhost:8080/getPlayer", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + jwt.value,
-      },
-    })
-      .then(async (response) => {
-        return {
-          response,
-          user: await response.json()
-        };
-      })
-      .then(async (data) => {
-        console.log(data.user)
-        if (data.response.ok) {
-          navigateTo("/profile/" + await data.user.playerName);
-        }
-      });
+    await api.get("http://localhost:8080/getPlayer")
+  .then((response) => {
+    return response.data;
+  })
+  .then((data) => {
+    navigateTo("/profile/" + data.playerName);
+  });
   }
 }
+useHead({
+  title: 'Login',
+})
+
 </script>
 
 <template>

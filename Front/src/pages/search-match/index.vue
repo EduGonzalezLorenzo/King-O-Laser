@@ -1,6 +1,6 @@
 <template>
   <div class="p-10">
-    <h1 class="text-7xl text-center mt-12 text-white mb-10">
+    <h1 class="text-5xl lg:text-7xl text-center mt-12 text-white mb-10">
       Search Game
     </h1>
     <allMatches :matches="matches" />
@@ -21,6 +21,9 @@ interface UserData {
   status: String;
   position: String;
 }
+useHead({
+  title: 'Search Match',
+})
 
 onMounted(async () => {
   const localStore = localStorage.getItem("jwt") as string;
@@ -34,7 +37,7 @@ onMounted(async () => {
     },
   })
     .then((response) => {
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error("Error en la solicitud al servidor");
       }
       return response.json();

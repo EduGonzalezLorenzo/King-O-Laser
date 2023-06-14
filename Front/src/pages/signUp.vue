@@ -26,7 +26,7 @@ async function createUser() {
     }),
   })
     .then(async (response) => {
-      if (response.ok) {
+      if (response.status === 200) {
         navigateTo("/login");
       }
       return{
@@ -70,6 +70,9 @@ function isStrongPassword(value: string) {
     myButton.disabled = false;
   }
 }
+useHead({
+  title: 'SignUp',
+})
 </script>
  
 <template>
