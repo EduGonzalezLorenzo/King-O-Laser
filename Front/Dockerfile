@@ -1,13 +1,19 @@
 # etapa de compilación
-FROM node:19.6.0-alpine as build-stage
+FROM node:19.6.0-alpine as builder
+# Set working directory
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+# Copy all files from current directory to working dir in image
 COPY . .
-RUN npm run build
+# install node modules and build assets
+RUN yarn install && yarn build && yarn generate
 
-# etapa de producción
-FROM nginx:latest as production-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 3000
-CMD ["nginx", "-g", "daemon off;"]
+# nginx state for serving content
+FROM nginx:alpine
+# Set working directory to nginx asset directory
+WORKDIR /usr/share/nginx/html
+# Remove default nginx static assets
+RUN rm -rf ./*
+# Copy static assets from builder stage
+COPY --from=builder /app/dist .
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

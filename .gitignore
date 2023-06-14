@@ -1,1 +1,3 @@
 /Back/DB/mysqlData/*
+/Docker/mysqlData/*
+/Docker/.m2/*
