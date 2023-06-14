@@ -1,11 +1,11 @@
 package com.telegame.code.services;
 
-import com.telegame.code.DTO.Message;
 import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.player.EmailException;
+import com.telegame.code.exceptions.player.GoogleException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
@@ -13,11 +13,9 @@ import com.telegame.code.forms.SignUpForm;
 import com.telegame.code.forms.UpdatePlayerForm;
 import com.telegame.code.models.Player;
 import com.telegame.code.repos.PlayerRepo;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -63,7 +61,8 @@ public class PlayerService {
     }
 
     private boolean wrongNameEmailOrPassword(Player player, LoginForm loginForm) throws NoSuchAlgorithmException {
-        return player == null || !player.getPassword().equals(HashUtils.getHashSHA256(loginForm.getPassword()));
+        if (player.getPassword() == null) throw new GoogleException();
+        return !player.getPassword().equals(HashUtils.getHashSHA256(loginForm.getPassword()));
     }
 
     private Player getPlayerByName(String playerName) {
