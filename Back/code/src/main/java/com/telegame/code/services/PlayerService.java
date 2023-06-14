@@ -5,10 +5,12 @@ import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.player.EmailException;
+import com.telegame.code.exceptions.player.GoogleException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
-import com.telegame.code.forms.PlayerForm;
+import com.telegame.code.forms.SignUpForm;
+import com.telegame.code.forms.UpdatePlayerForm;
 import com.telegame.code.models.Player;
 import com.telegame.code.repos.PlayerRepo;
 import jakarta.validation.ConstraintViolation;
@@ -28,14 +30,14 @@ public class PlayerService {
     private PlayerRepo playerRepo;
     private TokenService tokenService;
 
-    public String signUp(PlayerForm playerForm) throws NoSuchAlgorithmException {
-        Set<ConstraintViolation<PlayerForm>> formErrorList = validatorFactory.getValidator().validate(playerForm);
+    public String signUp(SignUpForm signUpForm) throws NoSuchAlgorithmException {
+        Set<ConstraintViolation<SignUpForm>> formErrorList = validatorFactory.getValidator().validate(signUpForm);
         if (!formErrorList.isEmpty()) throw new InputFormException();
 
-        if (playerRepo.findByEmailEquals(playerForm.getEmail()).isPresent()) throw new EmailException();
-        if (playerRepo.findByPlayerNameEquals(playerForm.getPlayerName()).isPresent()) throw new PlayerNameException();
+        if (playerRepo.findByEmailEquals(signUpForm.getEmail()).isPresent()) throw new EmailException();
+        if (playerRepo.findByPlayerNameEquals(signUpForm.getPlayerName()).isPresent()) throw new PlayerNameException();
 
-        playerRepo.save(PlayerBuilder.fromForm(playerForm));
+        playerRepo.save(PlayerBuilder.fromForm(signUpForm));
         return "ok";
     }
 
@@ -59,7 +61,8 @@ public class PlayerService {
     }
 
     private boolean wrongNameEmailOrPassword(Player player, LoginForm loginForm) throws NoSuchAlgorithmException {
-        return player == null || !player.getPassword().equals(HashUtils.getHashSHA256(loginForm.getPassword()));
+        if (player.getPassword() == null) throw new GoogleException();
+        return !player.getPassword().equals(HashUtils.getHashSHA256(loginForm.getPassword()));
     }
 
     private Player getPlayerByName(String playerName) {
@@ -72,21 +75,33 @@ public class PlayerService {
         return player.orElse(null);
     }
 
-    public PlayerDTO getPlayerInfo(Object request) {
+    public PlayerDTO getPlayerInfo(String playerName) {
         return PlayerDTO.builder()
-                .playerName((String) request)
+                .playerName(playerName)
                 .profileImgUrl("")
                 .loggedIn(true)
                 .build();
     }
 
-//    public Map<String, String> updatePlayerInfo(PlayerForm playerForm, Long id, Object candidate) {
-//        return new HashMap<>();
-//    }
-//
-//    public Map<String, String> deletePlayerInfo(Long playerId, Object candidate) {
-//        return new HashMap<>();
-//    }
-//
+    public String updatePlayerInfo(UpdatePlayerForm updatePlayerForm, String playerName) throws NoSuchAlgorithmException {
+        Set<ConstraintViolation<UpdatePlayerForm>> formErrorList = validatorFactory.getValidator().validate(updatePlayerForm);
+        if (!formErrorList.isEmpty()) throw new InputFormException();
 
+        Player oldPlayer = getPlayerByName(playerName);
+        Player updatedPlayer = generateUpdatedPlayer(oldPlayer, updatePlayerForm);
+
+        playerRepo.save(updatedPlayer);
+        return "ok";
+    }
+
+    private Player generateUpdatedPlayer(Player oldPlayer, UpdatePlayerForm updatePlayerForm) throws NoSuchAlgorithmException {
+        return Player.builder()
+                .id(oldPlayer.getId())
+                .email(oldPlayer.getEmail())
+                .playerName(updatePlayerForm.getPlayerName().equals("") ? oldPlayer.getPlayerName() : updatePlayerForm.getPlayerName())
+                .firstName(updatePlayerForm.getFirstName().equals("") ? oldPlayer.getFirstName() : updatePlayerForm.getFirstName())
+                .lastName(updatePlayerForm.getLastName().equals("") ? oldPlayer.getLastName() : updatePlayerForm.getLastName())
+                .password(updatePlayerForm.getPassword().equals("") ? oldPlayer.getPassword() : HashUtils.getHashSHA256(updatePlayerForm.getPassword()))
+                .build();
+    }
 }

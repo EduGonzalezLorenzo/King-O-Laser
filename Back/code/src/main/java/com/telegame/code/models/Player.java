@@ -18,7 +18,6 @@ public class Player {
     Long id;
     @NotNull
     String playerName;
-    @NotNull
     String password;
     @NotNull
     String email;

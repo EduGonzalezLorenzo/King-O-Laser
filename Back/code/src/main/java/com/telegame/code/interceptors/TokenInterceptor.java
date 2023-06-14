@@ -24,6 +24,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         try {
+            if (authHeader.equals("Bearer")) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             String token = authHeader.replace("Bearer ", "");
             request.setAttribute("playerName", tokenService.getPlayerNameFromJWT(token));
             return true;

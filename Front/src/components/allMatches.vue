@@ -46,6 +46,7 @@
 
 <script setup lang="ts">
 const jwt = ref<String>("");
+const msg = ref("");
 const password = ref("")
 onMounted(() =>{
   const localStore = localStorage.getItem("jwt");

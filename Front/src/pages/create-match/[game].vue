@@ -10,6 +10,7 @@ const boardDisposition = ref<string>("");
 const matchName = ref<string>("");
 const password = ref<string>("");
 const imgPath = ref<string>("");
+  const matchResponse = ref<boolean>(false);
 
 function isChecked(checked: boolean) {
   password.value = "";
@@ -35,19 +36,33 @@ async function createMatch(event: Event) {
 
   try {
     const response = await api.post("/match", content);
-  if (response.status === 200) {
-      await api
-        .get("/getPlayer")
-        .then((response) => {
-          return response.data;
-        })
-        .then((data) => {
-          navigateTo("/profile/" + data.playerName);
-        });
+
+    const data = {
+      response,
+      message: response.data,
+    };
+
+    if (data.response.status === 200) {
+      matchResponse.value = true;
+    } else {
+      msg.value = data.message.message;
+      console.log(msg.value);
+    }
+
+    if (matchResponse.value) {
+      const playerResponse = await api.get("/getPlayer");
+
+      const playerData = {
+        response: playerResponse,
+        user: playerResponse.data,
+      };
+
+      if (playerData.response.status === 200) {
+        navigateTo("/profile/" + playerData.user.playerName);
+      }
     }
   } catch (error) {
     console.error(error);
-    msg.value = "Error creating match.";
   }
 }
 
