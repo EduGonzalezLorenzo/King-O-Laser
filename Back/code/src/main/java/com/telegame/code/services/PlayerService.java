@@ -5,6 +5,7 @@ import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.player.EmailException;
+import com.telegame.code.exceptions.player.GoogleException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
@@ -59,7 +60,8 @@ public class PlayerService {
     }
 
     private boolean wrongNameEmailOrPassword(Player player, LoginForm loginForm) throws NoSuchAlgorithmException {
-        return player == null || !player.getPassword().equals(HashUtils.getHashSHA256(loginForm.getPassword()));
+        if (player.getPassword() == null) throw new GoogleException();
+        return !player.getPassword().equals(HashUtils.getHashSHA256(loginForm.getPassword()));
     }
 
     private Player getPlayerByName(String playerName) {

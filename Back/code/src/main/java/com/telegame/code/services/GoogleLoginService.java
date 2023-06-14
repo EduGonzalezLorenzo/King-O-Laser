@@ -2,6 +2,7 @@ package com.telegame.code.services;
 
 import com.google.gson.Gson;
 import com.telegame.code.Utils.HashUtils;
+import com.telegame.code.exceptions.player.GoogleException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.PlayerForm;
@@ -90,7 +91,7 @@ public class GoogleLoginService {
         if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             return EntityUtils.toString(resp.getEntity());
         }
-        throw new LoginException();
+        throw new GoogleException();
     }
 
     public String getUserInfo(String code) throws URISyntaxException, IOException, NoSuchAlgorithmException {
@@ -100,14 +101,15 @@ public class GoogleLoginService {
         String json = doGet(uriBuilder.build().toURL());
         String email = new Gson().fromJson(json, HashMap.class).get("email").toString();
         Player player = buildPlayerByEmail(email);
+        if (player == null) throw new PlayerNameException();
         return tokenService.createUserToken(player);
     }
 
     private Player buildPlayerByEmail(String email) throws NoSuchAlgorithmException {
         Optional<Player> player = playerRepo.findByEmailEquals(email);
-        if (player.isEmpty()) playerService.signUp(buildPlayerForm(email));
         if (player.isPresent()) return player.get();
-        throw new PlayerNameException();
+        playerService.signUp(buildPlayerForm(email));
+        return playerRepo.findByEmailEquals(email).orElse(null);
     }
 
     private PlayerForm buildPlayerForm(String email) throws NoSuchAlgorithmException {

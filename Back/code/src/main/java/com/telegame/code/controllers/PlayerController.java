@@ -4,11 +4,11 @@ import com.telegame.code.DTO.Message;
 import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.exceptions.InputFormException;
 import com.telegame.code.exceptions.player.EmailException;
+import com.telegame.code.exceptions.player.GoogleException;
 import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.forms.LoginForm;
 import com.telegame.code.forms.PlayerForm;
-import com.telegame.code.services.GoogleLoginService;
 import com.telegame.code.services.PlayerService;
 import com.telegame.code.services.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +49,8 @@ public class PlayerController {
             return new ResponseEntity<>(Message.builder().message("Player form error").build(), HttpStatus.BAD_REQUEST);
         } catch (LoginException e) {
             return new ResponseEntity<>(Message.builder().message("Wrong user, email or password").build(), HttpStatus.BAD_REQUEST);
+        } catch (GoogleException e) {
+            return new ResponseEntity<>(Message.builder().message("You have no password defined. Try to log with Google.").build(), HttpStatus.LOCKED);
         }
     }
 
