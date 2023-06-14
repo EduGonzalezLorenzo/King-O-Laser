@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  mysqldb:
+    image: mysql
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
+      - ./mysqlData:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - 3306:3306
+    restart: always
+    container_name: mysqldb
+    expose:
+      - '3306'
+  back:
+    depends_on:
+      - mysqldb
+    build: ../Back/code
+    restart: on-failure
+    ports:
+      - 8080:8080
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+  front:
+    depends_on:
+      - mysqldb
