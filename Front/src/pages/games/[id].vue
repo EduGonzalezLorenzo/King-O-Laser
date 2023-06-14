@@ -46,10 +46,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import api from '@/utils/axios.ts';
+import api from '@/utils/axios';
+import Grid from '~/components/GridComp.vue';
+import { useRoute } from "vue-router";
 
 const users = ref([]);
-const route = useRouter();
+const route = useRoute();
 
 const newSelectedPieceY = ref(0);
 const newSelectedPieceX = ref(0);
@@ -57,7 +59,7 @@ const newSelectedMovementY = ref(0);
 const newSelectedMovementX = ref(0);
 const newRotationValue = ref('');
 const openSendMenu = ref(false);
-const id = ref<Number>();
+const id = ref("");
 const loading = ref(false);
 const showStartedMatchList = ref(true);
 
@@ -101,7 +103,8 @@ async function fetchMovement() {
 
 onMounted(async () => {
   loading.value = true;
-  id.value = route.params?.id
+  id.value = route.params.id as string
+
   try {
     const response = await api.get('getPlayer');
 

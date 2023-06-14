@@ -5,14 +5,17 @@ const api: AxiosInstance = axios.create({
 });
 
 api.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: AxiosRequestConfig<any>) => {
     const jwt = localStorage.getItem('jwt');
 
     if (jwt) {
+      if (!config.headers) {
+        config.headers = {};
+      }
       config.headers['Authorization'] = 'Bearer ' + jwt;
     } else {
-      navigateTo('/login');
-      return Promise.reject(new Error('No se proporcionó un token JWT'));
+      throw new Error('No se proporcionó un token JWT');
+      navigateTo('/error/')
     }
 
     return config;

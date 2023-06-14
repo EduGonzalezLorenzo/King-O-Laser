@@ -7,7 +7,7 @@ const name = computed<string>(() => {
 
 const color = computed<string[]>(() => {
   const nameValue = name.value;
-  const hash = [];
+  let hash = 0;
 if (nameValue !== null && Array.from(nameValue)) {
   hash = Array.from(nameValue).reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
 }

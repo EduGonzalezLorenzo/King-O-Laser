@@ -26,7 +26,7 @@ async function createUser() {
     }),
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.status === 200) {
         navigateTo("/login");
       } else {
         msg.value = "Error Creating User";

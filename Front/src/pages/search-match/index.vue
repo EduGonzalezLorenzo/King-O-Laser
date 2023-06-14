@@ -34,7 +34,7 @@ onMounted(async () => {
     },
   })
     .then((response) => {
-      if (!response.ok) {
+      if (!response.status === 200) {
         throw new Error("Error en la solicitud al servidor");
       }
       return response.json();

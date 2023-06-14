@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import api from "@/utils/axios.ts";
+import api from "@/utils/axios";
 
 const msg = ref("");
 const route = useRoute();
@@ -34,14 +34,8 @@ async function createMatch(event: Event) {
   };
 
   try {
-    const response = await api.post("/match", content, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("jwt"),
-      },
-    });
-
-    if (response.ok) {
+    const response = await api.post("/match", content);
+  if (response.status === 200) {
       await api
         .get("/getPlayer")
         .then((response) => {

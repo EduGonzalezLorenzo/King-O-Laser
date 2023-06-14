@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import LoadingComponent from "~/components/LodingComp.vue";
-import api from '@/utils/axios.ts';
+import api from '@/utils/axios';
 
 const loading = ref(false);
 const showStartedMatchList = ref(false);
@@ -52,14 +52,9 @@ onMounted(async () => {
     console.error(error);
   }
   try {
-    const response = await api.get('/match', {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + jwt.value,
-      },
-    });
+    const response = await api.get('/match');
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Error en la solicitud al servidor");
     }
 

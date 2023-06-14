@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import api from '@/utils/axios.ts';
+import api from '@/utils/axios';
 
 const msg = ref<string>("");
 const is_email = ref<boolean>(true);
@@ -32,7 +32,7 @@ async function LogUser(event: Event) {
     body: JSON.stringify(content),
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.status === 200) {
         return response.json();
       } else {
         msg.value = 'Error Logging User';
