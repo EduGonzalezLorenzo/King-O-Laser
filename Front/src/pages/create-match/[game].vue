@@ -11,6 +11,7 @@ const matchName = ref<string>("");
 const password = ref<string>("");
 const imgPath = ref<string>("");
 const jwt = ref<string>("");
+  const matchResponse = ref<boolean>(false);
 
 function isChecked(checked: boolean) {
   password.value = "";
@@ -42,13 +43,40 @@ async function createMatch(event: Event) {
       Authorization: "Bearer " + jwt.value,
     },
     body: JSON.stringify(content),
-  }).then((response) => {
-    if (response.ok) {
-      navigateTo(`/profile/` + "hola");
+  }).then(async (response) => {
+    return {
+        response,
+        message: await response.json(),
+      };
+
+  }).then(async (data) => {
+    if (data.response.ok) {
+      matchResponse.value = true
     } else {
-      msg.value = "Error creating match.";
+      msg.value = data.message.message;
+      console.log(msg.value)
     }
-  });
+    });
+  if (matchResponse.value) {
+    await fetch("http://localhost:8080/getPlayer", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwt.value,
+      },
+    })
+      .then(async (response) => {
+        return {
+          response,
+          user: await response.json(),
+        };
+      })
+      .then(async (data) => {
+        if (data.response.ok) {
+          navigateTo("/profile/" + await data.user.playerName);
+        }
+      });
+  }
 }
 
 function showBoard() {

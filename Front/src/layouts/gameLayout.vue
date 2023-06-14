@@ -83,9 +83,6 @@ onMounted(async () => {
         position: userData.position,
       }));
     })
-    .catch((error) => {
-      console.error(error);
-    });
   loading.value = false;
 });
 </script>
