@@ -91,4 +91,17 @@ public class MatchController {
             return new ResponseEntity<>(Message.builder().message("Match not found").build(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/delete/{matchId}")
+    public ResponseEntity<?> deleteMatch(@PathVariable Long matchId, HttpServletRequest request) {
+        try {
+            return new ResponseEntity<>(matchService.deleteMatch(matchId, request.getAttribute("playerName").toString()), HttpStatus.OK);
+        } catch (PlayerNameException e) {
+            return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.I_AM_A_TEAPOT);
+        } catch (PlayerNoInMatchException e) {
+            return new ResponseEntity<>(Message.builder().message("The player is not in this match").build(), HttpStatus.UNAUTHORIZED);
+        } catch (MatchNoExistsException e) {
+            return new ResponseEntity<>(Message.builder().message("Match not found").build(), HttpStatus.NOT_FOUND);
+        }
+    }
 }

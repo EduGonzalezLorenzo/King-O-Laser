@@ -178,16 +178,13 @@ public class MatchService {
     public LaserBoardDTO getMatchInfo(Long matchId, String playerName) {
         GameMatch gameMatch = getGameMatch(matchId);
         Player player = getPlayer(playerName);
-        checkPlayerInMatch(player, gameMatch);
-        Optional<PlayerPlayMatch> playerPlayMatch = playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch);
-        if (playerPlayMatch.isEmpty()) throw new PlayerNoInMatchException();
-        return generateBoardDTO(getBoard(gameMatch), playerPlayMatch.get());
+        return generateBoardDTO(getBoard(gameMatch), getPlayerPlayMatch(player, gameMatch));
     }
 
-    private void checkPlayerInMatch(Player player, GameMatch gameMatch) {
-        if (playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch).isEmpty()) {
-            throw new PlayerNoInMatchException();
-        }
+    private PlayerPlayMatch getPlayerPlayMatch(Player player, GameMatch gameMatch) {
+        Optional<PlayerPlayMatch> playerPlayMatch = playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch);
+        if (playerPlayMatch.isEmpty()) throw new PlayerNoInMatchException();
+        return playerPlayMatch.get();
     }
 
     private LaserBoardDTO generateBoardDTO(Board board, PlayerPlayMatch playerPlayMatch) {
@@ -226,4 +223,15 @@ public class MatchService {
         return generateGameMatchDTOsList(result);
     }
 
+    public String deleteMatch(Long matchId, String playerName) {
+        GameMatch gameMatch = getGameMatch(matchId);
+        Player player = getPlayer(playerName);
+        List<PlayerPlayMatch> playersInMatch = playerPlayMatchRepo.findByGameMatchEquals(gameMatch);
+        if (playersInMatch.size() == 1) deleteFullMatch(matchId);
+
+        return "ok";
+    }
+
+    private void deleteFullMatch(Long matchId) {
+    }
 }
