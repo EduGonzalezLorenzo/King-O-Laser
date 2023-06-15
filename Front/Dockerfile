@@ -1,19 +1,19 @@
-# etapa de compilación
+# Etapa de compilación
 FROM node:19.6.0-alpine as builder
-# Set working directory
+# Se define el directorio de trabajo
 WORKDIR /app
-# Copy all files from current directory to working dir in image
+# Se copian todos los fichero del directorio actual al directorio de trabajo
 COPY . .
-# install node modules and build assets
+# Se instalan los modulos de node y se instala la aplicación
 RUN yarn install && yarn build && yarn generate
 
-# nginx state for serving content
+# Etapa de ejecución
 FROM nginx:alpine
-# Set working directory to nginx asset directory
+# Se define el directorio de trabajo
 WORKDIR /usr/share/nginx/html
-# Remove default nginx static assets
+# Se borran los assets estaticos predeterminados de Nginx
 RUN rm -rf ./*
-# Copy static assets from builder stage
+# Se copian los assets estaticos creados en la etapa de compialción
 COPY --from=builder /app/dist .
-# Containers run nginx with global directives and daemon off
+# Se ejecuta el contenedor nginx con loas directivas globales y daemon apagado
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
