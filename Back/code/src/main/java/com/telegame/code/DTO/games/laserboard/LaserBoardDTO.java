@@ -14,6 +14,7 @@ public class LaserBoardDTO {
     String lastAction;
     String status;
     String position;
+    long matchId;
 
     @Singular
     List<PieceDTO> pieces;

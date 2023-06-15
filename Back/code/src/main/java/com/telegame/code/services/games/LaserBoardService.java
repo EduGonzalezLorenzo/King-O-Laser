@@ -142,6 +142,7 @@ public class LaserBoardService {
     public LaserBoardDTO generateLaserBoardDTO(LaserBoard board, PlayerPlayMatch playerPlayMatch) {
 
         return LaserBoardDTO.builder()
+                .matchId(board.getGameMatch().getId())
                 .pieces(generatePieceListDTO(board.getPieceList()))
                 .lastAction(board.getLastAction())
                 .status(board.getStatus().toString())
