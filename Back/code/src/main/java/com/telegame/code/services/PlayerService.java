@@ -30,9 +30,8 @@ public class PlayerService {
     public String signUp(SignUpForm signUpForm) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<SignUpForm>> formErrorList = validatorFactory.getValidator().validate(signUpForm);
         if (!formErrorList.isEmpty()) throw new InputFormException();
-
         if (playerRepo.findByEmailEquals(signUpForm.getEmail()).isPresent()) throw new EmailException();
-        if (playerRepo.findByPlayerNameEquals(signUpForm.getPlayerName()).isPresent()) throw new PlayerNameException();
+        if (playerNameAlreadyRegistered(signUpForm.getPlayerName())) throw new PlayerNameException();
 
         playerRepo.save(PlayerBuilder.fromForm(signUpForm));
         return "ok";
@@ -82,8 +81,8 @@ public class PlayerService {
 
     public String updatePlayerInfo(UpdatePlayerForm updatePlayerForm, String playerName) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<UpdatePlayerForm>> formErrorList = validatorFactory.getValidator().validate(updatePlayerForm);
-        if (!formErrorList.isEmpty()) throw new InputFormException();
-        if (formValuesNotValid(updatePlayerForm)) throw new PlayerNameAlreadyExistsException();
+        if (!formErrorList.isEmpty() || formValuesNotValid(updatePlayerForm)) throw new InputFormException();
+        if (playerNameAlreadyRegistered(updatePlayerForm.getPlayerName())) throw new PlayerNameAlreadyExistsException();
 
         Player oldPlayer = getPlayerByName(playerName);
         if (oldPlayer == null) throw new PlayerNameException();
@@ -94,10 +93,12 @@ public class PlayerService {
         return "ok";
     }
 
+    private boolean playerNameAlreadyRegistered(String playerName) {
+        return playerRepo.findByPlayerNameEquals(playerName).isPresent();
+    }
+
     private boolean formValuesNotValid(UpdatePlayerForm updatePlayerForm) {
-        Optional<Player> player = playerRepo.findByPlayerNameEquals(updatePlayerForm.getPlayerName());
-        return (player.isPresent()
-                || (updatePlayerForm.getPlayerName().length() > 0 && updatePlayerForm.getPlayerName().length() < 3)
+        return ((updatePlayerForm.getPlayerName().length() > 0 && updatePlayerForm.getPlayerName().length() < 3)
                 || (updatePlayerForm.getPassword().length() > 0 && updatePlayerForm.getPassword().length() < 8)
                 || (updatePlayerForm.getFirstName().length() > 0 && updatePlayerForm.getFirstName().length() < 3)
                 || (updatePlayerForm.getLastName().length() > 0 && updatePlayerForm.getLastName().length() < 3));
