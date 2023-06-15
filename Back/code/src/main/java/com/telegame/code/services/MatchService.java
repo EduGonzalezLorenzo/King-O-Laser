@@ -101,9 +101,8 @@ public class MatchService {
 
     public String joinMatch(Long matchId, JoinMatchForm joinMatchForm, String playerName) throws NoSuchAlgorithmException {
         GameMatch gameMatch = checkGameMatch(getGameMatch(matchId), joinMatchForm);
-
+        Board board = getBoard(gameMatch);
         Player player = checkPlayer(getPlayer(playerName), gameMatch);
-
         PlayerPlayMatch playerPlayMatch = PlayerPlayMatch.builder()
                 .gameMatch(gameMatch)
                 .player(player)
@@ -111,10 +110,15 @@ public class MatchService {
                 .position("P2")
                 .build();
 
+        if (BoardNoAvailable(board)) throw new MatchNoExistsException();
         playerPlayMatchRepo.save(playerPlayMatch);
-        setBoardStatusReady(gameMatch);
+        setBoardStatusReady(board);
 
         return "ok";
+    }
+
+    private boolean BoardNoAvailable(Board board) {
+        return !board.getStatus().equals(Board.MatchStatus.WAITING);
     }
 
     private GameMatch checkGameMatch(GameMatch gameMatch, JoinMatchForm joinMatchForm) throws NoSuchAlgorithmException {
@@ -137,9 +141,7 @@ public class MatchService {
         return playerTwo;
     }
 
-    private void setBoardStatusReady(GameMatch gameMatch) {
-        Board board = getBoard(gameMatch);
-
+    private void setBoardStatusReady(Board board) {
         if (Math.random() < 0.5) board.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
         else board.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
 
@@ -220,6 +222,7 @@ public class MatchService {
             Optional<GameMatch> gameMatchOptional = gameMatchRepo.findById(matchId);
             if (gameMatchOptional.isEmpty()) continue;
             GameMatch gameMatch = gameMatchOptional.get();
+            if (BoardNoAvailable(getBoard(gameMatch))) continue;
             result.add(playerPlayMatchRepo.findByGameMatchEquals(gameMatch).get(0));
         }
         return generateGameMatchDTOsList(result);
