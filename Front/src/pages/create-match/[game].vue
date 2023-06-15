@@ -10,7 +10,7 @@ const boardDisposition = ref<string>("");
 const matchName = ref<string>("");
 const password = ref<string>("");
 const imgPath = ref<string>("");
-  const matchResponse = ref<boolean>(false);
+const matchResponse = ref<boolean>(false);
 
 function isChecked(checked: boolean) {
   password.value = "";
