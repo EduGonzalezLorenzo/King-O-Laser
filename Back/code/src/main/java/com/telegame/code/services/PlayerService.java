@@ -4,10 +4,7 @@ import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.Utils.HashUtils;
 import com.telegame.code.builder.PlayerBuilder;
 import com.telegame.code.exceptions.InputFormException;
-import com.telegame.code.exceptions.player.EmailException;
-import com.telegame.code.exceptions.player.GoogleException;
-import com.telegame.code.exceptions.player.LoginException;
-import com.telegame.code.exceptions.player.PlayerNameException;
+import com.telegame.code.exceptions.player.*;
 import com.telegame.code.forms.LoginForm;
 import com.telegame.code.forms.SignUpForm;
 import com.telegame.code.forms.UpdatePlayerForm;
@@ -86,13 +83,24 @@ public class PlayerService {
     public String updatePlayerInfo(UpdatePlayerForm updatePlayerForm, String playerName) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<UpdatePlayerForm>> formErrorList = validatorFactory.getValidator().validate(updatePlayerForm);
         if (!formErrorList.isEmpty()) throw new InputFormException();
+        if (formValuesNotValid(updatePlayerForm)) throw new PlayerNameAlreadyExistsException();
 
         Player oldPlayer = getPlayerByName(playerName);
         if (oldPlayer == null) throw new PlayerNameException();
 
+
         Player updatedPlayer = generateUpdatedPlayer(oldPlayer, updatePlayerForm);
         playerRepo.save(updatedPlayer);
         return "ok";
+    }
+
+    private boolean formValuesNotValid(UpdatePlayerForm updatePlayerForm) {
+        Optional<Player> player = playerRepo.findByPlayerNameEquals(updatePlayerForm.getPlayerName());
+        return (player.isPresent()
+                || (updatePlayerForm.getPlayerName().length() > 0 && updatePlayerForm.getPlayerName().length() < 3)
+                || (updatePlayerForm.getPassword().length() > 0 && updatePlayerForm.getPassword().length() < 8)
+                || (updatePlayerForm.getFirstName().length() > 0 && updatePlayerForm.getFirstName().length() < 3)
+                || (updatePlayerForm.getLastName().length() > 0 && updatePlayerForm.getLastName().length() < 3));
     }
 
     private Player generateUpdatedPlayer(Player oldPlayer, UpdatePlayerForm updatePlayerForm) throws NoSuchAlgorithmException {
