@@ -14,10 +14,12 @@ import com.telegame.code.models.GameMatch;
 import com.telegame.code.models.Player;
 import com.telegame.code.models.PlayerPlayMatch;
 import com.telegame.code.models.games.laserboard.LaserBoard;
+import com.telegame.code.models.games.laserboard.pieces.Piece;
 import com.telegame.code.repos.BoardRepo;
 import com.telegame.code.repos.GameMatchRepo;
 import com.telegame.code.repos.PlayerPlayMatchRepo;
 import com.telegame.code.repos.PlayerRepo;
+import com.telegame.code.repos.games.laserboard.PieceRepo;
 import com.telegame.code.services.games.LaserBoardService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
@@ -40,6 +42,7 @@ public class MatchService {
     private PlayerPlayMatchRepo playerPlayMatchRepo;
     private BoardRepo boardRepo;
     private LaserBoardService laserBoardService;
+    private PieceRepo pieceRepo;
 
     public String createMatch(MatchForm matchForm, String playerName) throws NoSuchAlgorithmException {
         Set<ConstraintViolation<MatchForm>> formErrorList = validatorFactory.getValidator().validate(matchForm);
@@ -116,7 +119,6 @@ public class MatchService {
 
     private GameMatch checkGameMatch(GameMatch gameMatch, JoinMatchForm joinMatchForm) throws NoSuchAlgorithmException {
         if (!gameMatch.getIsPublic()) checkPassword(joinMatchForm, gameMatch.getPassword());
-        //TODO check empty match case
         if (gameMatch.getPlayers().size() != 1) throw new FilledMatchException();
         return gameMatch;
     }
@@ -178,16 +180,13 @@ public class MatchService {
     public LaserBoardDTO getMatchInfo(Long matchId, String playerName) {
         GameMatch gameMatch = getGameMatch(matchId);
         Player player = getPlayer(playerName);
-        checkPlayerInMatch(player, gameMatch);
-        Optional<PlayerPlayMatch> playerPlayMatch = playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch);
-        if (playerPlayMatch.isEmpty()) throw new PlayerNoInMatchException();
-        return generateBoardDTO(getBoard(gameMatch), playerPlayMatch.get());
+        return generateBoardDTO(getBoard(gameMatch), getPlayerPlayMatch(player, gameMatch));
     }
 
-    private void checkPlayerInMatch(Player player, GameMatch gameMatch) {
-        if (playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch).isEmpty()) {
-            throw new PlayerNoInMatchException();
-        }
+    private PlayerPlayMatch getPlayerPlayMatch(Player player, GameMatch gameMatch) {
+        Optional<PlayerPlayMatch> playerPlayMatch = playerPlayMatchRepo.findByPlayerEqualsAndGameMatchEquals(player, gameMatch);
+        if (playerPlayMatch.isEmpty()) throw new PlayerNoInMatchException();
+        return playerPlayMatch.get();
     }
 
     private LaserBoardDTO generateBoardDTO(Board board, PlayerPlayMatch playerPlayMatch) {
@@ -226,4 +225,58 @@ public class MatchService {
         return generateGameMatchDTOsList(result);
     }
 
+    public String deleteMatch(Long matchId, String playerName) {
+        GameMatch gameMatch = getGameMatch(matchId);
+        Player player = getPlayer(playerName);
+        Board board = getBoard(gameMatch);
+        List<PlayerPlayMatch> playersInMatch = playerPlayMatchRepo.findByGameMatchEquals(gameMatch);
+        PlayerPlayMatch currentPlayer = getCurrentPlayerPlayMatch(playersInMatch, player);
+
+        if (playersInMatch.size() == 2) kickPlayerFromGame(currentPlayer, board);
+        else deleteFullMatch(gameMatch, playersInMatch, board);
+
+        return "ok";
+    }
+
+    private void kickPlayerFromGame(PlayerPlayMatch currentPlayer, Board board) {
+        updateBoard(board, currentPlayer);
+        playerPlayMatchRepo.delete(currentPlayer);
+    }
+
+    private void updateBoard(Board board, PlayerPlayMatch currentPlayer) {
+        if (currentPlayer.getPosition().equals("P1")) board.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
+        else board.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
+        boardRepo.save(board);
+    }
+
+    private PlayerPlayMatch getCurrentPlayerPlayMatch(List<PlayerPlayMatch> playersInMatch, Player player) {
+        for (PlayerPlayMatch playerPlayMatch : playersInMatch) {
+            if (playerPlayMatch.getPlayer().getId().equals(player.getId())) return playerPlayMatch;
+        }
+        throw new PlayerNoInMatchException();
+    }
+
+    private void deleteFullMatch(GameMatch gameMatch, List<PlayerPlayMatch> playersInMatch, Board board) {
+        deletePlayersInMatch(playersInMatch);
+        deleteBoard(board);
+        gameMatchRepo.delete(gameMatch);
+    }
+
+    private void deletePlayersInMatch(List<PlayerPlayMatch> playersInMatch) {
+        for (PlayerPlayMatch playerPlayMatch : playersInMatch) {
+            playerPlayMatchRepo.delete(playerPlayMatch);
+        }
+    }
+
+    private void deleteBoard(Board board) {
+        if (board instanceof LaserBoard) deletePieces(board);
+        boardRepo.delete(board);
+    }
+
+    private void deletePieces(Board board) {
+        List<Piece> pieceList = pieceRepo.findByLaserBoardId(board.getId());
+        for (Piece piece : pieceList) {
+            pieceRepo.delete(piece);
+        }
+    }
 }

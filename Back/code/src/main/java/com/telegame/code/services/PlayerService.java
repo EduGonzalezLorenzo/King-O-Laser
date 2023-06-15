@@ -88,8 +88,9 @@ public class PlayerService {
         if (!formErrorList.isEmpty()) throw new InputFormException();
 
         Player oldPlayer = getPlayerByName(playerName);
-        Player updatedPlayer = generateUpdatedPlayer(oldPlayer, updatePlayerForm);
+        if (oldPlayer == null) throw new PlayerNameException();
 
+        Player updatedPlayer = generateUpdatedPlayer(oldPlayer, updatePlayerForm);
         playerRepo.save(updatedPlayer);
         return "ok";
     }
