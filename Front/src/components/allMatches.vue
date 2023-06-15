@@ -9,7 +9,7 @@
         >
           <div
             class="flex items-start"
-            @click="inputGamePassword(game.id)"
+            @click="inputGamePassword(game)"
           >
             <div>
               <p class="font-bold">
@@ -53,7 +53,7 @@
         <form
           id="goMatch"
           class="bg-gray-900 rounded-lg text-white lg:m-10 p-10 md:grid md:grid-cols-1 md:gap-6 w-full flex flex-col items-center justify-center"
-          @submit="(event: Event) => goMatch(event)"
+          @submit="goMatch"
         >
           <div class="mb-6">
             <label
@@ -118,15 +118,45 @@ const props = defineProps({
     }),
   },
 });
-async function inputGamePassword(id: Number) {
-  displayForm.value = displayForm.value === true ? false : true;
-  gameId.value = id;
+async function inputGamePassword(game: any) {
+  gameId.value = game.id;
+  if (game.isPublic === "Private") {
+    displayForm.value = displayForm.value === true ? false : true;
+  } else {
+    publicMatch();
+  }
 }
-async function goMatch(event: any) {
-  event.preventDefault();
+
+async function publicMatch() { 
   const content = {
-      password: password.value,
-    }
+    password: "",
+  };  await fetch("http://localhost:8080/match/" + gameId.value, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
+    },
+    body: JSON.stringify(content),
+  })
+    .then(async (response) => {
+      return {
+        response,
+        message: await response.json(),
+      };
+    })
+    .then(async (data) => {
+      if (data.response.ok) {
+        navigateTo(`/games/` + gameId.value);
+      } else {
+        msg.value = data.message.message;
+      }
+    });
+}
+
+async function goMatch() {
+  const content = {
+    password: password.value,
+  };
   await fetch("http://localhost:8080/match/" + gameId.value, {
     method: "POST",
     headers: {
@@ -143,7 +173,7 @@ async function goMatch(event: any) {
     })
     .then(async (data) => {
       if (data.response.ok) {
-          navigateTo(`/games/` + gameId.value);
+        navigateTo(`/games/` + gameId.value);
       } else {
         msg.value = data.message.message;
       }
