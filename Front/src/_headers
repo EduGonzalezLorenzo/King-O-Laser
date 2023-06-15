@@ -1,0 +1,38 @@
+/*.html
+  Cache-Control: max-age=0, public
+
+/*.jpg
+  Cache-Control: max-age=31536000, public
+/*.jpeg
+  Cache-Control: max-age=31536000, public
+/*.gif
+  Cache-Control: max-age=31536000, public
+/*.png
+  Cache-Control: max-age=31536000, public
+/*.ico
+  Cache-Control: max-age=31536000, public
+/*.cur
+  Cache-Control: max-age=31536000, public
+/*.gz
+  Cache-Control: max-age=31536000, public
+/*.svg
+  Cache-Control: max-age=31536000, public
+/*.mp4
+  Cache-Control: max-age=31536000, public
+/*.ogg
+  Cache-Control: max-age=31536000, public
+/*.ogv
+  Cache-Control: max-age=31536000, public
+/*.webm
+  Cache-Control: max-age=31536000, public
+/*.htc
+  Cache-Control: max-age=31536000, public
+/*.svgz
+  Cache-Control: max-age=31536000, public
+/*.webp
+  Cache-Control: max-age=31536000, public
+
+/*.css
+  Cache-Control: max-age=31536000, public
+/*.js
+  Cache-Control: max-age=31536000, public
