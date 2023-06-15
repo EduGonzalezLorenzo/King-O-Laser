@@ -3,10 +3,7 @@ package com.telegame.code.controllers;
 import com.telegame.code.DTO.Message;
 import com.telegame.code.DTO.PlayerDTO;
 import com.telegame.code.exceptions.InputFormException;
-import com.telegame.code.exceptions.player.EmailException;
-import com.telegame.code.exceptions.player.GoogleException;
-import com.telegame.code.exceptions.player.LoginException;
-import com.telegame.code.exceptions.player.PlayerNameException;
+import com.telegame.code.exceptions.player.*;
 import com.telegame.code.forms.LoginForm;
 import com.telegame.code.forms.SignUpForm;
 import com.telegame.code.forms.UpdatePlayerForm;
@@ -71,6 +68,8 @@ public class PlayerController {
             return new ResponseEntity<>(Message.builder().message("Player form error").build(), HttpStatus.BAD_REQUEST);
         } catch (PlayerNameException e) {
             return new ResponseEntity<>(Message.builder().message("You are not registered").build(), HttpStatus.BAD_REQUEST);
+        } catch (PlayerNameAlreadyExistsException e) {
+            return new ResponseEntity<>(Message.builder().message("This name is already registered").build(), HttpStatus.BAD_REQUEST);
         }
     }
 }

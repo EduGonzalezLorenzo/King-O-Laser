@@ -100,6 +100,8 @@ public class MatchService {
     }
 
     public String joinMatch(Long matchId, JoinMatchForm joinMatchForm, String playerName) throws NoSuchAlgorithmException {
+        Set<ConstraintViolation<JoinMatchForm>> formErrorList = validatorFactory.getValidator().validate(joinMatchForm);
+        if (!formErrorList.isEmpty()) throw new MatchInfoException();
         GameMatch gameMatch = checkGameMatch(getGameMatch(matchId), joinMatchForm);
         Board board = getBoard(gameMatch);
         Player player = checkPlayer(getPlayer(playerName), gameMatch);
