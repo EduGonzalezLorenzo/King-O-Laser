@@ -9,7 +9,6 @@
 <script setup lang="ts">
 import allMatches from "~/components/allMatches.vue";
 const matches = ref([]);
-const password = ref("");
 const jwt = ref("");
 
 interface UserData {
