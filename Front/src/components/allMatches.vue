@@ -93,8 +93,6 @@
 </template>
 
 <script setup lang="ts">
-import api from "@/utils/axios";
-
 const jwt = ref<String>("");
 const displayForm = ref(false);
 const msg = ref("");
@@ -133,6 +131,7 @@ async function goMatch(event: any) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.value,
     },
     body: JSON.stringify(content),
   })
