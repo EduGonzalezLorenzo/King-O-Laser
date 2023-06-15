@@ -1,5 +1,33 @@
 <template>
   <div class="flex flex-col bg-gray-700 justify-start">
+    <div v-if="deleteMenu">
+      <div class="modal">
+        <div
+          v-if="deleteMenu"
+          class="modal_message"
+        >
+          <p class="font-bold text-white">
+            {{ deleteMessage.valueOf() }}
+          </p>
+          <div class="button_container">
+            <button
+              class="button confirm_delete"
+              @click="deleteMatch(idToDelete.valueOf())"
+            >
+              Yes
+            </button>
+            <button
+              class="button abort_delete"
+              @click="closeDeleteMenu()"
+            >
+              No
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <ul class="grid grid-cols-1">
       <li
         v-for="(game, index) in props.users"
@@ -34,6 +62,14 @@
                     ? "YOUR TURN" : "OPPONENT TURN"
                 }}
               </p>
+
+              <div
+                class="delete_button"
+                @click="openDeleteMenu(game)"
+              >
+                <p>X</p>
+              </div>
+
               <p
                 v-if="game.isPublic === 'Private'"
                 class="font-bold bg-red-500 p-2 rounded"
@@ -67,4 +103,82 @@ const props = defineProps({
 function goMatch(id) {
   navigateTo(`/games/` + id);
 }
+
+const deleteMenu = ref(false);
+const idToDelete = ref(0);
+const deleteMessage = ref("");
+
+function openDeleteMenu(game) {
+  deleteMenu.value = true;
+  idToDelete.value = game.id;
+  if(game.status === 'WAITING' || game.status === 'PLAYER_ONE_WIN' || game.status === 'PLAYER_TWO_WIN') {
+    deleteMessage.value = "¿Do you want to delete the match?"
+  } else {
+    deleteMessage.value = "The match is not finished. Do you want to abandon the match? Your opponent will win"
+  }
+}
+
+function closeDeleteMenu() {
+  deleteMenu.value = false;
+}
+
+async function deleteMatch(id) {
+  const jwt = localStorage.getItem("jwt");
+  await fetch(`http://localhost:8080/deleteMatch/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt,
+    },
+  })
+}
+
 </script>
+<style>
+
+.delete_button {
+  background-color: darkgray;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  width: 25px;
+  height: 25px;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete_button:hover {
+  background-color: red;
+}
+
+.modal {
+  background-color: rgb(0, 0, 0, 0.5);
+  color: white;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top:0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  color: black;
+  border-radius: 25%;
+}
+
+.confirm_delete:hover {
+  background-color: lightcoral;
+}
+
+.abort_delete:hover {
+  background-color: lightgreen;
+}
+
+.button_container {
+  display: flex;
+  justify-content: center;
+}
+</style>
