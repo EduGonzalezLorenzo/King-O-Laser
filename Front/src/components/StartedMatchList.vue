@@ -137,6 +137,7 @@ async function deleteMatch(id) {
 <style>
 
 .delete_button {
+  position: relative;
   background-color: darkgray;
   color: white;
   border-radius: 50%;
@@ -167,6 +168,7 @@ async function deleteMatch(id) {
 .button {
   color: black;
   border-radius: 25%;
+  padding: 0.5em 1em;
 }
 
 .confirm_delete:hover {
