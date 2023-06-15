@@ -2,24 +2,15 @@
   <div class="flex flex-col bg-gray-700 justify-start">
     <div v-if="deleteMenu">
       <div class="modal">
-        <div
-          v-if="deleteMenu"
-          class="modal_message"
-        >
+        <div v-if="deleteMenu" class="modal_message">
           <p class="font-bold text-white">
             {{ deleteMessage.valueOf() }}
           </p>
           <div class="button_container">
-            <button
-              class="button confirm_delete"
-              @click="deleteMatch(idToDelete.valueOf())"
-            >
+            <button class="button confirm_delete" @click="deleteMatch(idToDelete.valueOf())">
               Yes
             </button>
-            <button
-              class="button abort_delete"
-              @click="closeDeleteMenu()"
-            >
+            <button class="button abort_delete" @click="closeDeleteMenu()">
               No
             </button>
           </div>
@@ -29,15 +20,8 @@
 
 
     <ul class="grid grid-cols-1">
-      <li
-        v-for="(game, index) in props.users"
-        :key="index"
-        class="border-white border-4 p-4"
-      >
-        <div
-          class="flex items-start cursor-pointer"
-          @click="goMatch(game.id, index)"
-        >
+      <li v-for="(game, index) in props.users" :key="index" class="border-white border-4 p-4">
+        <div class="flex items-start cursor-pointer" @click="goMatch(game.id, index)">
           <div>
             <p class="font-bold text-white">
               {{ game.name }}
@@ -46,34 +30,23 @@
               Players: {{ game.currPlayers }}/2
             </p>
             <div class="flex flex-row">
-              <p
-                v-if="game.status === 'WAITING' || game.status === 'PLAYER_ONE_WIN' || game.status === 'PLAYER_TWO_WIN'"
-                class="font-bold bg-yellow-400 p-2 rounded mr-4"
-              >
+              <p v-if="game.status === 'WAITING' || game.status === 'PLAYER_ONE_WIN' || game.status === 'PLAYER_TWO_WIN'"
+                class="font-bold bg-yellow-400 p-2 rounded mr-4">
                 {{ game.status }}
               </p>
-              <p
-                v-else
-                class="font-bold text-white"
-              >
+              <p v-else class="font-bold text-white">
                 {{
                   (game.status === "PLAYER_ONE_TURN" && game.position === "P1")
-                    || (game.status === "PLAYER_TWO_TURN" && game.position === "P2")
-                    ? "YOUR TURN" : "OPPONENT TURN"
+                  || (game.status === "PLAYER_TWO_TURN" && game.position === "P2")
+                  ? "YOUR TURN" : "OPPONENT TURN"
                 }}
               </p>
 
-              <div
-                class="delete_button"
-                @click="openDeleteMenu(game)"
-              >
+              <div class="delete_button" @click="openDeleteMenu(game)">
                 <p>X</p>
               </div>
 
-              <p
-                v-if="game.isPublic === 'Private'"
-                class="font-bold bg-red-500 p-2 rounded"
-              >
+              <p v-if="game.isPublic === 'Private'" class="font-bold bg-red-500 p-2 rounded">
                 {{ game.isPublic }}
               </p>
             </div>
@@ -100,6 +73,13 @@ const props = defineProps({
     }),
   },
 });
+
+const user = ref({
+  name: '',
+  loggedIn: false,
+  profileImg: '',
+});
+
 function goMatch(id) {
   navigateTo(`/games/` + id);
 }
@@ -111,7 +91,7 @@ const deleteMessage = ref("");
 function openDeleteMenu(game) {
   deleteMenu.value = true;
   idToDelete.value = game.id;
-  if(game.status === 'WAITING' || game.status === 'PLAYER_ONE_WIN' || game.status === 'PLAYER_TWO_WIN') {
+  if (game.status === 'WAITING' || game.status === 'PLAYER_ONE_WIN' || game.status === 'PLAYER_TWO_WIN') {
     deleteMessage.value = "¿Do you want to delete the match?"
   } else {
     deleteMessage.value = "The match is not finished. Do you want to abandon the match? Your opponent will win"
@@ -124,18 +104,36 @@ function closeDeleteMenu() {
 
 async function deleteMatch(id) {
   const jwt = localStorage.getItem("jwt");
-  await fetch(`http://localhost:8080/deleteMatch/${id}`, {
+  await fetch(`http://localhost:8080/delete/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + jwt,
     },
   })
+    .then(async (response) => {
+
+      if (response.ok) {
+        try {
+          const response = await api.get('getPlayer');
+
+          const data = response.data;
+
+          user.value.name = data.playerName;
+          user.value.loggedIn = data.loggedIn;
+          user.value.profileImg = data.profileImg;
+        } catch (error) {
+          console.error(error);
+        }
+        navigateTo("profile/" + user.name)
+      } else {
+        navigateTo("error/matchDoesNotExists")
+      }
+    })
 }
 
 </script>
 <style>
-
 .delete_button {
   position: relative;
   background-color: darkgray;
@@ -146,6 +144,7 @@ async function deleteMatch(id) {
   height: 25px;
   justify-content: center;
   align-items: center;
+  z-index: 90;
 }
 
 .delete_button:hover {
@@ -158,7 +157,7 @@ async function deleteMatch(id) {
   width: 100vw;
   height: 100vh;
   position: absolute;
-  top:0;
+  top: 0;
   z-index: 100;
   display: flex;
   justify-content: center;
