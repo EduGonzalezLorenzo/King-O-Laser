@@ -18,7 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
-@CrossOrigin()
+@CrossOrigin("http://localhost:3000/")
 @Controller
 @AllArgsConstructor
 public class OauthController {

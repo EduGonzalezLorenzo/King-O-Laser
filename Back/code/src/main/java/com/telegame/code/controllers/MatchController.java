@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 
-@CrossOrigin()
+@CrossOrigin("http://localhost:3000/")
 @RestController
 @AllArgsConstructor
 public class MatchController {
