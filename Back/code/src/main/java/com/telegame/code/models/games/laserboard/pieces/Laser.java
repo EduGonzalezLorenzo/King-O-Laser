@@ -14,21 +14,21 @@ public class Laser extends Piece {
     public boolean rotate(String rotateTo, Piece piece) {
         switch (piece.getOwner()) {
             case PLAYER_ONE -> {
-                if(this.getRotation() == Direction.NORTH) {
+                if (this.getRotation() == Direction.NORTH) {
                     this.rotation = Direction.WEST;
                     return true;
                 }
-                if(this.getRotation() == Direction.WEST) {
+                if (this.getRotation() == Direction.WEST) {
                     this.rotation = Direction.NORTH;
                     return true;
                 }
             }
             case PLAYER_TWO -> {
-                if(this.getRotation() == Direction.SOUTH) {
+                if (this.getRotation() == Direction.SOUTH) {
                     this.rotation = Direction.EAST;
                     return true;
                 }
-                if(this.getRotation() == Direction.EAST) {
+                if (this.getRotation() == Direction.EAST) {
                     this.rotation = Direction.SOUTH;
                     return true;
                 }

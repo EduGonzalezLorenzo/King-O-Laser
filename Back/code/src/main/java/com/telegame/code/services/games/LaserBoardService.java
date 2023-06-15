@@ -92,7 +92,7 @@ public class LaserBoardService {
             laserBoard.setStatus(Board.MatchStatus.PLAYER_TWO_TURN);
             return false;
         }
-       if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_TWO_TURN) {
+        if (laserBoard.getStatus() == Board.MatchStatus.PLAYER_TWO_TURN) {
             laserBoard.setStatus(Board.MatchStatus.PLAYER_ONE_TURN);
             return false;
         }
@@ -196,22 +196,14 @@ public class LaserBoardService {
             if (board[posY][posX] instanceof Piece) {
                 route.add(new int[]{posY, posX});
                 Piece piece = (Piece) board[posY][posX];
-                PieceSide pieceSide = new Block();
-
-                switch (direction) {
-                    case NORTH:
-                        pieceSide = piece.getSide(Piece.Direction.SOUTH);
-                        break;
-                    case EAST:
-                        pieceSide = piece.getSide(Piece.Direction.WEST);
-                        break;
-                    case SOUTH:
-                        pieceSide = piece.getSide(Piece.Direction.NORTH);
-                        break;
-                    case WEST:
-                        pieceSide = piece.getSide(Piece.Direction.EAST);
-                        break;
-                }
+                new Block();
+                PieceSide pieceSide = switch (direction) {
+                    case NORTH -> piece.getSide(Piece.Direction.SOUTH);
+                    case EAST -> piece.getSide(Piece.Direction.WEST);
+                    case SOUTH -> piece.getSide(Piece.Direction.NORTH);
+                    case WEST -> piece.getSide(Piece.Direction.EAST);
+                    default -> new Block();
+                };
 
                 boolean bouncer = (piece instanceof Bouncer);
 
@@ -272,17 +264,10 @@ public class LaserBoardService {
         int posY = currentPosition[0];
         int posX = currentPosition[1];
         switch (direction) {
-            case NORTH:
-                posY--;
-                break;
-            case EAST:
-                posX++;
-                break;
-            case SOUTH:
-                posY++;
-                break;
-            case WEST:
-                posX--;
+            case NORTH -> posY--;
+            case EAST -> posX++;
+            case SOUTH -> posY++;
+            case WEST -> posX--;
         }
         return new int[]{posY, posX};
     }

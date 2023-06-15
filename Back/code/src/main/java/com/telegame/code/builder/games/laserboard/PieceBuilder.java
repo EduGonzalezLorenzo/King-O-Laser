@@ -1,9 +1,9 @@
 package com.telegame.code.builder.games.laserboard;
 
 import com.telegame.code.models.games.laserboard.Block;
-import com.telegame.code.models.games.laserboard.pieces.*;
 import com.telegame.code.models.games.laserboard.Deflect;
 import com.telegame.code.models.games.laserboard.Hit;
+import com.telegame.code.models.games.laserboard.pieces.*;
 
 import java.util.HashMap;
 import java.util.Map;

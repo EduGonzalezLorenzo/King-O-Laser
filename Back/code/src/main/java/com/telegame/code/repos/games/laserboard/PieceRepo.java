@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface PieceRepo extends JpaRepository<Piece, Long> {
 
-    List<Piece>findByPosYAndPosXAndLaserBoardId(int posY, int posX, long boardId);
+    List<Piece> findByPosYAndPosXAndLaserBoardId(int posY, int posX, long boardId);
 
-    List<Piece>findByLaserBoardId(long boardId);
+    List<Piece> findByLaserBoardId(long boardId);
 }
