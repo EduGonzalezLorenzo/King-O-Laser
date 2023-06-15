@@ -307,6 +307,8 @@ const handleClick = (event: MouseEvent) => {
               }
             }
           }
+        } else {
+          window.alert("La pieza que intentas mover no es tuya")
         }
       } else if (
         board.value[mouseY.value][mouseX.value] instanceof Cell &&
