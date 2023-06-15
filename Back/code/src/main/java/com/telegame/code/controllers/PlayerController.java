@@ -68,8 +68,9 @@ public class PlayerController {
                     .message(playerService.updatePlayerInfo(updatePlayerForm, request.getAttribute("playerName").toString()))
                     .build(), HttpStatus.OK);
         } catch (InputFormException e) {
-
             return new ResponseEntity<>(Message.builder().message("Player form error").build(), HttpStatus.BAD_REQUEST);
+        } catch (PlayerNameException e) {
+            return new ResponseEntity<>(Message.builder().message("You are not registered").build(), HttpStatus.BAD_REQUEST);
         }
     }
 }
