@@ -60,12 +60,12 @@
                 "
                 class="font-bold bg-yellow-400 p-2 rounded mr-4"
               >
-                {{ 
-                                  (game.status === "PLAYER_ONE_WIN" &&
+              {{ 
+                  (game.status === "PLAYER_ONE_WIN" &&
                     game.position === "P1") ||
                     (game.status === "PLAYER_TWO_WIN" && game.position === "P2")
                     ? "YOU WIN"
-                    : "YOU LOOSE"
+                    : (game.status === 'WAITING' ? 'WAITING' : "YOU LOOSE")
                 }}
               </p>
               <p
