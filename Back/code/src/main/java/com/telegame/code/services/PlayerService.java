@@ -50,13 +50,13 @@ public class PlayerService {
     }
 
     private Player getPlayer(LoginForm loginForm) {
-
         return loginForm.getPlayerName() == null ?
                 getPlayerByEmail(loginForm.getEmail()) :
                 getPlayerByName(loginForm.getPlayerName());
     }
 
     private boolean wrongNameEmailOrPassword(Player player, LoginForm loginForm) throws NoSuchAlgorithmException {
+        if (player == null) return true;
         if (player.getPassword() == null) throw new GoogleException();
         return !player.getPassword().equals(HashUtils.getHashSHA256(loginForm.getPassword()));
     }
