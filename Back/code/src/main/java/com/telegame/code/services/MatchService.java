@@ -125,6 +125,7 @@ public class MatchService {
 
     private GameMatch checkGameMatch(GameMatch gameMatch, JoinMatchForm joinMatchForm) throws NoSuchAlgorithmException {
         if (!gameMatch.getIsPublic()) checkPassword(joinMatchForm, gameMatch.getPassword());
+        if (gameMatch.getIsPublic() && joinMatchForm.getPassword().length() > 0) throw new InputFormException();
         if (gameMatch.getPlayers().size() != 1) throw new FilledMatchException();
         return gameMatch;
     }
