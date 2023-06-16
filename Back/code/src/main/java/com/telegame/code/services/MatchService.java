@@ -218,7 +218,7 @@ public class MatchService {
         return boardOptional.get();
     }
 
-    public List<GameMatchDTO> getAvailableMatches() {
+    public List<GameMatchDTO> getAvailableMatches(String playerName) {
         List<Long> matchesAvailable = playerPlayMatchRepo.findAvailableGames();
         List<PlayerPlayMatch> result = new ArrayList<>();
         for (Long matchId : matchesAvailable) {
@@ -226,9 +226,19 @@ public class MatchService {
             if (gameMatchOptional.isEmpty()) continue;
             GameMatch gameMatch = gameMatchOptional.get();
             if (BoardNoAvailable(getBoard(gameMatch))) continue;
-            result.add(playerPlayMatchRepo.findByGameMatchEquals(gameMatch).get(0));
+            PlayerPlayMatch playerPlayMatch = getPlayerPlayMatchIfIsAvailable(gameMatch, playerName);
+            if (playerPlayMatch == null) continue;
+            result.add(playerPlayMatch);
         }
         return generateGameMatchDTOsList(result);
+    }
+
+    private PlayerPlayMatch getPlayerPlayMatchIfIsAvailable(GameMatch gameMatch, String playerName) {
+        List<PlayerPlayMatch> playerPlayMatchList = playerPlayMatchRepo.findByGameMatchEquals(gameMatch);
+        if (playerPlayMatchList.isEmpty()) return null;
+        PlayerPlayMatch playerPlayMatch = playerPlayMatchList.get(0);
+        if (playerPlayMatch.getPlayer().getPlayerName().equals(playerName)) return null;
+        return playerPlayMatch;
     }
 
     public String deleteMatch(Long matchId, String playerName) {

@@ -61,9 +61,9 @@ public class MatchController {
     }
 
     @GetMapping("/matches")
-    public ResponseEntity<?> getAvailableMatches() {
+    public ResponseEntity<?> getAvailableMatches(HttpServletRequest request) {
         try {
-            return new ResponseEntity<>(matchService.getAvailableMatches(), HttpStatus.OK);
+            return new ResponseEntity<>(matchService.getAvailableMatches(request.getAttribute("playerName").toString()), HttpStatus.OK);
         } catch (PlayerNameException e) {
             return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.I_AM_A_TEAPOT);
         }

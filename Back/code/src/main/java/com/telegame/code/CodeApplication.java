@@ -25,7 +25,8 @@ public class CodeApplication implements WebMvcConfigurer {
                 .addPathPatterns("/getPlayer")
                 .addPathPatterns("/update/**")
                 .addPathPatterns("/settings")
-                .addPathPatterns("/delete/**");
+                .addPathPatterns("/delete/**")
+                .addPathPatterns("/matches");
 
         //URLs where you need to be NO logged
         registry.addInterceptor(userInterceptor)
