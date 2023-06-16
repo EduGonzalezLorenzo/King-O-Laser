@@ -35,6 +35,7 @@ public class OauthController {
     @GetMapping("/login/callback")
     public String callBack(String code, Model model) throws IOException, URISyntaxException, NoSuchAlgorithmException {
         try {
+//            return "redirect:https://king-o-laser-front.vercel.app/successGoogleLogin?jwt=" + googleLoginService.getUserInfo(code);
             return "redirect:http://localhost:3000/successGoogleLogin?jwt=" + googleLoginService.getUserInfo(code);
         } catch (PlayerNameException e) {
             return "Player has no defined name";
