@@ -18,7 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
-@CrossOrigin("http://localhost:3000/")
+@CrossOrigin({"http://localhost:3000/", "https://king-o-laser-front.vercel.app"})
 @Controller
 @AllArgsConstructor
 public class OauthController {
