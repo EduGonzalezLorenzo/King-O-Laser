@@ -249,9 +249,11 @@ public class MatchService {
     }
 
     private void updateBoard(Board board, PlayerPlayMatch currentPlayer) {
-        if (currentPlayer.getPosition().equals("P1")) board.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
-        else board.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
-        boardRepo.save(board);
+        if (!board.getStatus().equals(Board.MatchStatus.PLAYER_ONE_WIN) || board.getStatus().equals(Board.MatchStatus.PLAYER_TWO_WIN)) {
+            if (currentPlayer.getPosition().equals("P1")) board.setStatus(Board.MatchStatus.PLAYER_TWO_WIN);
+            else board.setStatus(Board.MatchStatus.PLAYER_ONE_WIN);
+            boardRepo.save(board);
+        }
     }
 
     private PlayerPlayMatch getCurrentPlayerPlayMatch(List<PlayerPlayMatch> playersInMatch, Player player) {
