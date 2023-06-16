@@ -110,7 +110,6 @@ onMounted(async () => {
     const response = await api.get('getPlayer');
 
     const data = response.data;
-
     user.value.name = data.playerName;
     user.value.loggedIn = data.loggedIn;
     user.value.profileImg = data.profileImg;
@@ -122,7 +121,6 @@ onMounted(async () => {
     const response = await api.get('match');
 
     const data = response.data;
-
     users.value = data.map((userData: UserData) => ({
       id: userData.id,
       name: userData.name,
@@ -133,7 +131,7 @@ onMounted(async () => {
       position: userData.position,
     }));
   } catch (error) {
-    console.error(error);
+    console.error("error");
   }
 
   loading.value = false;

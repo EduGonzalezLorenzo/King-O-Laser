@@ -46,7 +46,6 @@ import { Cell } from "~/types/Cell";
 import { Piece } from "~/types/Piece";
 import { BoardDisposition } from "~/types/BoardDisposition";
 
-
 const canvas = ref<HTMLCanvasElement | null>(null);
 const canvasWidth = ref(560);
 const canvasHeight = ref(700);
@@ -61,12 +60,12 @@ const selectedPieceX = ref<number>(0);
 const selectedMovementY = ref<number>(0);
 const selectedMovementX = ref<number>(0);
 const rotationValue = ref<string>("");
-const imagesArr = ref<HTMLImageElement[]>([])
+const imagesArr = ref<HTMLImageElement[]>([]);
 const boardDisposition = reactive<BoardDisposition>({
   lastAction: "",
   pieces: [],
   status: "",
-  position: ""
+  position: "",
 });
 
 const imagePaths = [
@@ -187,12 +186,15 @@ for (let x = 0; x < tableRows; x++) {
 }
 
 const drawGrid = (ctx: CanvasRenderingContext2D) => {
-  for (let x = 0; x < tableRows; x++) {
-    for (let y = 0; y < tableColumns; y++) {
-      showCell(board.value[x][y]);
+  try {
+    for (let x = 0; x < tableRows; x++) {
+      for (let y = 0; y < tableColumns; y++) {
+        showCell(board.value[x][y]);
+      }
     }
+  } catch (err) {
+    navigateTo("/error/ErrorDrawingGrid");
   }
-
   function showCell(cell: Cell) {
     ctx.fillStyle = "rgba(0,0,0, 0.5)";
     ctx.beginPath();
@@ -217,20 +219,30 @@ const emit = defineEmits<{
 }>();
 
 const checkValidTurn = () => {
-  if ((boardDisposition.status === "PLAYER_ONE_TURN" && boardDisposition.position === "P1") || (boardDisposition.status === "PLAYER_TWO_TURN" && boardDisposition.position === "P2")) {
+  if (
+    (boardDisposition.status === "PLAYER_ONE_TURN" &&
+      boardDisposition.position === "P1") ||
+    (boardDisposition.status === "PLAYER_TWO_TURN" &&
+      boardDisposition.position === "P2")
+  ) {
     return true;
   } else {
     return false;
   }
-}
+};
 
 const checkValidPiece = (piece: Piece) => {
-  if ((piece.owner === "PLAYER_ONE" && boardDisposition.status === "PLAYER_ONE_TURN") || (piece.owner === "PLAYER_TWO" && boardDisposition.status === "PLAYER_TWO_TURN")) {
+  if (
+    (piece.owner === "PLAYER_ONE" &&
+      boardDisposition.status === "PLAYER_ONE_TURN") ||
+    (piece.owner === "PLAYER_TWO" &&
+      boardDisposition.status === "PLAYER_TWO_TURN")
+  ) {
     return true;
   } else {
     return false;
   }
-}
+};
 
 const handleClick = (event: MouseEvent) => {
   if (checkValidTurn()) {
@@ -240,24 +252,30 @@ const handleClick = (event: MouseEvent) => {
     const arrow1 = document.getElementById("arrow_1") as HTMLElement;
     const arrow2 = document.getElementById("arrow_2") as HTMLElement;
 
-    mouseX.value = Math.floor(event.offsetX / (canvasWidth.value / tableColumns));
+    mouseX.value = Math.floor(
+      event.offsetX / (canvasWidth.value / tableColumns)
+    );
     mouseY.value = Math.floor(event.offsetY / (canvasHeight.value / tableRows));
 
     const ctx = canvas.value?.getContext("2d");
 
     if (ctx) {
       if (board.value[mouseY.value][mouseX.value] instanceof Piece) {
-        const piece = board.value[mouseY.value][mouseX.value]
+        const piece = board.value[mouseY.value][mouseX.value];
         if (checkValidPiece(piece)) {
-          menu.style.top = (mouseY.value * cellHeight.value) + ((window.innerHeight - canvasHeight.value) / 2) + (cellHeight.value / 8) + "px";
-          menu.style.left = (mouseX.value * cellHeight.value) + "px";
+          menu.style.top =
+            mouseY.value * cellHeight.value +
+            (window.innerHeight - canvasHeight.value) / 2 +
+            cellHeight.value / 8 +
+            "px";
+          menu.style.left = mouseX.value * cellHeight.value + "px";
 
-          menuItem1.style.height = (cellHeight.value / 2) + "px"
-          menuItem2.style.height = (cellHeight.value / 2) + "px"
-          arrow1.style.height = (cellHeight.value / 2) + "px"
-          arrow2.style.height = (cellHeight.value / 2) + "px"
-          arrow1.style.width = (cellWidth.value / 2) + "px"
-          arrow2.style.width = (cellWidth.value / 2) + "px"
+          menuItem1.style.height = cellHeight.value / 2 + "px";
+          menuItem2.style.height = cellHeight.value / 2 + "px";
+          arrow1.style.height = cellHeight.value / 2 + "px";
+          arrow2.style.height = cellHeight.value / 2 + "px";
+          arrow1.style.width = cellWidth.value / 2 + "px";
+          arrow2.style.width = cellWidth.value / 2 + "px";
           menu.classList.add("show");
 
           selectedPieceY.value = mouseY.value;
@@ -308,7 +326,7 @@ const handleClick = (event: MouseEvent) => {
             }
           }
         } else {
-          window.alert("La pieza que intentas mover no es tuya")
+          window.alert("La pieza que intentas mover no es tuya");
         }
       } else if (
         board.value[mouseY.value][mouseX.value] instanceof Cell &&
@@ -332,6 +350,7 @@ const drawBoard = (
   boardDisposition: BoardDisposition,
   images: HTMLImageElement[]
 ) => {
+  try{
   const pieceList: Piece[] = boardDisposition.pieces;
   pieceList.forEach((piece) => {
     board.value[piece.y][piece.x].empty = false;
@@ -351,9 +370,13 @@ const drawBoard = (
       cellWidth.value
     );
   });
+}catch(err){
+  navigateTo("/error/NoMatchFound")
+}
 };
 
 function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
+  try{
   if (piece.owner == "PLAYER_ONE") {
     switch (piece.type) {
       case "com.telegame.code.models.games.laserboard.pieces.King":
@@ -467,6 +490,9 @@ function getPieceImage(piece: Piece, images: HTMLImageElement[]) {
         return images[0];
     }
   }
+}catch(err){
+  navigateTo("/error/ErrorWithImages")
+}
 }
 
 function drawLaser(
@@ -477,10 +503,9 @@ function drawLaser(
   const trimmed = boardDisposition.lastAction;
   const steps = trimmed.split("*");
   const route: number[][] = steps.map((step) => {
-
-    const coordinates = step.split(',')
-    return coordinates.map(Number)
-  })
+    const coordinates = step.split(",");
+    return coordinates.map(Number);
+  });
 
   ctx.fillStyle = "rgb(100, 255, 100)";
   route.forEach((target: number[]) => {
@@ -570,7 +595,9 @@ onMounted(async () => {
   updateCanvasSize();
 });
 
-function chargeImages(imagePaths: HTMLImageElement[]): Promise<HTMLImageElement[]> {
+function chargeImages(
+  imagePaths: HTMLImageElement[]
+): Promise<HTMLImageElement[]> {
   return Promise.all(
     imagePaths.map((path) => {
       return new Promise<HTMLImageElement>((resolve, reject) => {
