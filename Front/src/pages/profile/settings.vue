@@ -101,12 +101,19 @@
 import api from "@/utils/axios";
 
 const msg = ref("");
-const matchResponse = ref<boolean>(false);
 const password = ref<string>("");
 const userName = ref<string>("");
 const firstName = ref<string>("");
 const lastName = ref<string>("");
 const repeatPassword = ref<string>("");
+const jwt = localStorage.getItem("jwt");
+const playerName = ref("")
+
+const user = ref({
+  name: String,
+  loggedIn: Boolean,
+  profileImg: String,
+});
 
 function checkPasswordsMatch() {
   const password1 = (document.getElementById("password") as HTMLInputElement)
@@ -127,28 +134,46 @@ function handleSubmit(event: any) {
   }
 }
 async function updateUser() {
+  const response = await api.get("getPlayer");
+
+  const data = response.data;
+
+  user.value.name = data.playerName;
+  user.value.loggedIn = data.loggedIn;
+  user.value.profileImg = data.profileImg;
   const content = {
     password: password.value,
     playerName: userName.value,
     firstName: firstName.value,
     lastName: lastName.value,
   };
-  try {
-    const response = await api.post("/settings", content);
-
-    const data = {
-      response,
-      message: response.data,
-    };
-
-    if (data.response.status === 200) {
-      matchResponse.value = true;
-    } else {
-      msg.value = data.message.message;
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  await fetch("http://localhost:8080/settings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt,
+    },
+    body: JSON.stringify(content),
+  })
+    .then(async (response) => {
+      return {
+        response,
+        message: await response.json(),
+      };
+    })
+    .then(async (data) => {
+      if(data.response.status === 200){
+      const jwt = await data.message.message
+      localStorage.setItem("jwt",jwt)
+      if(userName.value !== ""){
+       playerName.value = userName.value
+      }else{
+        playerName.value = user.value.name
+      }
+      navigateTo("/profile/" + playerName.value);
+      }
+      msg.value = await data.message.message;
+    });
 }
 definePageMeta({
   layout: "game-layout",

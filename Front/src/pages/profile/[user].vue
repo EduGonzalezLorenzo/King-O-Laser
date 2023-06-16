@@ -145,35 +145,3 @@ useHead({
   title: `Your Profile` ,
 })
 </script>
-
-<style>
-body {
-  background-color: #171515f5 !important;
-  background-image: none !important;
-}
-.game_container {
-  display: flex;
-  align-items: flex-start;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-.canvas_container {
-  position: relative;
-}
-
-.send_menu {
-  background-color: rgba(211, 211, 211, 0.516);
-  padding: 1em;
-  display: flex;
-  flex-direction: column;
-}
-
-button {
-  background-color: azure;
-  border: 1px solid black;
-  padding: 1em;
-  margin: 0.5em;
-}
-</style>

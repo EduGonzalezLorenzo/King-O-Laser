@@ -75,3 +75,9 @@ onMounted(async () => {
   loading.value = false;
 });
 </script>
+<style>
+body {
+  background-color: #171515f5 !important;
+  background-image: none !important;
+}
+</style>
