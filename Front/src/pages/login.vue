@@ -21,7 +21,6 @@ async function googleLogin() {
   }).then((response) => { 
     return response.json()
   }).then((data) => {
-    console.log(data)
     navigateTo(`${data.message}`, { external: true }) })
 }
 async function LogUser(event: Event) {

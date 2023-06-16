@@ -46,7 +46,6 @@ async function createMatch(event: Event) {
       matchResponse.value = true;
     } else {
       msg.value = data.message.message;
-      console.log(msg.value);
     }
 
     if (matchResponse.value) {
