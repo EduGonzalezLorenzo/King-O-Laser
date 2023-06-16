@@ -2,6 +2,7 @@ package com.telegame.code.controllers;
 
 import com.telegame.code.DTO.Message;
 import com.telegame.code.exceptions.player.GoogleException;
+import com.telegame.code.exceptions.player.LoginException;
 import com.telegame.code.exceptions.player.PlayerNameException;
 import com.telegame.code.services.GoogleLoginService;
 import com.telegame.code.services.TokenService;
@@ -41,6 +42,8 @@ public class OauthController {
             return "Player has no defined name";
         } catch (GoogleException e) {
             return "Google Login Error";
+        } catch (LoginException e) {
+            return "Login Error";
         }
     }
 }

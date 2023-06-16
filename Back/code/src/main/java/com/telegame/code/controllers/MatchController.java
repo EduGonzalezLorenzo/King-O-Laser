@@ -55,8 +55,10 @@ public class MatchController {
             return new ResponseEntity<>(Message.builder().message("Player can no join match because he no exists").build(), HttpStatus.I_AM_A_TEAPOT);
         } catch (PlayerAlreadyInMatchException e) {
             return new ResponseEntity<>(Message.builder().message("You are already in this match").build(), HttpStatus.CONFLICT);
-        } catch (MatchInfoException e) {
+        } catch (InputFormException e) {
             return new ResponseEntity<>(Message.builder().message("Wrong password").build(), HttpStatus.BAD_REQUEST);
+        } catch (MatchInfoException e) {
+            return new ResponseEntity<>(Message.builder().message("").build(), HttpStatus.BAD_REQUEST);
         }
     }
 
