@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 
-@CrossOrigin("http://localhost:3000/")
+@CrossOrigin({"http://localhost:3000/", "https://king-o-laser-front.vercel.app"})
 @RestController
 @AllArgsConstructor
 public class PlayerController {
