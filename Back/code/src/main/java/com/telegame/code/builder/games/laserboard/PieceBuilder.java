@@ -12,7 +12,6 @@ public class PieceBuilder {
 
     public static Piece buildPiece(String type, Piece.Owner owner, int posY, int posX, Piece.Direction rotation) {
         Piece piece = new King();
-        System.out.println("type: " + type);
         switch (type) {
             case "class com.telegame.code.models.games.laserboard.pieces.King" -> {
                 Piece king = new King();

@@ -89,7 +89,6 @@ public abstract class Piece implements Movable {
             this.posX = nextX;
             return true;
         } else {
-            System.out.println("Movimiento incorrecto");
             return false;
         }
     }
