@@ -13,6 +13,7 @@ import com.telegame.code.repos.PlayerRepo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
 import lombok.AllArgsConstructor;
+import org.apache.el.parser.Token;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -90,7 +91,8 @@ public class PlayerService {
 
         Player updatedPlayer = generateUpdatedPlayer(oldPlayer, updatePlayerForm);
         playerRepo.save(updatedPlayer);
-        return "ok";
+
+        return tokenService.createUserToken(updatedPlayer);
     }
 
     private boolean playerNameAlreadyRegistered(String playerName) {
